@@ -1,14 +1,17 @@
 import React from 'react';
 import { useCart } from '../context/CartContext';
+import { useUser } from '../context/UserContext';
 import './CartDrawer.css';
 
 interface CartDrawerProps {
   isOpen: boolean;
   onClose: () => void;
+  onCheckout: () => void;
 }
 
-const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose }) => {
+const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose, onCheckout }) => {
   const { cart, addToCart, removeFromCart, totalPrice, subtotal, discount, clearCart } = useCart();
+  const { activeDiscount } = useUser();
 
   if (!isOpen) return null;
 
@@ -50,9 +53,9 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose }) => {
                 <span>Subtotal:</span>
                 <span>{subtotal.toLocaleString()} RWF</span>
               </div>
-              {discount > 0 && (
+              {activeDiscount > 0 && (
                 <div className="summary-row discount">
-                  <span>Loyalty Discount (5%):</span>
+                  <span>Admin Loyalty Discount ({activeDiscount}%):</span>
                   <span>-{discount.toLocaleString()} RWF</span>
                 </div>
               )}
@@ -61,7 +64,9 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose }) => {
                 <span>{totalPrice.toLocaleString()} RWF</span>
               </div>
             </div>
-            <button className="checkout-btn">Checkout</button>
+            <button className="checkout-btn" onClick={() => { onCheckout(); clearCart(); }}>
+              Confirm Checkout
+            </button>
             <button className="clear-btn" onClick={clearCart}>Clear Cart</button>
           </div>
         )}

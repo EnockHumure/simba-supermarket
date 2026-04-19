@@ -43,7 +43,7 @@
 
 .bot-window {
   width: 350px;
-  height: 450px;
+  height: 500px;
   background-color: white;
   border-radius: 12px;
   box-shadow: 0 10px 40px rgba(0,0,0,0.2);
@@ -96,10 +96,23 @@
   background-color: #f9f9f9;
 }
 
+.message-container {
+  display: flex;
+  flex-direction: column;
+  max-width: 80%;
+}
+
+.message-container.bot {
+  align-self: flex-start;
+}
+
+.message-container.user {
+  align-self: flex-end;
+}
+
 .message {
   padding: 0.8rem 1rem;
   border-radius: 12px;
-  max-width: 80%;
   font-size: 0.9rem;
   line-height: 1.4;
 }
@@ -107,7 +120,6 @@
 .message.bot {
   background-color: white;
   color: #333;
-  align-self: flex-start;
   border-bottom-left-radius: 2px;
   box-shadow: 0 2px 5px rgba(0,0,0,0.05);
   border-left: 4px solid var(--simba-blue);
@@ -116,8 +128,42 @@
 .message.user {
   background-color: var(--simba-blue);
   color: white;
-  align-self: flex-end;
   border-bottom-right-radius: 2px;
+}
+
+.bot-product-links {
+  margin-top: 0.8rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  background: rgba(0, 123, 255, 0.05);
+  padding: 0.6rem;
+  border-radius: 8px;
+}
+
+.bot-hint {
+  font-size: 0.75rem;
+  color: var(--simba-blue);
+  font-weight: bold;
+  margin: 0 0 0.3rem 0;
+  text-transform: uppercase;
+}
+
+.bot-product-btn {
+  background-color: white;
+  border: 1px solid var(--simba-blue);
+  color: var(--simba-blue);
+  padding: 0.5rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  text-align: left;
+  transition: all 0.2s;
+}
+
+.bot-product-btn:hover {
+  background-color: var(--simba-blue);
+  color: white;
 }
 
 .bot-input {

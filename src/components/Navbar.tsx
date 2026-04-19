@@ -11,7 +11,7 @@ interface NavbarProps {
 
 const Navbar: React.FC<NavbarProps> = ({ searchTerm, onSearchChange, onCartClick }) => {
   const { totalItems } = useCart();
-  const { user, isLoyal } = useUser();
+  const { user, activeDiscount } = useUser();
 
   return (
     <nav className="navbar">
@@ -29,8 +29,8 @@ const Navbar: React.FC<NavbarProps> = ({ searchTerm, onSearchChange, onCartClick
       </div>
       <div className="navbar-actions">
         {user && (
-          <div className={`loyalty-status ${isLoyal ? 'loyal' : ''}`}>
-            {isLoyal ? '✓ Loyal Customer (5% Off)' : 'Guest Client'}
+          <div className={`loyalty-status ${activeDiscount > 0 ? 'loyal' : 'guest'}`}>
+            {activeDiscount > 0 ? `👑 VIP Client (${activeDiscount}% Off)` : '👤 Guest Client'}
           </div>
         )}
         <div className="navbar-cart" onClick={onCartClick}>

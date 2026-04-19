@@ -1,14 +1,22 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useUser } from '../context/UserContext';
+import { useSimbaAI } from '../hooks/useSimbaAI';
+import type { Product } from '../context/CartContext';
 import './SimbaBot.css';
 
 interface Message {
   text: string;
   isBot: boolean;
+  productLinks?: Product[];
 }
 
-const SimbaBot: React.FC = () => {
-  const { user, isLoyal } = useUser();
+interface SimbaBotProps {
+  onViewProduct: (product: Product) => void;
+}
+
+const SimbaBot: React.FC<SimbaBotProps> = ({ onViewProduct }) => {
+  const { user, activeDiscount } = useUser();
+  const { getResponse, isLoading } = useSimbaAI();
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
@@ -16,44 +24,34 @@ const SimbaBot: React.FC = () => {
 
   useEffect(() => {
     if (user && messages.length === 0) {
-      const welcomeMsg = isLoyal 
-        ? `Welcome back, ${user.name}! 🦁 How can I assist you with your loyal customer benefits today?`
-        : `Hello ${user.name}! I'm Simba Bot, your personal shopping guide. Ask me anything about our store!`;
+      let welcomeMsg = `Hello ${user.name}! 🦁 I am your Simba Shopping Assistant. I can help you find any product in our store and redirect you to it instantly! Just tell me what you're looking for (e.g., 'Cassava', 'Juice', or 'Massage Roller') and I'll fetch it for you.`;
+      
+      if (activeDiscount > 0) {
+        welcomeMsg = `Welcome back, ${user.name}! 🦁 Our Admin has granted you a ${activeDiscount}% loyalty discount! I can also help you find and redirect you to any product—just tell me what you need!`;
+      }
       setMessages([{ text: welcomeMsg, isBot: true }]);
     }
-  }, [user, isLoyal]);
+  }, [user, activeDiscount, messages.length]);
 
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  const handleSend = (e: React.FormEvent) => {
+  const handleSend = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!input.trim()) return;
+    if (!input.trim() || isLoading) return;
 
     const userMsg = input.trim();
     setMessages(prev => [...prev, { text: userMsg, isBot: false }]);
     setInput('');
 
-    // Simulated Bot Responses
-    setTimeout(() => {
-      let botResponse = "That's a great question! I'm here to help you find the best deals at Simba Supermarket.";
-      
-      const lowerInput = userMsg.toLowerCase();
-      if (lowerInput.includes('location') || lowerInput.includes('where')) {
-        botResponse = "We are located in Kigali, Rwanda! You can find us in several convenient spots around the city.";
-      } else if (lowerInput.includes('discount') || lowerInput.includes('loyalty')) {
-        botResponse = isLoyal 
-          ? "You're one of our loyal customers! You get an automatic 5% discount on every order today."
-          : "Shopping with us more than once makes you a loyal customer, unlocking a 5% discount on all future orders!";
-      } else if (lowerInput.includes('hello') || lowerInput.includes('hi')) {
-        botResponse = `Hi ${user?.name}! Hope you're having a wonderful day shopping with us!`;
-      } else if (lowerInput.includes('category') || lowerInput.includes('fresh')) {
-        botResponse = "We have everything from fresh produce to electronics. Check out our 'Cosmetics' or 'Sports' sections for some great deals!";
-      }
-
-      setMessages(prev => [...prev, { text: botResponse, isBot: true }]);
-    }, 1000);
+    const aiResponse = await getResponse(userMsg, false, activeDiscount);
+    
+    setMessages(prev => [...prev, { 
+      text: aiResponse.text, 
+      isBot: true, 
+      productLinks: aiResponse.matchedProducts 
+    }]);
   };
 
   if (!user) return null;
@@ -78,20 +76,40 @@ const SimbaBot: React.FC = () => {
           </div>
           <div className="bot-messages">
             {messages.map((m, i) => (
-              <div key={i} className={`message ${m.isBot ? 'bot' : 'user'}`}>
-                {m.text}
+              <div key={i} className={`message-container ${m.isBot ? 'bot' : 'user'}`}>
+                <div className={`message ${m.isBot ? 'bot' : 'user'}`}>
+                  {m.text}
+                </div>
+                {m.productLinks && m.productLinks.length > 0 && (
+                  <div className="bot-product-links">
+                    <p className="bot-hint">Click below to view the product:</p>
+                    {m.productLinks.map(p => (
+                      <button 
+                        key={p.id} 
+                        className="bot-product-btn"
+                        onClick={() => onViewProduct(p)}
+                      >
+                        📦 View {p.name}
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
             ))}
+            {isLoading && <div className="message bot loading">Simba Bot is fetching products...</div>}
             <div ref={chatEndRef} />
           </div>
           <form className="bot-input" onSubmit={handleSend}>
             <input 
               type="text" 
-              placeholder="Type your message..." 
+              placeholder="What can I find for you?" 
               value={input}
               onChange={(e) => setInput(e.target.value)}
+              disabled={isLoading}
             />
-            <button type="submit">Send</button>
+            <button type="submit" disabled={isLoading}>
+              {isLoading ? '...' : 'Fetch'}
+            </button>
           </form>
         </div>
       )}

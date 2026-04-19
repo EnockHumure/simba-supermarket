@@ -30,7 +30,7 @@ interface CartContextType {
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
 export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const { isLoyal } = useUser();
+  const { activeDiscount } = useUser();
   const [cart, setCart] = useState<CartItem[]>([]);
 
   const addToCart = (product: Product) => {
@@ -57,7 +57,7 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   const totalItems = cart.reduce((total, item) => total + item.quantity, 0);
   const subtotal = cart.reduce((total, item) => total + item.price * item.quantity, 0);
-  const discount = isLoyal ? subtotal * 0.05 : 0;
+  const discount = subtotal * (activeDiscount / 100);
   const totalPrice = subtotal - discount;
 
   return (
