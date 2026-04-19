@@ -123,13 +123,30 @@
   background-color: #fafafa;
 }
 
-.cart-total {
+.cart-summary {
+  margin-bottom: 1.5rem;
+}
+
+.summary-row {
   display: flex;
   justify-content: space-between;
-  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+  font-size: 0.95rem;
+  color: #666;
+}
+
+.summary-row.discount {
+  color: #28a745;
+  font-weight: 500;
+}
+
+.summary-row.total {
+  font-size: 1.25rem;
   font-weight: bold;
-  margin-bottom: 1rem;
   color: #E21F26;
+  border-top: 1px solid #ddd;
+  padding-top: 0.8rem;
+  margin-top: 0.8rem;
 }
 
 .checkout-btn {

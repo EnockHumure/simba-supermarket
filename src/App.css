@@ -1,0 +1,155 @@
+.app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background-color: var(--simba-light);
+}
+
+.app-body {
+  display: flex;
+  flex: 1;
+}
+
+.welcome-banner {
+  background: linear-gradient(135deg, var(--simba-blue), var(--simba-green));
+  color: white;
+  padding: 1.5rem 2rem;
+  border-radius: 12px;
+  margin-bottom: 2rem;
+  text-align: left;
+  box-shadow: 0 4px 15px rgba(0, 123, 255, 0.2);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  animation: slideInLeft 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+@keyframes slideInLeft {
+  from { opacity: 0; transform: translateX(-20px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+.welcome-banner h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 800;
+}
+
+.welcome-banner p {
+  margin: 0.3rem 0 0;
+  color: rgba(255,255,255,0.9);
+  font-weight: 500;
+}
+
+.loyalty-badge {
+  background-color: var(--simba-gold);
+  color: var(--simba-red);
+  padding: 0.4rem 1rem;
+  border-radius: 50px;
+  font-weight: 900;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.main-content {
+  flex: 1;
+  padding: 2rem;
+}
+
+.content-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.content-header h2 {
+  margin: 0;
+  color: var(--simba-dark);
+  font-weight: 800;
+  position: relative;
+}
+
+.content-header h2::after {
+  content: '';
+  position: absolute;
+  bottom: -5px;
+  left: 0;
+  width: 40px;
+  height: 3px;
+  background-color: var(--simba-blue);
+  border-radius: 2px;
+}
+
+.product-count {
+  color: #888;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 2rem;
+}
+
+.no-products {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 6rem;
+  color: #888;
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.footer {
+  background-color: var(--simba-dark);
+  color: white;
+  padding: 3rem;
+  text-align: center;
+  font-size: 0.95rem;
+}
+
+@media (max-width: 768px) {
+  .app-body {
+    flex-direction: column;
+  }
+  
+  .sidebar {
+    width: 100%;
+    height: auto;
+    position: static;
+    border-right: none;
+    border-bottom: 1px solid #ddd;
+    padding: 1rem;
+  }
+  
+  .sidebar ul {
+    display: flex;
+    overflow-x: auto;
+    padding-bottom: 0.5rem;
+    gap: 0.5rem;
+  }
+  
+  .sidebar li {
+    white-space: nowrap;
+    padding: 0.5rem 1.2rem;
+  }
+  
+  .main-content {
+    padding: 1rem;
+  }
+  
+  .hero-content h1 {
+    font-size: 2.2rem;
+  }
+  
+  .welcome-banner {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+}
