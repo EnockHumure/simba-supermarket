@@ -1,22 +1,29 @@
 .modal-content.user-modal {
-  width: min(520px, 100%);
+  width: min(760px, 100%);
   padding: 28px;
 }
 
 .user-modal {
   display: grid;
-  gap: 18px;
+  gap: 20px;
 }
 
 .simba-intro-card {
   padding: 18px;
   border-radius: 18px;
-  background: rgba(93, 35, 150, 0.08);
+  background: rgba(214, 40, 40, 0.08);
   border: 1px solid rgba(73, 38, 111, 0.08);
 }
 
 .simba-intro-card h3 {
   margin-bottom: 8px;
+}
+
+.account-page-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(260px, 0.9fr);
+  gap: 16px;
+  align-items: start;
 }
 
 .simba-badge {
@@ -35,7 +42,7 @@
 }
 
 .user-modal h2 {
-  font-size: 2rem;
+  font-size: 1.8rem;
 }
 
 .user-modal > p,
@@ -47,6 +54,11 @@
 .user-modal form {
   display: grid;
   gap: 14px;
+}
+
+.account-actions {
+  display: flex;
+  gap: 12px;
 }
 
 .form-group {
@@ -86,4 +98,30 @@
 .phone-error-msg {
   color: #c44d4d;
   font-size: 0.86rem;
+}
+
+.loyalty-tip {
+  padding: 16px;
+  border-radius: 16px;
+  background: #fff9ef;
+  border: 1px solid rgba(214, 40, 40, 0.12);
+}
+
+.loyalty-tip strong {
+  display: block;
+  margin-bottom: 6px;
+}
+
+@media (max-width: 760px) {
+  .modal-content.user-modal {
+    padding: 20px;
+  }
+
+  .account-page-hero {
+    grid-template-columns: 1fr;
+  }
+
+  .account-actions {
+    flex-direction: column;
+  }
 }

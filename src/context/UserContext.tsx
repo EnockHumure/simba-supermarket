@@ -3,7 +3,8 @@ import { ADMIN_PHONE, normalizeRwandanPhone } from '../i18n';
 
 export interface UserProfile {
   name: string;
-  phone: string;
+  email: string;
+  phone?: string;
   visitCount: number;
   totalPurchases: number;
   manualDiscount: number; // Admin-controlled percentage
@@ -12,9 +13,9 @@ export interface UserProfile {
 interface UserContextType {
   user: UserProfile | null;
   allProfiles: Record<string, UserProfile>;
-  login: (name: string, phone: string) => void;
+  login: (name: string, email: string, phone?: string) => void;
   logout: () => void;
-  updateProfile: (phone: string, updates: Partial<UserProfile>) => void;
+  updateProfile: (email: string, updates: Partial<UserProfile>) => void;
   isLoyal: boolean;
   activeDiscount: number;
   isAdmin: boolean;
@@ -26,7 +27,6 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [user, setUser] = useState<UserProfile | null>(null);
   const [allProfiles, setAllProfiles] = useState<Record<string, UserProfile>>({});
 
-  // Load and persist from a "database" of phone numbers in localStorage
   const getProfiles = (): Record<string, UserProfile> => {
     const data = localStorage.getItem('simba_profiles');
     return data ? JSON.parse(data) : {};
@@ -37,38 +37,45 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setAllProfiles(profiles);
   };
 
-  const login = (name: string, phone: string) => {
-    const normalizedPhone = normalizeRwandanPhone(phone);
+  const login = (name: string, email: string, phone?: string) => {
+    const normalizedEmail = email.trim().toLowerCase();
+    const normalizedPhone = phone ? normalizeRwandanPhone(phone) : undefined;
     const profiles = getProfiles();
-    let profile = profiles[normalizedPhone];
+    let profile = profiles[normalizedEmail];
 
     if (profile) {
-      // Returning user: Increment visit count
-      profile = { ...profile, name, visitCount: (profile.visitCount || 0) + 1 };
+      profile = {
+        ...profile,
+        name,
+        email: normalizedEmail,
+        phone: normalizedPhone || profile.phone,
+        visitCount: (profile.visitCount || 0) + 1,
+      };
     } else {
-      // New user: Create profile with zeroed purchase history
-      profile = { 
-        name, 
-        phone: normalizedPhone, 
-        visitCount: 1, 
-        totalPurchases: 0, 
-        manualDiscount: 0 
+      profile = {
+        name,
+        email: normalizedEmail,
+        phone: normalizedPhone,
+        visitCount: 1,
+        totalPurchases: 0,
+        manualDiscount: 0,
       };
     }
 
-    const updatedProfiles = { ...profiles, [normalizedPhone]: profile };
+    const updatedProfiles = { ...profiles, [normalizedEmail]: profile };
     setUser(profile);
     saveProfiles(updatedProfiles);
-    localStorage.setItem('simba_current_session', normalizedPhone);
+    localStorage.setItem('simba_current_session', normalizedEmail);
   };
 
-  const updateProfile = (phone: string, updates: Partial<UserProfile>) => {
+  const updateProfile = (email: string, updates: Partial<UserProfile>) => {
     const profiles = getProfiles();
-    if (profiles[phone]) {
-      const updatedProfile = { ...profiles[phone], ...updates };
-      const updatedProfiles = { ...profiles, [phone]: updatedProfile };
+    const normalizedEmail = email.trim().toLowerCase();
+    if (profiles[normalizedEmail]) {
+      const updatedProfile = { ...profiles[normalizedEmail], ...updates };
+      const updatedProfiles = { ...profiles, [normalizedEmail]: updatedProfile };
       saveProfiles(updatedProfiles);
-      if (user?.phone === phone) {
+      if (user?.email === normalizedEmail) {
         setUser(updatedProfile);
       }
     }
@@ -83,9 +90,9 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     const profiles = getProfiles();
     setAllProfiles(profiles);
     
-    const currentSessionPhone = localStorage.getItem('simba_current_session');
-    if (currentSessionPhone) {
-      const profile = profiles[currentSessionPhone];
+    const currentSessionEmail = localStorage.getItem('simba_current_session');
+    if (currentSessionEmail) {
+      const profile = profiles[currentSessionEmail];
       if (profile) {
         setUser(profile);
       }

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useCart } from '../context/CartContext';
 import { useUser } from '../context/UserContext';
 import { useSettings } from '../context/SettingsContext';
@@ -14,6 +14,7 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose, onCheckout }) 
   const { cart, addToCart, removeFromCart, totalPrice, subtotal, discount, clearCart } = useCart();
   const { activeDiscount } = useUser();
   const { t } = useSettings();
+  const [paymentMethod, setPaymentMethod] = useState('card');
 
   if (!isOpen) {
     return null;
@@ -77,6 +78,33 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose, onCheckout }) 
               <div className="summary-row total">
                 <span>{t('total')}</span>
                 <strong>{totalPrice.toLocaleString()} RWF</strong>
+              </div>
+            </div>
+
+            <div className="payment-section">
+              <label className="payment-label">{t('paymentMethod')}</label>
+              <div className="payment-options">
+                <button
+                  type="button"
+                  className={`payment-option ${paymentMethod === 'card' ? 'active' : ''}`}
+                  onClick={() => setPaymentMethod('card')}
+                >
+                  {t('payWithCard')}
+                </button>
+                <button
+                  type="button"
+                  className={`payment-option ${paymentMethod === 'cash' ? 'active' : ''}`}
+                  onClick={() => setPaymentMethod('cash')}
+                >
+                  {t('payWithCash')}
+                </button>
+                <button
+                  type="button"
+                  className={`payment-option ${paymentMethod === 'mobile' ? 'active' : ''}`}
+                  onClick={() => setPaymentMethod('mobile')}
+                >
+                  {t('payWithMobile')}
+                </button>
               </div>
             </div>
 

@@ -16,12 +16,9 @@ import './App.css';
 import { translateCategoryLabel, translateProductLabel } from './i18n';
 
 type ServiceKey =
-  | 'express'
-  | 'fresh'
-  | 'bakery'
-  | 'home'
-  | 'family'
-  | 'essentials';
+  | 'supermarket'
+  | 'restaurant'
+  | 'bakery';
 
 const serviceDefinitions: Record<
   ServiceKey,
@@ -32,41 +29,23 @@ const serviceDefinitions: Record<
     accent: string;
   }
 > = {
-  express: {
-    title: 'Simba Express',
-    subtitle: 'Daily essentials from Kigali in minutes.',
-    categories: ['General', 'Food Products'],
-    accent: 'Fast lane',
+  supermarket: {
+    title: 'Supermarket',
+    subtitle: 'Groceries, household essentials, drinks, and general shopping from Simba.',
+    categories: ['General', 'Food Products', 'Kitchenware & Electronics', 'Baby Products'],
+    accent: 'Supermarket',
   },
-  fresh: {
-    title: 'Fresh Rwanda',
-    subtitle: 'Milk, produce and market staples from the Simba catalogue.',
-    categories: ['Food Products', 'General'],
-    accent: 'Farm picks',
+  restaurant: {
+    title: 'Restaurant',
+    subtitle: 'Coffee shop style picks, drinks, quick food, and ready-to-enjoy items.',
+    categories: ['Food Products', 'Alcoholic Drinks', 'Cosmetics & Personal Care'],
+    accent: 'Restaurant',
   },
   bakery: {
-    title: 'Bakery Drop',
-    subtitle: 'Bread, pastries and breakfast add-ons for the morning rush.',
+    title: 'Bakery',
+    subtitle: 'Bread, pastries, cakes, breakfast items, and bakery factory products.',
     categories: ['Cosmetics & Personal Care', 'Food Products'],
-    accent: 'Warm now',
-  },
-  home: {
-    title: 'Home Setup',
-    subtitle: 'Kitchen, cleaning and practical household goods in one order.',
-    categories: ['Kitchenware & Electronics', 'General'],
-    accent: 'House care',
-  },
-  family: {
-    title: 'Family Basket',
-    subtitle: 'Baby, personal care and bigger everyday baskets.',
-    categories: ['Baby Products', 'Cosmetics & Personal Care'],
-    accent: 'Parent picks',
-  },
-  essentials: {
-    title: 'Weekend Stock-Up',
-    subtitle: 'Drinks, pantry goods and larger-value refill orders.',
-    categories: ['Alcoholic Drinks', 'General'],
-    accent: 'Bulk value',
+    accent: 'Bakery',
   },
 };
 
@@ -116,7 +95,7 @@ const AppContent: React.FC = () => {
   const [isAdminOpen, setIsAdminOpen] = useState(false);
   const [isUserModalOpen, setIsUserModalOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-  const [activeService, setActiveService] = useState<ServiceKey>('express');
+  const [activeService, setActiveService] = useState<ServiceKey>('supermarket');
   const [activeFaq, setActiveFaq] = useState(0);
   const [selectedLocation, setSelectedLocation] = useState('Kigali CBD');
   const productsRef = useRef<HTMLElement | null>(null);
@@ -166,7 +145,7 @@ const AppContent: React.FC = () => {
     }
 
     const newTotal = (user.totalPurchases || 0) + 1;
-    updateProfile(user.phone, { totalPurchases: newTotal });
+    updateProfile(user.email, { totalPurchases: newTotal });
     window.alert(`Checkout successful for ${user.name}. Total completed orders: ${newTotal}.`);
     setIsCartOpen(false);
   };
@@ -209,8 +188,7 @@ const AppContent: React.FC = () => {
               <p className="section-kicker">Your Simba account</p>
               <h2>Murakaza neza, {user.name}.</h2>
               <p>
-                Delivering to <strong>{selectedLocation}</strong> with loyalty tracking on{' '}
-                <strong>{user.phone}</strong>.
+                Delivering to <strong>{selectedLocation}</strong> for account <strong>{user.email}</strong>.
               </p>
             </div>
             <div className="welcome-banner-meta">

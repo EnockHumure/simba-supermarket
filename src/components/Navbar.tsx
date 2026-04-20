@@ -98,7 +98,7 @@ const Navbar: React.FC<NavbarProps> = ({
             </button>
           ) : (
             <button className="switch-account-btn" onClick={onLoginClick}>
-              {t('enterSimba')}
+              {t('signInSimba')}
             </button>
           )}
         </div>

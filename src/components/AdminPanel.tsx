@@ -56,12 +56,12 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose }) => {
                 profilesArray.map((profile: UserProfile) => (
                   <tr key={profile.phone}>
                     <td>{profile.name}</td>
-                    <td>{profile.phone}</td>
+                    <td>{profile.phone || profile.email}</td>
                     <td>{profile.totalPurchases || 0}</td>
                     <td>
                       <select
                         value={profile.manualDiscount || 0}
-                        onChange={(event) => handleDiscountChange(profile.phone, parseInt(event.target.value, 10))}
+                        onChange={(event) => handleDiscountChange(profile.email, parseInt(event.target.value, 10))}
                       >
                         <option value={0}>0%</option>
                         <option value={5}>5%</option>

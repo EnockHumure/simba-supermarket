@@ -41,7 +41,6 @@ const Hero: React.FC<HeroProps> = ({
             onClick={() => onServiceChange(key)}
           >
             <strong>{service.title}</strong>
-            <span>{service.accent}</span>
           </button>
         ))}
       </div>
@@ -54,7 +53,6 @@ const Hero: React.FC<HeroProps> = ({
         </div>
 
         <div className="hero-order-card">
-          <p className="hero-order-eyebrow">{activeMeta.accent}</p>
           <h2>{activeMeta.title}</h2>
           <p>{activeMeta.subtitle}</p>
 
