@@ -4,14 +4,19 @@ import { useSettings } from '../context/SettingsContext';
 import { isValidRwandanPhone, normalizeRwandanPhone } from '../i18n';
 import './UserModal.css';
 
-const UserModal: React.FC = () => {
+interface UserModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+const UserModal: React.FC<UserModalProps> = ({ isOpen, onClose }) => {
   const { user, login } = useUser();
   const { t } = useSettings();
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [error, setError] = useState('');
 
-  if (user) {
+  if (user || !isOpen) {
     return null;
   }
 
@@ -26,6 +31,7 @@ const UserModal: React.FC = () => {
 
     if (name && phone) {
       login(name, normalizeRwandanPhone(phone));
+      onClose();
     }
   };
 
@@ -67,6 +73,9 @@ const UserModal: React.FC = () => {
 
           <button type="submit" className="login-btn">
             {t('enterSimba')}
+          </button>
+          <button type="button" className="guest-btn" onClick={onClose}>
+            Continue as guest
           </button>
         </form>
 

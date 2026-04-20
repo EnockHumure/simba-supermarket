@@ -5,9 +5,9 @@
 .app-shell {
   width: min(1380px, calc(100% - 32px));
   margin: 0 auto;
-  padding: 24px 0 48px;
+  padding: 14px 0 32px;
   display: grid;
-  gap: 24px;
+  gap: 14px;
 }
 
 .section,
@@ -20,17 +20,17 @@
 .campaign-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 18px;
+  gap: 14px;
 }
 
 .campaign-card {
   border-radius: 28px;
-  padding: 28px;
+  padding: 18px;
   border: 1px solid transparent;
   text-align: left;
   display: grid;
   gap: 12px;
-  min-height: 210px;
+  min-height: 148px;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
@@ -40,7 +40,7 @@
 }
 
 .campaign-card h3 {
-  font-size: clamp(1.35rem, 2vw, 1.75rem);
+  font-size: clamp(1.02rem, 1.45vw, 1.28rem);
   line-height: 1.1;
 }
 
@@ -77,7 +77,7 @@
 
 .section {
   display: grid;
-  gap: 20px;
+  gap: 14px;
 }
 
 .section-heading {
@@ -94,7 +94,7 @@
 .section-heading h2,
 .section-heading h3 {
   margin-top: 6px;
-  font-size: clamp(1.5rem, 2vw, 2.2rem);
+  font-size: clamp(1.15rem, 1.55vw, 1.55rem);
 }
 
 .section-heading p:last-child {
@@ -130,7 +130,7 @@
   display: flex;
   justify-content: space-between;
   gap: 24px;
-  padding: 28px;
+  padding: 18px;
   border-radius: 28px;
   background: linear-gradient(135deg, rgba(93, 35, 150, 0.95), rgba(129, 62, 197, 0.9));
   color: #fff;
@@ -143,6 +143,7 @@
 
 .welcome-banner h2 {
   margin: 6px 0 8px;
+  font-size: 1.25rem;
 }
 
 .welcome-banner-meta {
@@ -153,7 +154,7 @@
 
 .welcome-banner-meta div {
   min-width: 120px;
-  padding: 16px;
+  padding: 12px;
   border-radius: 22px;
   background: rgba(255, 255, 255, 0.12);
   display: grid;
@@ -171,31 +172,31 @@
 .product-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 18px;
+  gap: 12px;
 }
 
 .app-body {
   display: grid;
   grid-template-columns: 300px minmax(0, 1fr);
-  gap: 20px;
+  gap: 16px;
   align-items: start;
 }
 
 .market-content {
   display: grid;
-  gap: 20px;
+  gap: 16px;
 }
 
 .market-highlights {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 16px;
+  gap: 12px;
 }
 
 .highlight-card,
 .panel {
   border-radius: 26px;
-  padding: 22px;
+  padding: 14px;
   background: var(--simba-surface);
   border: 1px solid var(--simba-line);
   box-shadow: var(--simba-shadow);
@@ -208,7 +209,7 @@
 }
 
 .highlight-value {
-  font-size: 1.9rem;
+  font-size: 1.3rem;
   font-weight: 800;
 }
 
@@ -220,13 +221,13 @@
 .bottom-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 18px;
+  gap: 14px;
 }
 
 .mini-product-list {
-  margin-top: 18px;
+  margin-top: 14px;
   display: grid;
-  gap: 12px;
+  gap: 10px;
 }
 
 .mini-product-card {
@@ -234,7 +235,7 @@
   grid-template-columns: 72px minmax(0, 1fr);
   gap: 14px;
   align-items: center;
-  padding: 12px;
+  padding: 10px;
   border-radius: 20px;
   background: #fff;
   border: 1px solid var(--simba-line);
@@ -273,7 +274,7 @@
 
 .empty-state {
   grid-column: 1 / -1;
-  padding: 48px 24px;
+  padding: 32px 20px;
   border-radius: 24px;
   text-align: center;
   border: 1px dashed rgba(93, 35, 150, 0.24);
@@ -285,7 +286,7 @@
   justify-content: space-between;
   gap: 24px;
   align-items: center;
-  padding: 32px;
+  padding: 18px;
   border-radius: 32px;
   color: #fff;
   background:
@@ -295,7 +296,7 @@
 
 .download-banner h2 {
   margin: 8px 0 10px;
-  font-size: clamp(1.6rem, 2vw, 2.3rem);
+  font-size: clamp(1.18rem, 1.5vw, 1.6rem);
   max-width: 720px;
 }
 
@@ -311,13 +312,13 @@
 }
 
 .faq-list {
-  margin-top: 18px;
+  margin-top: 14px;
   display: grid;
   gap: 12px;
 }
 
 .faq-item {
-  padding: 16px 18px;
+  padding: 12px 14px;
   border-radius: 20px;
   background: #fff;
   border: 1px solid var(--simba-line);
@@ -340,7 +341,7 @@
 }
 
 .coverage-grid {
-  margin-top: 18px;
+  margin-top: 14px;
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
@@ -361,8 +362,8 @@
 }
 
 .coverage-note {
-  margin-top: 18px;
-  padding: 16px;
+  margin-top: 14px;
+  padding: 12px;
   border-radius: 18px;
   background: #fff;
   border: 1px solid var(--simba-line);
@@ -388,7 +389,7 @@
 .footer {
   width: min(1380px, calc(100% - 32px));
   margin: 0 auto 28px;
-  padding: 28px 0 0;
+  padding: 18px 0 0;
   display: flex;
   justify-content: space-between;
   gap: 18px;
@@ -457,7 +458,7 @@
   .highlight-card,
   .campaign-card,
   .welcome-banner {
-    padding: 20px;
+    padding: 16px;
   }
 
   .admin-access {

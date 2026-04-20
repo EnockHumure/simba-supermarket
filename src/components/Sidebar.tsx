@@ -1,4 +1,6 @@
 import React from 'react';
+import { useSettings } from '../context/SettingsContext';
+import { translateCategoryLabel } from '../i18n';
 import './Sidebar.css';
 
 interface SidebarProps {
@@ -14,6 +16,8 @@ const Sidebar: React.FC<SidebarProps> = ({
   onSelectCategory,
   categoryCounts,
 }) => {
+  const { language } = useSettings();
+
   return (
     <aside className="sidebar">
       <div className="sidebar-header">
@@ -37,7 +41,7 @@ const Sidebar: React.FC<SidebarProps> = ({
             className={`sidebar-item ${selectedCategory === category ? 'active' : ''}`}
             onClick={() => onSelectCategory(category)}
           >
-            <span>{category}</span>
+            <span>{translateCategoryLabel(category, language)}</span>
             <strong>{categoryCounts[category] || 0}</strong>
           </button>
         ))}

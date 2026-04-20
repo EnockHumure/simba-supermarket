@@ -11,16 +11,16 @@
   display: flex;
   justify-content: space-between;
   gap: 12px;
-  padding: 10px 16px;
+  padding: 5px 12px;
   background: linear-gradient(90deg, #5d2396, #7336b0);
   color: rgba(255, 255, 255, 0.88);
-  font-size: 0.86rem;
+  font-size: 0.7rem;
 }
 
 .navbar {
   width: min(1380px, calc(100% - 32px));
   margin: 0 auto;
-  padding: 14px 0;
+  padding: 8px 0;
   display: grid;
   grid-template-columns: auto auto minmax(220px, 1fr) auto auto;
   gap: 16px;
@@ -30,19 +30,19 @@
 .navbar-brand {
   display: inline-flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   padding: 0;
   background: transparent;
 }
 
 .brand-mark {
-  width: 52px;
-  height: 52px;
-  border-radius: 16px;
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.3rem;
+  font-size: 0.96rem;
   font-weight: 900;
   color: #fff;
   background: linear-gradient(135deg, #5d2396, #7a37b6);
@@ -54,7 +54,7 @@
 }
 
 .brand-copy strong {
-  font-size: 1.5rem;
+  font-size: 1.08rem;
   line-height: 1;
 }
 
@@ -63,22 +63,23 @@
   color: var(--simba-muted);
   text-transform: uppercase;
   letter-spacing: 0.08em;
+  font-size: 0.68rem;
 }
 
 .navbar-location {
   min-width: 180px;
   display: grid;
-  gap: 6px;
+  gap: 4px;
   color: var(--simba-muted);
-  font-size: 0.84rem;
+  font-size: 0.76rem;
 }
 
 .navbar-location select,
 .navbar-search input {
-  min-height: 52px;
+  min-height: 38px;
   width: 100%;
-  border-radius: 18px;
-  padding: 0 16px;
+  border-radius: 12px;
+  padding: 0 10px;
   background: rgba(255, 255, 255, 0.86);
   border: 1px solid rgba(73, 38, 111, 0.1);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6);
@@ -91,28 +92,28 @@
 .navbar-actions {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 8px;
 }
 
 .navbar-controls {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
 }
 
 .navbar-select-control {
   display: grid;
-  gap: 6px;
-  font-size: 0.8rem;
+  gap: 4px;
+  font-size: 0.72rem;
   color: var(--simba-muted);
 }
 
 .navbar-select-control select,
 .theme-toggle,
 .switch-account-btn {
-  min-height: 44px;
-  border-radius: 14px;
-  padding: 0 14px;
+  min-height: 34px;
+  border-radius: 10px;
+  padding: 0 10px;
 }
 
 .navbar-select-control select {
@@ -128,9 +129,9 @@
 }
 
 .navbar-account {
-  min-height: 52px;
-  padding: 0 16px;
-  border-radius: 18px;
+  min-height: 38px;
+  padding: 0 10px;
+  border-radius: 12px;
   background: rgba(255, 255, 255, 0.82);
   border: 1px solid rgba(73, 38, 111, 0.1);
   display: grid;
@@ -138,25 +139,25 @@
 }
 
 .navbar-account-label {
-  font-size: 0.8rem;
+  font-size: 0.72rem;
   color: var(--simba-muted);
 }
 
 .navbar-cart {
-  min-height: 52px;
-  padding: 0 16px;
-  border-radius: 18px;
+  min-height: 38px;
+  padding: 0 10px;
+  border-radius: 12px;
   display: inline-flex;
   align-items: center;
-  gap: 12px;
+  gap: 8px;
   color: #fff;
   background: linear-gradient(135deg, #ff9b34, #ff7f22);
   box-shadow: 0 14px 28px rgba(255, 143, 50, 0.26);
 }
 
 .navbar-cart strong {
-  min-width: 34px;
-  height: 34px;
+  min-width: 24px;
+  height: 24px;
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.2);
   display: inline-flex;

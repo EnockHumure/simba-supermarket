@@ -1,8 +1,11 @@
 import { useMemo, useState } from 'react';
 import productsData from '../simba_products.json';
 import type { Product } from '../context/CartContext';
+import { useSettings } from '../context/SettingsContext';
+import { translateCategoryLabel, translateProductLabel } from '../i18n';
 
 export const useProducts = () => {
+  const { language } = useSettings();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
@@ -18,11 +21,13 @@ export const useProducts = () => {
       const matchesSearch =
         term.length === 0 ||
         product.name.toLowerCase().includes(term) ||
-        product.category.toLowerCase().includes(term);
+        product.category.toLowerCase().includes(term) ||
+        translateProductLabel(product.name, language).toLowerCase().includes(term) ||
+        translateCategoryLabel(product.category, language).toLowerCase().includes(term);
       const matchesCategory = selectedCategory ? product.category === selectedCategory : true;
       return matchesSearch && matchesCategory;
     });
-  }, [allProducts, searchTerm, selectedCategory]);
+  }, [allProducts, language, searchTerm, selectedCategory]);
 
   return {
     products: filteredProducts,

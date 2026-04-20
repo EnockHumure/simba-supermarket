@@ -13,6 +13,7 @@ import ProductModal from './components/ProductModal';
 import AdminPanel from './components/AdminPanel';
 import SimbaBot from './components/SimbaBot';
 import './App.css';
+import { translateCategoryLabel, translateProductLabel } from './i18n';
 
 type ServiceKey =
   | 'express'
@@ -110,9 +111,10 @@ const AppContent: React.FC = () => {
   } = useProducts();
 
   const { user, isLoyal, activeDiscount, updateProfile, isAdmin } = useUser();
-  const { t } = useSettings();
+  const { language, t } = useSettings();
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isAdminOpen, setIsAdminOpen] = useState(false);
+  const [isUserModalOpen, setIsUserModalOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [activeService, setActiveService] = useState<ServiceKey>('express');
   const [activeFaq, setActiveFaq] = useState(0);
@@ -180,13 +182,14 @@ const AppContent: React.FC = () => {
 
   return (
     <div className="app">
-      <UserModal />
+      <UserModal isOpen={isUserModalOpen} onClose={() => setIsUserModalOpen(false)} />
       <Navbar
         searchTerm={searchTerm}
         onSearchChange={setSearchTerm}
         onCartClick={() => setIsCartOpen(true)}
         selectedLocation={selectedLocation}
         onLocationChange={setSelectedLocation}
+        onLoginClick={() => setIsUserModalOpen(true)}
       />
 
       <main className="app-shell">
@@ -300,7 +303,7 @@ const AppContent: React.FC = () => {
                     <button key={`deal-${product.id}`} className="mini-product-card" onClick={() => setSelectedProduct(product)}>
                       <img src={product.image} alt={product.name} loading="lazy" />
                       <div>
-                        <strong>{product.name}</strong>
+                        <strong>{translateProductLabel(product.name, language)}</strong>
                         <span>{product.price.toLocaleString()} RWF</span>
                       </div>
                     </button>
@@ -320,7 +323,7 @@ const AppContent: React.FC = () => {
                     <button key={`premium-${product.id}`} className="mini-product-card" onClick={() => setSelectedProduct(product)}>
                       <img src={product.image} alt={product.name} loading="lazy" />
                       <div>
-                        <strong>{product.name}</strong>
+                        <strong>{translateProductLabel(product.name, language)}</strong>
                         <span>{product.price.toLocaleString()} RWF</span>
                       </div>
                     </button>
@@ -333,7 +336,7 @@ const AppContent: React.FC = () => {
               <div className="section-heading">
                 <div>
                   <p className="section-kicker">Main shop</p>
-                  <h2>{selectedCategory || 'Everything on Simba'}</h2>
+                  <h2>{selectedCategory ? translateCategoryLabel(selectedCategory, language) : 'Everything on Simba'}</h2>
                   <p>
                     {searchTerm
                       ? `Showing results for "${searchTerm}" in Simba's Rwanda catalogue.`

@@ -1,5 +1,7 @@
 import React from 'react';
 import { useCart, type Product } from '../context/CartContext';
+import { useSettings } from '../context/SettingsContext';
+import { translateCategoryLabel, translateProductLabel } from '../i18n';
 import './ProductModal.css';
 
 interface ProductModalProps {
@@ -9,6 +11,7 @@ interface ProductModalProps {
 
 const ProductModal: React.FC<ProductModalProps> = ({ product, onClose }) => {
   const { addToCart } = useCart();
+  const { language } = useSettings();
 
   if (!product) {
     return null;
@@ -25,8 +28,8 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, onClose }) => {
             <img src={product.image} alt={product.name} />
           </div>
           <div className="product-modal-info">
-            <p className="category-tag">{product.category}</p>
-            <h2>{product.name}</h2>
+            <p className="category-tag">{translateCategoryLabel(product.category, language)}</p>
+            <h2>{translateProductLabel(product.name, language)}</h2>
             <div className="product-meta">
               <p>
                 <strong>Unit</strong>

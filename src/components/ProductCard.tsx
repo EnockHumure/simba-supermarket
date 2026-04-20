@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { useCart, type Product } from '../context/CartContext';
+import { useSettings } from '../context/SettingsContext';
+import { translateCategoryLabel, translateProductLabel } from '../i18n';
 import './ProductCard.css';
 
 interface ProductCardProps {
@@ -9,6 +11,7 @@ interface ProductCardProps {
 
 const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) => {
   const { addToCart } = useCart();
+  const { language } = useSettings();
   const [isAdded, setIsAdded] = useState(false);
 
   const handleAddToCart = (event: React.MouseEvent) => {
@@ -32,8 +35,8 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) => {
       </div>
 
       <div className="product-info">
-        <p className="product-category">{product.category}</p>
-        <h4 className="product-name">{product.name}</h4>
+        <p className="product-category">{translateCategoryLabel(product.category, language)}</p>
+        <h4 className="product-name">{translateProductLabel(product.name, language)}</h4>
 
         <div className="product-footer">
           <div>

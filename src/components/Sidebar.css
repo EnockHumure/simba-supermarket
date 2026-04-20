@@ -1,8 +1,8 @@
 .sidebar {
   position: sticky;
-  top: 126px;
-  border-radius: 28px;
-  padding: 22px;
+  top: 96px;
+  border-radius: 18px;
+  padding: 14px;
   background: rgba(255, 255, 255, 0.84);
   border: 1px solid rgba(73, 38, 111, 0.1);
   box-shadow: var(--simba-shadow);
@@ -11,7 +11,7 @@
 
 .sidebar-header h3 {
   margin-top: 6px;
-  font-size: 1.45rem;
+  font-size: 1.08rem;
 }
 
 .sidebar-header p:last-child {
@@ -20,15 +20,15 @@
 }
 
 .sidebar-list {
-  margin-top: 18px;
+  margin-top: 12px;
   display: grid;
-  gap: 10px;
+  gap: 8px;
 }
 
 .sidebar-item {
-  min-height: 58px;
-  padding: 0 16px;
-  border-radius: 18px;
+  min-height: 42px;
+  padding: 0 10px;
+  border-radius: 12px;
   display: flex;
   justify-content: space-between;
   gap: 12px;
@@ -41,11 +41,12 @@
 
 .sidebar-item span {
   max-width: 180px;
+  font-size: 0.88rem;
 }
 
 .sidebar-item strong {
-  min-width: 34px;
-  height: 34px;
+  min-width: 24px;
+  height: 24px;
   border-radius: 999px;
   display: inline-flex;
   align-items: center;

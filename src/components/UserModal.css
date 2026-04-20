@@ -75,6 +75,14 @@
   background: linear-gradient(135deg, #5d2396, #813ec5);
 }
 
+.guest-btn {
+  min-height: 46px;
+  border-radius: 16px;
+  color: var(--simba-purple);
+  font-weight: 700;
+  background: rgba(93, 35, 150, 0.08);
+}
+
 .phone-error-msg {
   color: #c44d4d;
   font-size: 0.86rem;
