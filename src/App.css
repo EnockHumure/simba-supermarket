@@ -11,59 +11,9 @@
 }
 
 .section,
-.campaign-grid,
 .download-banner,
 .footer {
   animation: section-rise 0.45s ease both;
-}
-
-.campaign-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 14px;
-}
-
-.campaign-card {
-  border-radius: 28px;
-  padding: 18px;
-  border: 1px solid transparent;
-  text-align: left;
-  display: grid;
-  gap: 12px;
-  min-height: 148px;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.campaign-card:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--simba-shadow);
-}
-
-.campaign-card h3 {
-  font-size: clamp(1.02rem, 1.45vw, 1.28rem);
-  line-height: 1.1;
-}
-
-.campaign-card p {
-  color: rgba(32, 18, 51, 0.78);
-}
-
-.campaign-card-orange {
-  background: linear-gradient(135deg, #ffb13d, #ff8f32);
-}
-
-.campaign-card-cream {
-  background: linear-gradient(135deg, #fffdf5, #ffe7b3);
-  border-color: rgba(90, 40, 129, 0.12);
-}
-
-.campaign-card-dark {
-  color: #fff;
-  background: linear-gradient(135deg, #40206f, #6a2ea6);
-}
-
-.campaign-card-dark p {
-  color: rgba(255, 255, 255, 0.82);
 }
 
 .campaign-eyebrow,
@@ -409,7 +359,6 @@
 }
 
 @media (max-width: 1180px) {
-  .campaign-grid,
   .service-spotlight-grid,
   .product-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -436,7 +385,6 @@
     width: min(100% - 20px, 100%);
   }
 
-  .campaign-grid,
   .service-spotlight-grid,
   .product-grid {
     grid-template-columns: 1fr;
@@ -456,7 +404,6 @@
   .download-banner,
   .panel,
   .highlight-card,
-  .campaign-card,
   .welcome-banner {
     padding: 16px;
   }

@@ -203,24 +203,6 @@ const AppContent: React.FC = () => {
           locationOptions={rwandaLocations}
         />
 
-        <section className="campaign-grid">
-          <button className="campaign-card campaign-card-orange" onClick={() => setActiveService('express')}>
-            <span className="campaign-eyebrow">Rwanda launch</span>
-            <h3>Simba now feels like a rapid delivery app, not just a catalogue.</h3>
-            <p>Fast ordering, Kigali neighborhoods, and sharper merchandising all live on the homepage.</p>
-          </button>
-          <button className="campaign-card campaign-card-cream" onClick={() => setSelectedCategory('General')}>
-            <span className="campaign-eyebrow">Smart basket</span>
-            <h3>Jump straight into essentials and everyday refill products.</h3>
-            <p>One tap takes shoppers into the broadest Simba inventory lane.</p>
-          </button>
-          <button className="campaign-card campaign-card-dark" onClick={() => setIsCartOpen(true)}>
-            <span className="campaign-eyebrow">Live cart</span>
-            <h3>Cart, loyalty, admin discounting and the Simba assistant still work.</h3>
-            <p>The redesign keeps the full Simba flow instead of replacing it with a static mockup.</p>
-          </button>
-        </section>
-
         {user && (
           <section className={`welcome-banner ${activeDiscount > 0 ? 'vip' : ''}`}>
             <div>
@@ -253,7 +235,6 @@ const AppContent: React.FC = () => {
             <div>
               <p className="section-kicker">{activeServiceMeta.accent}</p>
               <h2>{activeServiceMeta.title}</h2>
-              <p>{activeServiceMeta.subtitle}</p>
             </div>
             <button className="ghost-button" onClick={scrollToProducts}>
               Browse full Simba catalogue
@@ -385,11 +366,8 @@ const AppContent: React.FC = () => {
         <section className="download-banner">
           <div>
             <p className="section-kicker">Simba Rwanda</p>
-            <h2>Designed like a rapid-commerce landing page, built on your actual Simba data.</h2>
-            <p>
-              Search, category filtering, loyalty, chatbot assistance, admin discount management, modal product views,
-              and the cart checkout flow all remain active inside the redesign.
-            </p>
+            <h2>Friendly shopping, faster browsing.</h2>
+            <p>Search, categories, cart, optional login, and Simba assistant all stay available in one simple flow.</p>
           </div>
           <div className="download-actions">
             <button className="primary-button" onClick={scrollToProducts}>

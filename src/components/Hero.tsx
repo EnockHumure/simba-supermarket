@@ -51,12 +51,6 @@ const Hero: React.FC<HeroProps> = ({
           <p className="hero-kicker">{t('heroKicker')}</p>
           <h1>{t('heroTitle')}</h1>
           <p className="hero-description">{t('heroDescription')}</p>
-
-          <div className="hero-badges">
-            <span>Same Simba catalogue</span>
-            <span>Rwandan phone login</span>
-            <span>Cart and loyalty active</span>
-          </div>
         </div>
 
         <div className="hero-order-card">

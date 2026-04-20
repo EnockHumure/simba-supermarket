@@ -28,17 +28,14 @@ const Navbar: React.FC<NavbarProps> = ({
 
   return (
     <header className="navbar-shell">
-      <div className="navbar-topline">
-        <p>Kigali delivery for Simba Rwanda</p>
-        <p>Loyalty discounts and assistant support are active</p>
-      </div>
-
       <nav className="navbar">
         <button className="navbar-brand" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
-          <span className="brand-mark">S</span>
+          <span className="brand-mark">
+            <img src="/favicon.svg" alt="Simba" />
+          </span>
           <span className="brand-copy">
             <strong>simba</strong>
-            <small>rwanda in minutes</small>
+            <small>rwanda</small>
           </span>
         </button>
 
