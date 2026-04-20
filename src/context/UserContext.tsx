@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
+import { ADMIN_PHONE, normalizeRwandanPhone } from '../i18n';
 
 export interface UserProfile {
   name: string;
@@ -16,6 +17,7 @@ interface UserContextType {
   updateProfile: (phone: string, updates: Partial<UserProfile>) => void;
   isLoyal: boolean;
   activeDiscount: number;
+  isAdmin: boolean;
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
@@ -36,8 +38,9 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   };
 
   const login = (name: string, phone: string) => {
+    const normalizedPhone = normalizeRwandanPhone(phone);
     const profiles = getProfiles();
-    let profile = profiles[phone];
+    let profile = profiles[normalizedPhone];
 
     if (profile) {
       // Returning user: Increment visit count
@@ -46,17 +49,17 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       // New user: Create profile with zeroed purchase history
       profile = { 
         name, 
-        phone, 
+        phone: normalizedPhone, 
         visitCount: 1, 
         totalPurchases: 0, 
         manualDiscount: 0 
       };
     }
 
-    const updatedProfiles = { ...profiles, [phone]: profile };
+    const updatedProfiles = { ...profiles, [normalizedPhone]: profile };
     setUser(profile);
     saveProfiles(updatedProfiles);
-    localStorage.setItem('simba_current_session', phone);
+    localStorage.setItem('simba_current_session', normalizedPhone);
   };
 
   const updateProfile = (phone: string, updates: Partial<UserProfile>) => {
@@ -91,9 +94,10 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   const isLoyal = user ? user.manualDiscount > 0 || user.totalPurchases >= 5 : false;
   const activeDiscount = user ? user.manualDiscount : 0;
+  const isAdmin = user?.phone === ADMIN_PHONE;
 
   return (
-    <UserContext.Provider value={{ user, allProfiles, login, logout, updateProfile, isLoyal, activeDiscount }}>
+    <UserContext.Provider value={{ user, allProfiles, login, logout, updateProfile, isLoyal, activeDiscount, isAdmin }}>
       {children}
     </UserContext.Provider>
   );

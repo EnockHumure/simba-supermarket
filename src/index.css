@@ -20,6 +20,25 @@
   --simba-line: rgba(73, 38, 111, 0.12);
   --simba-surface: rgba(255, 255, 255, 0.88);
   --simba-shadow: 0 24px 60px rgba(78, 40, 128, 0.14);
+  --page-bg:
+    radial-gradient(circle at top left, rgba(255, 196, 45, 0.28), transparent 28%),
+    linear-gradient(180deg, #fff8eb 0%, #ffffff 32%, #f4f1ff 100%);
+}
+
+:root[data-theme='dark'] {
+  color: #f5f0ff;
+  background:
+    radial-gradient(circle at top left, rgba(255, 196, 45, 0.12), transparent 24%),
+    linear-gradient(180deg, #171022 0%, #120d1c 32%, #1d1430 100%);
+  --simba-cream: #20162c;
+  --simba-ink: #f5f0ff;
+  --simba-muted: #c3b9d8;
+  --simba-line: rgba(212, 197, 236, 0.12);
+  --simba-surface: rgba(29, 20, 48, 0.84);
+  --simba-shadow: 0 28px 64px rgba(0, 0, 0, 0.34);
+  --page-bg:
+    radial-gradient(circle at top left, rgba(255, 196, 45, 0.12), transparent 24%),
+    linear-gradient(180deg, #171022 0%, #120d1c 32%, #1d1430 100%);
 }
 
 * {
@@ -35,6 +54,7 @@ body {
   min-width: 320px;
   min-height: 100vh;
   color: var(--simba-ink);
+  background: var(--page-bg);
 }
 
 body,

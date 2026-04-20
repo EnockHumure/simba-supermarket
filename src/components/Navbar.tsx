@@ -1,6 +1,8 @@
 import React from 'react';
 import { useCart } from '../context/CartContext';
 import { useUser } from '../context/UserContext';
+import { useSettings } from '../context/SettingsContext';
+import { translations, type Language } from '../i18n';
 import './Navbar.css';
 
 interface NavbarProps {
@@ -19,7 +21,8 @@ const Navbar: React.FC<NavbarProps> = ({
   onLocationChange,
 }) => {
   const { totalItems } = useCart();
-  const { user, activeDiscount } = useUser();
+  const { user, activeDiscount, logout, isAdmin } = useUser();
+  const { language, setLanguage, theme, setTheme, t } = useSettings();
 
   return (
     <header className="navbar-shell">
@@ -38,7 +41,7 @@ const Navbar: React.FC<NavbarProps> = ({
         </button>
 
         <label className="navbar-location">
-          <span>Delivering to</span>
+          <span>{t('deliveringTo')}</span>
           <select value={selectedLocation} onChange={(event) => onLocationChange(event.target.value)}>
             <option>Kigali CBD</option>
             <option>Kimironko</option>
@@ -54,22 +57,47 @@ const Navbar: React.FC<NavbarProps> = ({
         <div className="navbar-search">
           <input
             type="text"
-            placeholder="Search Simba products, categories, brands"
+            placeholder={t('searchPlaceholder')}
             value={searchTerm}
             onChange={(event) => onSearchChange(event.target.value)}
           />
         </div>
 
+        <div className="navbar-controls">
+          <label className="navbar-select-control">
+            <span>Language</span>
+            <select value={language} onChange={(event) => setLanguage(event.target.value as Language)}>
+              {Object.entries(translations).map(([code, value]) => (
+                <option key={code} value={code}>
+                  {value.languageName}
+                </option>
+              ))}
+            </select>
+          </label>
+
+          <button className="theme-toggle" onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}>
+            {theme === 'light' ? t('darkMode') : t('lightMode')}
+          </button>
+        </div>
+
         <div className="navbar-actions">
           <div className="navbar-account">
-            <span className="navbar-account-label">{user ? user.name : 'Guest'}</span>
-            <strong>{activeDiscount > 0 ? `${activeDiscount}% loyalty` : 'New shopper'}</strong>
+            <span className="navbar-account-label">{user ? user.name : t('guest')}</span>
+            <strong>
+              {activeDiscount > 0 ? `${activeDiscount}% ${t('loyalty')}` : isAdmin ? 'Admin' : t('newShopper')}
+            </strong>
           </div>
 
           <button className="navbar-cart" onClick={onCartClick}>
-            <span>Cart</span>
+            <span>{t('cart')}</span>
             <strong>{totalItems}</strong>
           </button>
+
+          {user && (
+            <button className="switch-account-btn" onClick={logout}>
+              {t('switchAccount')}
+            </button>
+          )}
         </div>
       </nav>
     </header>

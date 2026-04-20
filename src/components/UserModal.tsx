@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
 import { useUser } from '../context/UserContext';
+import { useSettings } from '../context/SettingsContext';
+import { isValidRwandanPhone, normalizeRwandanPhone } from '../i18n';
 import './UserModal.css';
 
 const UserModal: React.FC = () => {
   const { user, login } = useUser();
+  const { t } = useSettings();
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [error, setError] = useState('');
@@ -12,35 +15,34 @@ const UserModal: React.FC = () => {
     return null;
   }
 
-  const validateRwandanPhone = (number: string) => {
-    const rwandaRegex = /^\+2507[8923]\d{7}$/;
-    return rwandaRegex.test(number);
-  };
-
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
     setError('');
 
-    if (!validateRwandanPhone(phone)) {
-      setError('Use a valid Rwanda number starting with +25078, +25079, +25072, or +25073.');
+    if (!isValidRwandanPhone(phone)) {
+      setError(t('phoneError'));
       return;
     }
 
     if (name && phone) {
-      login(name, phone);
+      login(name, normalizeRwandanPhone(phone));
     }
   };
 
   return (
     <div className="modal-overlay">
       <div className="modal-content user-modal">
-        <div className="simba-badge">simba rwanda</div>
-        <h2>Start with your Rwanda number</h2>
-        <p>We restore your Simba profile, visit history, and loyalty discounts using the same phone number.</p>
+        <div className="simba-badge">{t('loginBadge')}</div>
+        <div className="simba-intro-card">
+          <h3>{t('simbaIntroTitle')}</h3>
+          <p>{t('simbaIntroBody')}</p>
+        </div>
+        <h2>{t('loginTitle')}</h2>
+        <p>{t('loginDescription')}</p>
 
         <form onSubmit={handleSubmit}>
           <div className="form-group">
-            <label>Full name</label>
+            <label>{t('fullName')}</label>
             <input
               type="text"
               value={name}
@@ -51,24 +53,24 @@ const UserModal: React.FC = () => {
           </div>
 
           <div className="form-group">
-            <label>Phone number</label>
+            <label>{t('phoneNumber')}</label>
             <input
               type="tel"
               value={phone}
               onChange={(event) => setPhone(event.target.value)}
-              placeholder="+25078XXXXXXX"
+              placeholder="+25078XXXXXXX / 0788XXXXXX"
               required
             />
             {error && <p className="phone-error-msg">{error}</p>}
-            <p className="phone-hint">Supported prefixes: +25078, +25079, +25072, +25073</p>
+            <p className="phone-hint">{t('phoneHint')}</p>
           </div>
 
           <button type="submit" className="login-btn">
-            Enter Simba
+            {t('enterSimba')}
           </button>
         </form>
 
-        <p className="loyalty-tip">Returning shoppers keep admin-assigned discounts and purchase counts.</p>
+        <p className="loyalty-tip">{t('loyaltyTip')}</p>
       </div>
     </div>
   );

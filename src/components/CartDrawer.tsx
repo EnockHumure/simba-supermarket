@@ -1,6 +1,7 @@
 import React from 'react';
 import { useCart } from '../context/CartContext';
 import { useUser } from '../context/UserContext';
+import { useSettings } from '../context/SettingsContext';
 import './CartDrawer.css';
 
 interface CartDrawerProps {
@@ -12,6 +13,7 @@ interface CartDrawerProps {
 const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose, onCheckout }) => {
   const { cart, addToCart, removeFromCart, totalPrice, subtotal, discount, clearCart } = useCart();
   const { activeDiscount } = useUser();
+  const { t } = useSettings();
 
   if (!isOpen) {
     return null;
@@ -22,8 +24,8 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose, onCheckout }) 
       <aside className="cart-drawer" onClick={(event) => event.stopPropagation()}>
         <div className="cart-header">
           <div>
-            <p className="section-kicker">Your order</p>
-            <h2>Simba cart</h2>
+            <p className="section-kicker">{t('yourOrder')}</p>
+            <h2>{t('simbaCart')}</h2>
           </div>
           <button className="close-btn" onClick={onClose}>
             x
@@ -33,8 +35,8 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose, onCheckout }) 
         <div className="cart-content">
           {cart.length === 0 ? (
             <div className="empty-cart">
-              <h3>Your cart is empty.</h3>
-              <p>Add products from the Simba catalogue to start a Kigali delivery basket.</p>
+              <h3>{t('emptyCartTitle')}</h3>
+              <p>{t('emptyCartBody')}</p>
             </div>
           ) : (
             <ul className="cart-items">
@@ -61,17 +63,19 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose, onCheckout }) 
           <div className="cart-footer">
             <div className="cart-summary">
               <div className="summary-row">
-                <span>Subtotal</span>
+                <span>{t('subtotal')}</span>
                 <strong>{subtotal.toLocaleString()} RWF</strong>
               </div>
               {activeDiscount > 0 && (
                 <div className="summary-row discount">
-                  <span>Loyalty discount ({activeDiscount}%)</span>
+                  <span>
+                    {t('discount')} ({activeDiscount}%)
+                  </span>
                   <strong>-{discount.toLocaleString()} RWF</strong>
                 </div>
               )}
               <div className="summary-row total">
-                <span>Total</span>
+                <span>{t('total')}</span>
                 <strong>{totalPrice.toLocaleString()} RWF</strong>
               </div>
             </div>
@@ -83,10 +87,10 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose, onCheckout }) 
                 clearCart();
               }}
             >
-              Confirm checkout
+              {t('confirmCheckout')}
             </button>
             <button className="clear-btn" onClick={clearCart}>
-              Clear basket
+              {t('clearBasket')}
             </button>
           </div>
         )}

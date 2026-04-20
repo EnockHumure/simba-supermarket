@@ -1,6 +1,7 @@
 import React, { useMemo, useRef, useState } from 'react';
 import { UserProvider, useUser } from './context/UserContext';
 import { CartProvider, type Product } from './context/CartContext';
+import { SettingsProvider, useSettings } from './context/SettingsContext';
 import { useProducts } from './hooks/useProducts';
 import Navbar from './components/Navbar';
 import Sidebar from './components/Sidebar';
@@ -108,7 +109,8 @@ const AppContent: React.FC = () => {
     setSelectedCategory,
   } = useProducts();
 
-  const { user, isLoyal, activeDiscount, updateProfile } = useUser();
+  const { user, isLoyal, activeDiscount, updateProfile, isAdmin } = useUser();
+  const { t } = useSettings();
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isAdminOpen, setIsAdminOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
@@ -165,6 +167,15 @@ const AppContent: React.FC = () => {
     updateProfile(user.phone, { totalPurchases: newTotal });
     window.alert(`Checkout successful for ${user.name}. Total completed orders: ${newTotal}.`);
     setIsCartOpen(false);
+  };
+
+  const openAdminPanel = () => {
+    if (!isAdmin) {
+      window.alert(t('unauthorizedAdmin'));
+      return;
+    }
+
+    setIsAdminOpen(true);
   };
 
   return (
@@ -381,8 +392,8 @@ const AppContent: React.FC = () => {
             <button className="primary-button" onClick={scrollToProducts}>
               Start shopping
             </button>
-            <button className="ghost-button dark" onClick={() => setIsAdminOpen(true)}>
-              Open admin loyalty panel
+            <button className="ghost-button dark" onClick={openAdminPanel}>
+              {t('adminAccess')}
             </button>
           </div>
         </section>
@@ -434,9 +445,11 @@ const AppContent: React.FC = () => {
         </section>
       </main>
 
-      <div className="admin-access" onClick={() => setIsAdminOpen(true)}>
-        Admin loyalty
-      </div>
+      {isAdmin && (
+        <div className="admin-access" onClick={openAdminPanel}>
+          {t('adminAccess')}
+        </div>
+      )}
 
       <CartDrawer isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} onCheckout={handleCheckout} />
       <ProductModal product={selectedProduct} onClose={() => setSelectedProduct(null)} />
@@ -456,11 +469,13 @@ const AppContent: React.FC = () => {
 
 const App: React.FC = () => {
   return (
-    <UserProvider>
-      <CartProvider>
-        <AppContent />
-      </CartProvider>
-    </UserProvider>
+    <SettingsProvider>
+      <UserProvider>
+        <CartProvider>
+          <AppContent />
+        </CartProvider>
+      </UserProvider>
+    </SettingsProvider>
   );
 };
 

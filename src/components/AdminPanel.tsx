@@ -1,5 +1,6 @@
 import React from 'react';
 import { useUser, type UserProfile } from '../context/UserContext';
+import { useSettings } from '../context/SettingsContext';
 import './AdminPanel.css';
 
 interface AdminPanelProps {
@@ -9,6 +10,7 @@ interface AdminPanelProps {
 
 const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose }) => {
   const { allProfiles, updateProfile } = useUser();
+  const { t } = useSettings();
 
   if (!isOpen) {
     return null;
@@ -26,7 +28,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose }) => {
         <div className="admin-header">
           <div>
             <p className="section-kicker">Back office</p>
-            <h2>Simba loyalty manager</h2>
+            <h2>{t('adminTitle')}</h2>
           </div>
           <button className="close-btn" onClick={onClose}>
             x
@@ -34,7 +36,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose }) => {
         </div>
 
         <div className="admin-content">
-          <p>Manage shopper profiles, purchase counts, and manual loyalty discounts assigned to Rwanda phone numbers.</p>
+          <p>{t('adminBody')}</p>
 
           <table className="admin-table">
             <thead>

@@ -1,4 +1,5 @@
 import React from 'react';
+import { useSettings } from '../context/SettingsContext';
 import './Hero.css';
 
 interface ServiceDefinition {
@@ -28,6 +29,7 @@ const Hero: React.FC<HeroProps> = ({
   locationOptions,
 }) => {
   const activeMeta = serviceDefinitions[activeService];
+  const { t } = useSettings();
 
   return (
     <section className="hero">
@@ -46,13 +48,9 @@ const Hero: React.FC<HeroProps> = ({
 
       <div className="hero-layout">
         <div className="hero-copy">
-          <p className="hero-kicker">Simba, rebuilt for Rwanda</p>
-          <h1>Rapid grocery shopping for Kigali, with Simba products and loyalty built in.</h1>
-          <p className="hero-description">
-            This front-end takes the Getir-style landing page approach and applies it to Simba: strong service lanes,
-            faster category discovery, neighborhood-aware messaging, and a homepage that pushes shoppers straight into
-            ordering.
-          </p>
+          <p className="hero-kicker">{t('heroKicker')}</p>
+          <h1>{t('heroTitle')}</h1>
+          <p className="hero-description">{t('heroDescription')}</p>
 
           <div className="hero-badges">
             <span>Same Simba catalogue</span>
@@ -89,7 +87,7 @@ const Hero: React.FC<HeroProps> = ({
           </div>
 
           <button className="hero-primary" onClick={onPrimaryAction}>
-            Start this basket
+            {t('startBasket')}
           </button>
         </div>
       </div>
