@@ -10,35 +10,35 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  --simba-purple: #d62828;
-  --simba-purple-dark: #9f1d1d;
-  --simba-gold: #f4c542;
-  --simba-orange: #db8b16;
+  --simba-purple: #f28c28;
+  --simba-purple-dark: #cf6f10;
+  --simba-gold: #ffd166;
+  --simba-orange: #f28c28;
   --simba-cream: #fff6de;
   --simba-ink: #201233;
   --simba-muted: #6b6181;
-  --simba-line: rgba(120, 35, 35, 0.12);
+  --simba-line: rgba(164, 94, 12, 0.14);
   --simba-surface: rgba(255, 255, 255, 0.88);
-  --simba-shadow: 0 20px 48px rgba(126, 33, 33, 0.12);
+  --simba-shadow: 0 20px 48px rgba(190, 113, 20, 0.16);
   --page-bg:
-    radial-gradient(circle at top left, rgba(255, 196, 45, 0.28), transparent 28%),
-    linear-gradient(180deg, #fff8eb 0%, #ffffff 32%, #f4f1ff 100%);
+    radial-gradient(circle at top left, rgba(242, 140, 40, 0.18), transparent 28%),
+    linear-gradient(180deg, #fff9ef 0%, #ffffff 34%, #fff4e8 100%);
 }
 
 :root[data-theme='dark'] {
   color: #f5f0ff;
   background:
-    radial-gradient(circle at top left, rgba(255, 196, 45, 0.12), transparent 24%),
-    linear-gradient(180deg, #171022 0%, #120d1c 32%, #1d1430 100%);
-  --simba-cream: #20162c;
-  --simba-ink: #f5f0ff;
-  --simba-muted: #c3b9d8;
-  --simba-line: rgba(255, 217, 217, 0.12);
-  --simba-surface: rgba(29, 20, 48, 0.84);
+    radial-gradient(circle at top left, rgba(242, 140, 40, 0.16), transparent 24%),
+    linear-gradient(180deg, #23160a 0%, #1d1208 32%, #2b1c0f 100%);
+  --simba-cream: #2a1a0e;
+  --simba-ink: #fff4e8;
+  --simba-muted: #dec4a7;
+  --simba-line: rgba(255, 209, 155, 0.14);
+  --simba-surface: rgba(43, 28, 15, 0.84);
   --simba-shadow: 0 28px 64px rgba(0, 0, 0, 0.34);
   --page-bg:
-    radial-gradient(circle at top left, rgba(255, 196, 45, 0.12), transparent 24%),
-    linear-gradient(180deg, #171022 0%, #120d1c 32%, #1d1430 100%);
+    radial-gradient(circle at top left, rgba(242, 140, 40, 0.16), transparent 24%),
+    linear-gradient(180deg, #23160a 0%, #1d1208 32%, #2b1c0f 100%);
 }
 
 * {
