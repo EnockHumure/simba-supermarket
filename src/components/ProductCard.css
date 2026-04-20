@@ -1,118 +1,120 @@
 .product-card {
-  background-color: var(--simba-white);
-  border: 1px solid #eee;
-  border-radius: 12px;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
-  box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-  cursor: pointer;
+  padding: 16px;
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.88);
+  border: 1px solid rgba(73, 38, 111, 0.1);
+  box-shadow: var(--simba-shadow);
+  display: grid;
+  gap: 12px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .product-card:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 12px 24px rgba(0,0,0,0.1);
-  border-color: var(--simba-blue);
+  transform: translateY(-4px);
+}
+
+.product-card-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.stock-pill,
+.unit-pill {
+  min-height: 32px;
+  padding: 0 12px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.stock-pill.in-stock {
+  color: #1f8a41;
+  background: rgba(49, 174, 82, 0.1);
+}
+
+.stock-pill.out-stock {
+  color: #b94747;
+  background: rgba(185, 71, 71, 0.1);
+}
+
+.unit-pill {
+  color: var(--simba-muted);
+  background: rgba(93, 35, 150, 0.08);
 }
 
 .product-image {
-  height: 200px;
-  background-color: #fcfcfc;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 1rem;
-  transition: background-color 0.3s;
-}
-
-.product-card:hover .product-image {
-  background-color: white;
+  aspect-ratio: 1;
+  border-radius: 22px;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(180deg, #fffaf0, #f4edff);
+  overflow: hidden;
 }
 
 .product-image img {
-  max-width: 100%;
-  max-height: 100%;
+  width: 100%;
+  height: 100%;
   object-fit: contain;
-  transition: transform 0.3s;
-}
-
-.product-card:hover .product-image img {
-  transform: scale(1.05);
+  padding: 12px;
 }
 
 .product-info {
-  padding: 1.25rem;
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-}
-
-.product-name {
-  margin: 0;
-  font-size: 1.1rem;
-  font-weight: 700;
-  color: var(--simba-dark);
-  margin-bottom: 0.5rem;
-  line-height: 1.3;
+  display: grid;
+  gap: 8px;
 }
 
 .product-category {
-  font-size: 0.85rem;
-  color: #888;
-  margin: 0;
-  margin-bottom: 1.25rem;
-  display: flex;
-  align-items: center;
+  color: var(--simba-orange);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-size: 0.72rem;
+  font-weight: 800;
 }
 
-.product-category::before {
-  content: '🏷️';
-  margin-right: 0.3rem;
-  font-size: 0.75rem;
+.product-name {
+  font-size: 1.06rem;
+  line-height: 1.25;
+  min-height: 52px;
 }
 
 .product-footer {
-  margin-top: auto;
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  gap: 12px;
+  align-items: end;
 }
 
 .product-price {
-  font-size: 1.2rem;
-  font-weight: 800;
-  color: var(--simba-blue);
+  font-size: 1.06rem;
+  color: var(--simba-purple);
+}
+
+.product-subcopy {
+  margin-top: 4px;
+  display: block;
+  color: var(--simba-muted);
+  font-size: 0.82rem;
 }
 
 .add-to-cart-btn {
-  background-color: var(--simba-blue);
-  color: white;
-  border: none;
-  padding: 0.6rem 1rem;
-  border-radius: 50px;
-  cursor: pointer;
-  font-weight: 700;
-  font-size: 0.85rem;
-  transition: all 0.2s;
-  box-shadow: 0 2px 4px rgba(0, 123, 255, 0.2);
-}
-
-.add-to-cart-btn:hover:not(:disabled) {
-  background-color: #0056b3;
-  transform: scale(1.05);
-  box-shadow: 0 4px 8px rgba(0, 123, 255, 0.4);
+  width: 52px;
+  height: 52px;
+  border-radius: 18px;
+  color: #fff;
+  font-size: 1.35rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #5d2396, #813ec5);
 }
 
 .add-to-cart-btn.success {
-  background-color: var(--simba-green);
-  color: white;
-  box-shadow: 0 4px 8px rgba(40, 167, 69, 0.4);
+  font-size: 0.9rem;
+  background: linear-gradient(135deg, #ff9a33, #ff7e22);
 }
 
 .add-to-cart-btn:disabled {
-  background-color: #ddd;
-  color: #888;
   cursor: not-allowed;
-  box-shadow: none;
+  background: #c8c2d4;
 }

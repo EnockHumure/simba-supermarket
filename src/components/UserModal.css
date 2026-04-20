@@ -1,124 +1,70 @@
-.user-modal {
-  background: white;
-  padding: 2.5rem;
-  border-radius: 12px;
-  width: 95%;
-  max-width: 450px;
-  text-align: center;
-  box-shadow: 0 10px 40px rgba(0,0,0,0.3);
-  border-top: 5px solid var(--simba-blue);
-  position: relative;
+.modal-content.user-modal {
+  width: min(520px, 100%);
+  padding: 28px;
 }
 
-/* Mobile Responsiveness for Modal */
-@media (max-width: 480px) {
-  .user-modal {
-    padding: 1.5rem;
-    width: 90%;
-  }
-
-  .user-modal h2 {
-    font-size: 1.5rem;
-  }
-
-  .login-btn {
-    padding: 0.9rem;
-    font-size: 1rem;
-  }
+.user-modal {
+  display: grid;
+  gap: 18px;
 }
 
 .simba-badge {
-  background-color: var(--simba-light);
-  color: var(--simba-blue);
-  display: inline-block;
-  padding: 0.5rem 1rem;
-  border-radius: 50px;
-  font-weight: bold;
-  font-size: 0.9rem;
-  margin-bottom: 1.5rem;
+  width: fit-content;
+  min-height: 36px;
+  padding: 0 14px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  color: var(--simba-purple);
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  background: rgba(93, 35, 150, 0.08);
 }
 
 .user-modal h2 {
-  color: var(--simba-dark);
-  margin-bottom: 0.5rem;
-  font-weight: 800;
+  font-size: 2rem;
 }
 
-.user-modal p {
-  color: #666;
-  margin-bottom: 2rem;
-  font-size: 0.95rem;
-  line-height: 1.4;
+.user-modal > p,
+.loyalty-tip,
+.phone-hint {
+  color: var(--simba-muted);
+}
+
+.user-modal form {
+  display: grid;
+  gap: 14px;
 }
 
 .form-group {
-  text-align: left;
-  margin-bottom: 1.5rem;
+  display: grid;
+  gap: 8px;
 }
 
 .form-group label {
-  display: block;
-  font-weight: bold;
-  margin-bottom: 0.6rem;
-  font-size: 0.9rem;
-  color: #444;
+  font-size: 0.92rem;
+  font-weight: 700;
 }
 
 .form-group input {
-  width: 100%;
-  padding: 0.9rem 1.2rem;
-  border: 2px solid #eee;
-  border-radius: 8px;
-  font-size: 1rem;
-  transition: all 0.3s;
-}
-
-.form-group input:focus {
-  outline: none;
-  border-color: var(--simba-blue);
-  box-shadow: 0 0 0 4px rgba(0, 123, 255, 0.1);
-}
-
-.phone-error-msg {
-  color: var(--simba-red);
-  font-size: 0.8rem;
-  margin-top: 0.5rem;
-  font-weight: bold;
-  text-align: left;
-}
-
-.phone-hint {
-  font-size: 0.75rem;
-  color: #999;
-  margin-top: 0.4rem;
-  text-align: left;
+  min-height: 54px;
+  border-radius: 18px;
+  padding: 0 16px;
+  background: rgba(93, 35, 150, 0.06);
+  border: 1px solid rgba(73, 38, 111, 0.1);
 }
 
 .login-btn {
-  width: 100%;
-  background-color: var(--simba-blue);
-  color: white;
-  border: none;
-  padding: 1.1rem;
-  border-radius: 8px;
-  font-size: 1.1rem;
+  min-height: 54px;
+  border-radius: 18px;
+  color: #fff;
   font-weight: 800;
-  cursor: pointer;
-  transition: all 0.3s;
-  box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
-  text-transform: uppercase;
-  letter-spacing: 1px;
+  background: linear-gradient(135deg, #5d2396, #813ec5);
 }
 
-.login-btn:hover {
-  background-color: #0056b3;
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(0, 123, 255, 0.4);
-}
-
-.loyalty-tip {
-  margin-top: 1.5rem !important;
-  font-size: 0.85rem !important;
-  color: var(--simba-green) !important;
-  font-weight: bold;
+.phone-error-msg {
+  color: #c44d4d;
+  font-size: 0.86rem;
 }

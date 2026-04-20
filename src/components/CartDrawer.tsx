@@ -13,18 +13,29 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose, onCheckout }) 
   const { cart, addToCart, removeFromCart, totalPrice, subtotal, discount, clearCart } = useCart();
   const { activeDiscount } = useUser();
 
-  if (!isOpen) return null;
+  if (!isOpen) {
+    return null;
+  }
 
   return (
     <div className="cart-overlay" onClick={onClose}>
-      <div className="cart-drawer" onClick={(e) => e.stopPropagation()}>
+      <aside className="cart-drawer" onClick={(event) => event.stopPropagation()}>
         <div className="cart-header">
-          <h2>Your Cart</h2>
-          <button className="close-btn" onClick={onClose}>×</button>
+          <div>
+            <p className="section-kicker">Your order</p>
+            <h2>Simba cart</h2>
+          </div>
+          <button className="close-btn" onClick={onClose}>
+            x
+          </button>
         </div>
+
         <div className="cart-content">
           {cart.length === 0 ? (
-            <p className="empty-cart">Your cart is empty.</p>
+            <div className="empty-cart">
+              <h3>Your cart is empty.</h3>
+              <p>Add products from the Simba catalogue to start a Kigali delivery basket.</p>
+            </div>
           ) : (
             <ul className="cart-items">
               {cart.map((item) => (
@@ -32,45 +43,54 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose, onCheckout }) 
                   <img src={item.image} alt={item.name} className="cart-item-image" />
                   <div className="cart-item-info">
                     <p className="cart-item-name">{item.name}</p>
+                    <span className="cart-item-unit">{item.price.toLocaleString()} RWF each</span>
                     <div className="cart-item-controls">
                       <button onClick={() => removeFromCart(item.id)}>-</button>
                       <span>{item.quantity}</span>
                       <button onClick={() => addToCart(item)}>+</button>
                     </div>
                   </div>
-                  <div className="cart-item-price">
-                    {(item.price * item.quantity).toLocaleString()} RWF
-                  </div>
+                  <div className="cart-item-price">{(item.price * item.quantity).toLocaleString()} RWF</div>
                 </li>
               ))}
             </ul>
           )}
         </div>
+
         {cart.length > 0 && (
           <div className="cart-footer">
             <div className="cart-summary">
               <div className="summary-row">
-                <span>Subtotal:</span>
-                <span>{subtotal.toLocaleString()} RWF</span>
+                <span>Subtotal</span>
+                <strong>{subtotal.toLocaleString()} RWF</strong>
               </div>
               {activeDiscount > 0 && (
                 <div className="summary-row discount">
-                  <span>Admin Loyalty Discount ({activeDiscount}%):</span>
-                  <span>-{discount.toLocaleString()} RWF</span>
+                  <span>Loyalty discount ({activeDiscount}%)</span>
+                  <strong>-{discount.toLocaleString()} RWF</strong>
                 </div>
               )}
               <div className="summary-row total">
-                <span>Total:</span>
-                <span>{totalPrice.toLocaleString()} RWF</span>
+                <span>Total</span>
+                <strong>{totalPrice.toLocaleString()} RWF</strong>
               </div>
             </div>
-            <button className="checkout-btn" onClick={() => { onCheckout(); clearCart(); }}>
-              Confirm Checkout
+
+            <button
+              className="checkout-btn"
+              onClick={() => {
+                onCheckout();
+                clearCart();
+              }}
+            >
+              Confirm checkout
             </button>
-            <button className="clear-btn" onClick={clearCart}>Clear Cart</button>
+            <button className="clear-btn" onClick={clearCart}>
+              Clear basket
+            </button>
           </div>
         )}
-      </div>
+      </aside>
     </div>
   );
 };

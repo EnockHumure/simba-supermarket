@@ -8,20 +8,21 @@ const UserModal: React.FC = () => {
   const [phone, setPhone] = useState('');
   const [error, setError] = useState('');
 
-  if (user) return null;
+  if (user) {
+    return null;
+  }
 
   const validateRwandanPhone = (number: string) => {
-    // Regex for: +250 followed by 78, 79 (MTN) or 72, 73 (Airtel), then 7 digits
     const rwandaRegex = /^\+2507[8923]\d{7}$/;
     return rwandaRegex.test(number);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
     setError('');
 
     if (!validateRwandanPhone(phone)) {
-      setError('Please enter a valid Rwandan number starting with +250 (MTN: 78/79, Airtel: 72/73)');
+      setError('Use a valid Rwanda number starting with +25078, +25079, +25072, or +25073.');
       return;
     }
 
@@ -33,35 +34,41 @@ const UserModal: React.FC = () => {
   return (
     <div className="modal-overlay">
       <div className="modal-content user-modal">
-        <div className="simba-badge">🦁 Simba Supermarket</div>
-        <h2>Identify Yourself</h2>
-        <p>Enter your phone number to restore your loyalty points and discounts!</p>
+        <div className="simba-badge">simba rwanda</div>
+        <h2>Start with your Rwanda number</h2>
+        <p>We restore your Simba profile, visit history, and loyalty discounts using the same phone number.</p>
+
         <form onSubmit={handleSubmit}>
           <div className="form-group">
-            <label>Full Name</label>
-            <input 
-              type="text" 
-              value={name} 
-              onChange={(e) => setName(e.target.value)} 
-              placeholder="Habimana Habimana"
-              required 
+            <label>Full name</label>
+            <input
+              type="text"
+              value={name}
+              onChange={(event) => setName(event.target.value)}
+              placeholder="Uwase Aline"
+              required
             />
           </div>
+
           <div className="form-group">
-            <label>Phone Number (Rwandan Code)</label>
-            <input 
-              type="tel" 
-              value={phone} 
-              onChange={(e) => setPhone(e.target.value)} 
+            <label>Phone number</label>
+            <input
+              type="tel"
+              value={phone}
+              onChange={(event) => setPhone(event.target.value)}
               placeholder="+25078XXXXXXX"
-              required 
+              required
             />
             {error && <p className="phone-error-msg">{error}</p>}
-            <p className="phone-hint">Format: +25078... / +25079... / +25072... / +25073...</p>
+            <p className="phone-hint">Supported prefixes: +25078, +25079, +25072, +25073</p>
           </div>
-          <button type="submit" className="login-btn">Start Shopping</button>
+
+          <button type="submit" className="login-btn">
+            Enter Simba
+          </button>
         </form>
-        <p className="loyalty-tip">Using the same number earns you Admin-granted discounts!</p>
+
+        <p className="loyalty-tip">Returning shoppers keep admin-assigned discounts and purchase counts.</p>
       </div>
     </div>
   );

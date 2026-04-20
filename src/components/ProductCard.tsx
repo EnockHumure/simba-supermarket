@@ -11,33 +11,46 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) => {
   const { addToCart } = useCart();
   const [isAdded, setIsAdded] = useState(false);
 
-  const handleAddToCart = (e: React.MouseEvent) => {
-    e.stopPropagation();
+  const handleAddToCart = (event: React.MouseEvent) => {
+    event.stopPropagation();
     addToCart(product);
     setIsAdded(true);
-    setTimeout(() => setIsAdded(false), 2000);
+    window.setTimeout(() => setIsAdded(false), 1400);
   };
 
   return (
-    <div className="product-card" onClick={() => onClick(product)}>
+    <article className="product-card" onClick={() => onClick(product)}>
+      <div className="product-card-top">
+        <span className={`stock-pill ${product.inStock ? 'in-stock' : 'out-stock'}`}>
+          {product.inStock ? 'In stock' : 'Unavailable'}
+        </span>
+        <span className="unit-pill">{product.unit}</span>
+      </div>
+
       <div className="product-image">
         <img src={product.image} alt={product.name} loading="lazy" />
       </div>
+
       <div className="product-info">
-        <h4 className="product-name">{product.name}</h4>
         <p className="product-category">{product.category}</p>
+        <h4 className="product-name">{product.name}</h4>
+
         <div className="product-footer">
-          <span className="product-price">{product.price.toLocaleString()} RWF</span>
+          <div>
+            <strong className="product-price">{product.price.toLocaleString()} RWF</strong>
+            <span className="product-subcopy">Tap for details</span>
+          </div>
+
           <button
             className={`add-to-cart-btn ${isAdded ? 'success' : ''}`}
             onClick={handleAddToCart}
             disabled={!product.inStock}
           >
-            {isAdded ? 'Added! ✓' : product.inStock ? 'Add to Cart' : 'Out of Stock'}
+            {isAdded ? 'Added' : '+'}
           </button>
         </div>
       </div>
-    </div>
+    </article>
   );
 };
 

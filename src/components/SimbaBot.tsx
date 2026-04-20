@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useUser } from '../context/UserContext';
 import { useSimbaAI } from '../hooks/useSimbaAI';
 import type { Product } from '../context/CartContext';
@@ -24,91 +24,101 @@ const SimbaBot: React.FC<SimbaBotProps> = ({ onViewProduct }) => {
 
   useEffect(() => {
     if (user && messages.length === 0) {
-      let welcomeMsg = `Hello ${user.name}! 🦁 I am your Simba Shopping Assistant. I can help you find any product in our store and redirect you to it instantly! Just tell me what you're looking for (e.g., 'Cassava', 'Juice', or 'Massage Roller') and I'll fetch it for you.`;
-      
-      if (activeDiscount > 0) {
-        welcomeMsg = `Welcome back, ${user.name}! 🦁 Our Admin has granted you a ${activeDiscount}% loyalty discount! I can also help you find and redirect you to any product—just tell me what you need!`;
-      }
-      setMessages([{ text: welcomeMsg, isBot: true }]);
+      const welcomeText =
+        activeDiscount > 0
+          ? `Welcome back, ${user.name}. Your current Simba loyalty discount is ${activeDiscount}%. Ask for a product and I will surface matching items.`
+          : `Hello ${user.name}. I am Simba Bot. Ask for any product in the Rwanda catalogue and I will help you find it quickly.`;
+
+      setMessages([{ text: welcomeText, isBot: true }]);
     }
-  }, [user, activeDiscount, messages.length]);
+  }, [activeDiscount, messages.length, user]);
 
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  const handleSend = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!input.trim() || isLoading) return;
+  const handleSend = async (event: React.FormEvent) => {
+    event.preventDefault();
+    if (!input.trim() || isLoading) {
+      return;
+    }
 
-    const userMsg = input.trim();
-    setMessages(prev => [...prev, { text: userMsg, isBot: false }]);
+    const userMessage = input.trim();
+    setMessages((current) => [...current, { text: userMessage, isBot: false }]);
     setInput('');
 
-    const aiResponse = await getResponse(userMsg, false, activeDiscount);
-    
-    setMessages(prev => [...prev, { 
-      text: aiResponse.text, 
-      isBot: true, 
-      productLinks: aiResponse.matchedProducts 
-    }]);
+    const aiResponse = await getResponse(userMessage, false, activeDiscount);
+    setMessages((current) => [
+      ...current,
+      {
+        text: aiResponse.text,
+        isBot: true,
+        productLinks: aiResponse.matchedProducts,
+      },
+    ]);
   };
 
-  if (!user) return null;
+  if (!user) {
+    return null;
+  }
 
   return (
     <div className={`simba-bot-container ${isOpen ? 'open' : ''}`}>
       {!isOpen && (
-        <div className="bot-trigger" onClick={() => setIsOpen(true)}>
-          <span className="bot-icon">🦁</span>
+        <button className="bot-trigger" onClick={() => setIsOpen(true)}>
+          <span className="bot-icon">SB</span>
           <span className="bot-label">Ask Simba Bot</span>
-        </div>
+        </button>
       )}
 
       {isOpen && (
         <div className="bot-window">
           <div className="bot-header">
             <div className="header-info">
-              <span className="bot-avatar">🦁</span>
-              <h3>Simba Bot</h3>
+              <span className="bot-avatar">SB</span>
+              <div>
+                <h3>Simba Bot</h3>
+                <p>Find products and shortcuts</p>
+              </div>
             </div>
-            <button className="close-bot" onClick={() => setIsOpen(false)}>&times;</button>
+            <button className="close-bot" onClick={() => setIsOpen(false)}>
+              x
+            </button>
           </div>
+
           <div className="bot-messages">
-            {messages.map((m, i) => (
-              <div key={i} className={`message-container ${m.isBot ? 'bot' : 'user'}`}>
-                <div className={`message ${m.isBot ? 'bot' : 'user'}`}>
-                  {m.text}
-                </div>
-                {m.productLinks && m.productLinks.length > 0 && (
+            {messages.map((message, index) => (
+              <div key={index} className={`message-container ${message.isBot ? 'bot' : 'user'}`}>
+                <div className={`message ${message.isBot ? 'bot' : 'user'}`}>{message.text}</div>
+                {message.productLinks && message.productLinks.length > 0 && (
                   <div className="bot-product-links">
-                    <p className="bot-hint">Click below to view the product:</p>
-                    {m.productLinks.map(p => (
-                      <button 
-                        key={p.id} 
+                    {message.productLinks.map((product) => (
+                      <button
+                        key={product.id}
                         className="bot-product-btn"
-                        onClick={() => onViewProduct(p)}
+                        onClick={() => onViewProduct(product)}
                       >
-                        📦 View {p.name}
+                        View {product.name}
                       </button>
                     ))}
                   </div>
                 )}
               </div>
             ))}
-            {isLoading && <div className="message bot loading">Simba Bot is fetching products...</div>}
+            {isLoading && <div className="message bot loading">Searching the Simba catalogue...</div>}
             <div ref={chatEndRef} />
           </div>
+
           <form className="bot-input" onSubmit={handleSend}>
-            <input 
-              type="text" 
-              placeholder="What can I find for you?" 
+            <input
+              type="text"
+              placeholder="Ask for milk, cassava, bread, juice..."
               value={input}
-              onChange={(e) => setInput(e.target.value)}
+              onChange={(event) => setInput(event.target.value)}
               disabled={isLoading}
             />
             <button type="submit" disabled={isLoading}>
-              {isLoading ? '...' : 'Fetch'}
+              Send
             </button>
           </form>
         </div>

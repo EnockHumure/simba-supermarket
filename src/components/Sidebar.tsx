@@ -5,29 +5,43 @@ interface SidebarProps {
   categories: string[];
   selectedCategory: string | null;
   onSelectCategory: (category: string | null) => void;
+  categoryCounts: Record<string, number>;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ categories, selectedCategory, onSelectCategory }) => {
+const Sidebar: React.FC<SidebarProps> = ({
+  categories,
+  selectedCategory,
+  onSelectCategory,
+  categoryCounts,
+}) => {
   return (
     <aside className="sidebar">
-      <h3>Categories</h3>
-      <ul>
-        <li
-          className={selectedCategory === null ? 'active' : ''}
+      <div className="sidebar-header">
+        <p className="section-kicker">Departments</p>
+        <h3>Shop by category</h3>
+        <p>These filters drive the main product grid below.</p>
+      </div>
+
+      <div className="sidebar-list">
+        <button
+          className={`sidebar-item ${selectedCategory === null ? 'active' : ''}`}
           onClick={() => onSelectCategory(null)}
         >
-          All Products
-        </li>
+          <span>All Products</span>
+          <strong>{Object.values(categoryCounts).reduce((total, count) => total + count, 0)}</strong>
+        </button>
+
         {categories.map((category) => (
-          <li
+          <button
             key={category}
-            className={selectedCategory === category ? 'active' : ''}
+            className={`sidebar-item ${selectedCategory === category ? 'active' : ''}`}
             onClick={() => onSelectCategory(category)}
           >
-            {category}
-          </li>
+            <span>{category}</span>
+            <strong>{categoryCounts[category] || 0}</strong>
+          </button>
         ))}
-      </ul>
+      </div>
     </aside>
   );
 };
