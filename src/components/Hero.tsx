@@ -33,9 +33,6 @@ const Hero: React.FC<HeroProps> = ({
 
   return (
     <section className="hero" aria-label="Hero Section">
-      <div className="hero-logo-container">
-        <img src="https://simbasupermarket.rw/wp-content/uploads/2023/05/Simba-Logo-1.png" alt="Simba Supermarket Logo" className="hero-logo" />
-      </div>
       <div className="hero-service-strip">
         {Object.entries(serviceDefinitions).map(([key, service]) => (
           <button
