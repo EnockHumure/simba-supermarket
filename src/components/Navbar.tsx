@@ -3,6 +3,7 @@ import { useCart } from '../context/CartContext';
 import { useUser } from '../context/UserContext';
 import { useSettings } from '../context/SettingsContext';
 import { translations, type Language } from '../i18n';
+import simbaLogo from '../simbaheaderM.png';
 import './Navbar.css';
 
 interface NavbarProps {
@@ -37,7 +38,7 @@ const Navbar: React.FC<NavbarProps> = ({
           aria-label="Simba Rwanda Home"
         >
           <span className="brand-mark">
-            <img src="https://simbasupermarket.rw/wp-content/uploads/2023/05/Simba-Logo-1.png" alt="Simba Supermarket Logo" />
+            <img src={simbaLogo} alt="Simba Supermarket Logo" />
           </span>
           <span className="brand-copy">
             <strong>simba</strong>

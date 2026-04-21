@@ -116,12 +116,28 @@
 
 .bot-product-btn {
   min-height: 42px;
-  padding: 0 14px;
+  padding: 8px 14px;
   border-radius: 14px;
   text-align: left;
-  color: var(--simba-purple);
+  color: var(--simba-ink);
   background: #fff;
   border: 1px solid rgba(73, 38, 111, 0.08);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+}
+
+.bot-product-btn span {
+  font-size: 0.85rem;
+  flex: 1;
+}
+
+.bot-product-btn strong {
+  font-size: 0.82rem;
+  color: var(--simba-primary);
+  white-space: nowrap;
 }
 
 .bot-input {

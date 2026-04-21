@@ -15,23 +15,18 @@ interface SimbaBotProps {
 }
 
 const SimbaBot: React.FC<SimbaBotProps> = ({ onViewProduct }) => {
-  const { user, activeDiscount } = useUser();
-  const { getResponse, isLoading, isOnline } = useSimbaAI();
+  const { user } = useUser();
+  const { getResponse, isLoading } = useSimbaAI();
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const chatEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (user && messages.length === 0) {
-      const welcomeText =
-        activeDiscount > 0
-          ? `Welcome back, ${user.name}. Your current Simba loyalty discount is ${activeDiscount}%. Ask for a product and I will surface matching items.`
-          : `Hello ${user.name}. I am Simba Bot. Ask for any product in the Rwanda catalogue and I will help you find it quickly.`;
-
-      setMessages([{ text: welcomeText, isBot: true }]);
+    if (messages.length === 0) {
+      setMessages([{ text: "Hi! Type any product name and I'll find it for you.", isBot: true }]);
     }
-  }, [activeDiscount, messages.length, user]);
+  }, [messages.length]);
 
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -47,7 +42,7 @@ const SimbaBot: React.FC<SimbaBotProps> = ({ onViewProduct }) => {
     setMessages((current) => [...current, { text: userMessage, isBot: false }]);
     setInput('');
 
-    const aiResponse = await getResponse(userMessage, false, activeDiscount);
+    const aiResponse = await getResponse(userMessage);
     setMessages((current) => [
       ...current,
       {
@@ -57,14 +52,8 @@ const SimbaBot: React.FC<SimbaBotProps> = ({ onViewProduct }) => {
       },
     ]);
 
-    if (aiResponse.shouldRedirect) {
-      onViewProduct(aiResponse.shouldRedirect);
-    }
-  };
 
-  if (!user) {
-    return null;
-  }
+  };
 
   return (
     <div className={`simba-bot-container ${isOpen ? 'open' : ''}`}>
@@ -86,13 +75,7 @@ const SimbaBot: React.FC<SimbaBotProps> = ({ onViewProduct }) => {
               <span className="bot-avatar">SB</span>
               <div>
                 <h3>Simba Bot</h3>
-                <p>
-                  {isOnline === false ? (
-                    <span className="status-offline">Offline Mode (Search Only)</span>
-                  ) : (
-                    "Find products and shortcuts"
-                  )}
-                </p>
+                <p>Product finder</p>
               </div>
             </div>
             <button 
@@ -117,7 +100,8 @@ const SimbaBot: React.FC<SimbaBotProps> = ({ onViewProduct }) => {
                         onClick={() => onViewProduct(product)}
                         aria-label={`View details for ${product.name}`}
                       >
-                        View {product.name}
+                        <span>{product.name}</span>
+                        <strong>{product.price.toLocaleString()} RWF</strong>
                       </button>
                     ))}
                   </div>
@@ -131,11 +115,11 @@ const SimbaBot: React.FC<SimbaBotProps> = ({ onViewProduct }) => {
           <form className="bot-input" onSubmit={handleSend}>
             <input
               type="text"
-              placeholder="Ask for milk, cassava, bread, juice..."
+              placeholder="Search: milk, bread, coffee..."
               value={input}
               onChange={(event) => setInput(event.target.value)}
               disabled={isLoading}
-              aria-label="Ask a question"
+              aria-label="Search for a product"
             />
             <button type="submit" disabled={isLoading} aria-label="Send message">
               Send
