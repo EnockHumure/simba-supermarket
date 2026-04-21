@@ -118,8 +118,6 @@ const AppContent: React.FC = () => {
     [allProducts]
   );
 
-  const activeServiceMeta = serviceDefinitions[activeService];
-
   const serviceProducts = useMemo(() => {
     return allProducts
       .filter((product) => activeServiceMeta.categories.includes(product.category))
@@ -427,11 +425,17 @@ const AppContent: React.FC = () => {
       <SimbaBot onViewProduct={(product) => setSelectedProduct(product)} />
 
       <footer className="footer">
-        <div>
+        <div className="footer-brand-section">
           <strong>Simba Rwanda</strong>
           <p>Rapid grocery experience inspired by Getir, adapted for Kigali and the Simba catalogue.</p>
+          <div className="footer-socials">
+            <a href="https://www.facebook.com/simbasupermarket/" target="_blank" rel="noopener noreferrer" aria-label="Facebook">Facebook</a>
+            <a href="https://x.com/SimbaRwanda" target="_blank" rel="noopener noreferrer" aria-label="X (Twitter)">X</a>
+            <a href="https://www.instagram.com/simba_supermarket/" target="_blank" rel="noopener noreferrer" aria-label="Instagram">Instagram</a>
+            <a href="https://share.google/D9neQXWE1MfMeNz81" target="_blank" rel="noopener noreferrer" className="location-link" aria-label="Simba Locations">Our Locations</a>
+          </div>
         </div>
-        <p>Copyright 2026 Simba Supermarket. Rwanda-focused commerce demo.</p>
+        <p className="footer-copyright">Copyright 2026 Simba Supermarket. Rwanda-focused commerce demo.</p>
       </footer>
     </div>
   );

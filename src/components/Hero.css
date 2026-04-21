@@ -6,6 +6,18 @@
   overflow: hidden;
 }
 
+.hero-logo-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 32px;
+}
+
+.hero-logo {
+  max-height: 90px;
+  width: auto;
+  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2));
+}
+
 /* Subtle pattern for Simba look */
 .hero::before {
   content: '';

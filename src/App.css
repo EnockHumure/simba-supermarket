@@ -197,8 +197,46 @@
   padding: 40px 16px 0;
   display: flex;
   justify-content: space-between;
+  align-items: flex-start;
   border-top: 1px solid var(--simba-line);
   color: var(--simba-muted);
+}
+
+.footer-brand-section {
+  display: grid;
+  gap: 16px;
+  max-width: 500px;
+}
+
+.footer-socials {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+
+.footer-socials a {
+  color: var(--simba-primary);
+  font-weight: 700;
+  font-size: 0.9rem;
+  transition: opacity 0.2s;
+}
+
+.footer-socials a:hover {
+  opacity: 0.7;
+  text-decoration: underline;
+}
+
+.location-link {
+  background: var(--simba-secondary);
+  color: var(--simba-ink) !important;
+  padding: 4px 12px;
+  border-radius: 6px;
+  text-decoration: none !important;
+}
+
+.footer-copyright {
+  font-size: 0.85rem;
 }
 
 @keyframes section-rise {

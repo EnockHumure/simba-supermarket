@@ -1,127 +1,99 @@
-.modal-content.user-modal {
-  width: min(760px, 100%);
-  padding: 28px;
-}
-
 .user-modal {
-  display: grid;
-  gap: 20px;
+  max-width: 480px;
+  width: min(100%, 480px);
+  padding: 32px;
+  border-radius: 16px;
+  background: var(--simba-white);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.2);
 }
 
-.simba-intro-card {
-  padding: 18px;
-  border-radius: 18px;
-  background: rgba(214, 40, 40, 0.08);
-  border: 1px solid rgba(73, 38, 111, 0.08);
-}
-
-.simba-intro-card h3 {
+.account-page-hero h2 {
+  color: var(--simba-primary);
+  font-size: 1.8rem;
+  font-weight: 800;
   margin-bottom: 8px;
 }
 
-.account-page-hero {
-  display: grid;
-  grid-template-columns: minmax(0, 1.2fr) minmax(260px, 0.9fr);
-  gap: 16px;
-  align-items: start;
-}
-
-.simba-badge {
-  width: fit-content;
-  min-height: 36px;
-  padding: 0 14px;
-  border-radius: 999px;
-  display: inline-flex;
-  align-items: center;
-  color: var(--simba-purple);
-  font-size: 0.78rem;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  background: rgba(93, 35, 150, 0.08);
-}
-
-.user-modal h2 {
-  font-size: 1.8rem;
-}
-
-.user-modal > p,
-.loyalty-tip,
-.phone-hint {
+.account-page-hero p {
   color: var(--simba-muted);
-}
-
-.user-modal form {
-  display: grid;
-  gap: 14px;
-}
-
-.account-actions {
-  display: flex;
-  gap: 12px;
+  margin-bottom: 24px;
 }
 
 .form-group {
+  margin-bottom: 20px;
   display: grid;
   gap: 8px;
 }
 
 .form-group label {
-  font-size: 0.92rem;
   font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--simba-ink);
 }
 
 .form-group input {
-  min-height: 54px;
-  border-radius: 18px;
+  min-height: 48px;
   padding: 0 16px;
-  background: rgba(93, 35, 150, 0.06);
-  border: 1px solid rgba(73, 38, 111, 0.1);
+  border-radius: 8px;
+  border: 1px solid var(--simba-line);
+  background: #f8f9fa;
+  font-size: 1rem;
+}
+
+.form-group input:focus {
+  border-color: var(--simba-primary);
+  outline: none;
+  background: #fff;
+}
+
+.account-actions {
+  display: grid;
+  gap: 12px;
+  margin-top: 32px;
 }
 
 .login-btn {
-  min-height: 54px;
-  border-radius: 18px;
+  height: 52px;
+  background: var(--simba-primary);
   color: #fff;
+  border-radius: 8px;
   font-weight: 800;
-  background: linear-gradient(135deg, #5d2396, #813ec5);
+  font-size: 1rem;
 }
 
 .guest-btn {
-  min-height: 46px;
-  border-radius: 16px;
-  color: var(--simba-purple);
-  font-weight: 700;
-  background: rgba(93, 35, 150, 0.08);
-}
-
-.phone-error-msg {
-  color: #c44d4d;
-  font-size: 0.86rem;
+  height: 52px;
+  background: transparent;
+  color: var(--simba-muted);
+  font-weight: 600;
 }
 
 .loyalty-tip {
+  margin-top: 32px;
   padding: 16px;
-  border-radius: 16px;
-  background: #fff9ef;
-  border: 1px solid rgba(214, 40, 40, 0.12);
+  border-radius: 12px;
+  background: var(--simba-primary-soft);
+  border: 1px solid rgba(227, 27, 35, 0.1);
+  display: grid;
+  gap: 4px;
 }
 
 .loyalty-tip strong {
-  display: block;
-  margin-bottom: 6px;
+  color: var(--simba-primary);
+  font-size: 0.9rem;
 }
 
-@media (max-width: 760px) {
-  .modal-content.user-modal {
-    padding: 20px;
-  }
+.loyalty-tip p {
+  font-size: 0.82rem;
+  color: var(--simba-ink);
+}
 
-  .account-page-hero {
-    grid-template-columns: 1fr;
-  }
-
-  .account-actions {
-    flex-direction: column;
+@media (max-width: 600px) {
+  .user-modal {
+    padding: 24px;
+    border-radius: 0;
+    height: 100%;
+    max-height: 100vh;
+    overflow-y: auto;
   }
 }

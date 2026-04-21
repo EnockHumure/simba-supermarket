@@ -1,31 +1,30 @@
 :root {
-  /* Simba Rwanda Authentic Palette */
+  /* Simba Rwanda Premium Palette */
   --simba-primary: #e31b23;      /* Simba Red */
   --simba-primary-dark: #c0161d;
-  --simba-secondary: #ffd200;    /* Simba Gold/Yellow */
-  --simba-orange: #f28c28;       /* Simba Orange accent */
+  --simba-primary-soft: #fff5f5;
+  --simba-secondary: #ffd200;    /* Simba Gold */
+  --simba-orange: #f28c28;
   
   --simba-bg: #f8f9fa;
   --simba-white: #ffffff;
   --simba-ink: #1a1a1b;
   --simba-muted: #5f6368;
   --simba-line: #e8eaed;
-  --simba-shadow: 0 4px 12px rgba(227, 27, 35, 0.08);
+  --simba-shadow: 0 4px 12px rgba(227, 27, 35, 0.06);
   
   font-family: "Open Sans", system-ui, -apple-system, sans-serif;
   line-height: 1.5;
-  font-weight: 400;
-  color: var(--simba-ink);
-  background: var(--simba-bg);
 }
 
 :root[data-theme='dark'] {
   --simba-bg: #121212;
   --simba-white: #1e1e1e;
-  --simba-ink: #f1f3f4;
-  --simba-muted: #9aa0a6;
-  --simba-line: #3c4043;
-  --simba-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+  --simba-ink: #f8f9fa;
+  --simba-muted: #a0a0a0;
+  --simba-line: #333333;
+  --simba-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  --simba-primary-soft: #2a1010;
 }
 
 * {
