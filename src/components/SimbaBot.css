@@ -62,7 +62,19 @@
   font-size: 0.86rem;
 }
 
-.status-offline {
+.close-bot {
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  background: rgba(93, 35, 150, 0.1);
+  color: #1a1a1b;
+  font-size: 1rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
   color: #d93025;
   font-weight: 600;
   font-size: 0.75rem;

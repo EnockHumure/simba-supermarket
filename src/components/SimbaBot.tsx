@@ -81,7 +81,7 @@ const SimbaBot: React.FC<SimbaBotProps> = ({ onViewProduct }) => {
               onClick={() => setIsOpen(false)}
               aria-label="Close Assistant"
             >
-              x
+              ✕
             </button>
           </div>
 
