@@ -38,11 +38,7 @@ const Navbar: React.FC<NavbarProps> = ({
           aria-label="Simba Rwanda Home"
         >
           <span className="brand-mark">
-            <img src={simbaLogo} alt="Simba Supermarket Logo" />
-          </span>
-          <span className="brand-copy">
-            <strong>simba</strong>
-            <small>rwanda</small>
+            <img src={simbaLogo} alt="Simba Supermarket" />
           </span>
         </button>
 

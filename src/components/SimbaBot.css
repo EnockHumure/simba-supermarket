@@ -97,7 +97,7 @@
 
 .message.bot {
   background: rgba(93, 35, 150, 0.08);
-  color: var(--simba-ink);
+  color: #1a1a1b;
 }
 
 .message.user {
