@@ -32,13 +32,18 @@ const Hero: React.FC<HeroProps> = ({
   const { t } = useSettings();
 
   return (
-    <section className="hero">
+    <section className="hero" aria-label="Hero Section">
+      <div className="hero-logo-container">
+        <img src="https://simbasupermarket.rw/wp-content/uploads/2023/05/Simba-Logo-1.png" alt="Simba Supermarket Logo" className="hero-logo" />
+      </div>
       <div className="hero-service-strip">
         {Object.entries(serviceDefinitions).map(([key, service]) => (
           <button
             key={key}
             className={`hero-service-tab ${activeService === key ? 'active' : ''}`}
             onClick={() => onServiceChange(key)}
+            aria-pressed={activeService === key}
+            aria-label={`Switch to ${service.title} service`}
           >
             <strong>{service.title}</strong>
           </button>

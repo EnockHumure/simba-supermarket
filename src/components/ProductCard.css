@@ -1,33 +1,41 @@
 .product-card {
-  padding: 10px;
-  border-radius: 16px;
-  background: rgba(255, 255, 255, 0.88);
-  border: 1px solid rgba(73, 38, 111, 0.1);
-  box-shadow: var(--simba-shadow);
+  padding: 12px;
+  border-radius: 12px;
+  background: var(--simba-white);
+  border: 1px solid var(--simba-line);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.02);
   display: grid;
-  gap: 8px;
+  gap: 12px;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
+  position: relative;
 }
 
 .product-card:hover {
-  transform: translateY(-4px);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(93, 62, 188, 0.06);
 }
 
 .product-card-top {
   display: flex;
   justify-content: space-between;
   gap: 10px;
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  right: 8px;
+  z-index: 2;
 }
 
 .stock-pill,
 .unit-pill {
-  min-height: 26px;
-  padding: 0 10px;
-  border-radius: 999px;
+  min-height: 22px;
+  padding: 0 8px;
+  border-radius: 6px;
   display: inline-flex;
   align-items: center;
-  font-size: 0.68rem;
-  font-weight: 700;
+  font-size: 0.64rem;
+  font-weight: 800;
+  text-transform: uppercase;
 }
 
 .stock-pill.in-stock {
@@ -42,79 +50,115 @@
 
 .unit-pill {
   color: var(--simba-muted);
-  background: rgba(93, 35, 150, 0.08);
+  background: rgba(0,0,0,0.05);
 }
 
 .product-image {
   aspect-ratio: 1;
-  border-radius: 14px;
+  border-radius: 8px;
   display: grid;
   place-items: center;
-  background: linear-gradient(180deg, #fffaf0, #f4edff);
-  overflow: hidden;
+  background: #fff;
+  border: 1px solid #f0f0f0;
 }
 
-.product-image img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  padding: 8px;
+.product-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(227, 27, 35, 0.06);
 }
 
 .product-info {
   display: grid;
-  gap: 8px;
+  gap: 4px;
 }
 
 .product-category {
   color: var(--simba-orange);
   text-transform: uppercase;
-  letter-spacing: 0.1em;
-  font-size: 0.66rem;
-  font-weight: 800;
+  letter-spacing: 0.05em;
+  font-size: 0.6rem;
+  font-weight: 700;
 }
 
 .product-name {
-  font-size: 0.88rem;
-  line-height: 1.25;
-  min-height: 40px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--simba-ink);
+  min-height: 3.6em;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .product-footer {
   display: flex;
   justify-content: space-between;
-  gap: 12px;
-  align-items: end;
+  gap: 10px;
+  align-items: center;
+  margin-top: 4px;
 }
 
 .product-price {
-  font-size: 0.88rem;
-  color: var(--simba-purple);
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--simba-primary);
 }
 
 .product-subcopy {
-  margin-top: 4px;
-  display: block;
-  color: var(--simba-muted);
-  font-size: 0.68rem;
+  display: none;
+}
+
+/* Stepper & Button Styles */
+.stepper-container {
+  min-width: 40px;
 }
 
 .add-to-cart-btn {
-  width: 38px;
-  height: 38px;
-  border-radius: 12px;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  color: var(--simba-primary);
+  font-size: 1.4rem;
+  font-weight: 500;
+  background: var(--simba-white);
+  border: 1px solid var(--simba-line);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.add-to-cart-btn:hover {
+  border-color: var(--simba-primary);
+  background: #fffcfc;
+}
+
+.stepper {
+  display: flex;
+  align-items: center;
+  background: var(--simba-primary);
   color: #fff;
-  font-size: 1rem;
+  border-radius: 10px;
+  padding: 2px;
+  box-shadow: var(--simba-shadow);
+}
+}
+
+.stepper-btn {
+  width: 32px;
+  height: 32px;
+  background: transparent;
+  color: #fff;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.stepper-qty {
+  min-width: 24px;
+  text-align: center;
   font-weight: 800;
-  background: linear-gradient(135deg, #5d2396, #813ec5);
+  font-size: 0.95rem;
 }
 
-.add-to-cart-btn.success {
-  font-size: 0.9rem;
-  background: linear-gradient(135deg, #ff9a33, #ff7e22);
-}
-
-.add-to-cart-btn:disabled {
-  cursor: not-allowed;
-  background: #c8c2d4;
-}

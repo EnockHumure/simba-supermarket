@@ -9,6 +9,7 @@ interface AIResponse {
 
 export const useSimbaAI = () => {
   const [isLoading, setIsLoading] = useState(false);
+  const [isOnline, setIsOnline] = useState<boolean | null>(null);
 
   const askOllama = async (prompt: string): Promise<AIResponse | null> => {
     try {
@@ -25,10 +26,15 @@ export const useSimbaAI = () => {
         })
       });
 
-      if (!response.ok) return null;
+      if (!response.ok) {
+        setIsOnline(false);
+        return null;
+      }
       const data = await response.json();
+      setIsOnline(true);
       return { text: data.response, matchedProducts: [] };
     } catch (error) {
+      setIsOnline(false);
       return null;
     }
   };
@@ -70,7 +76,10 @@ export const useSimbaAI = () => {
           ? `You're in luck! Our Admin has already granted you a ${discount}% discount. Your subtotal will update automatically!` 
           : "We value our loyal customers. Keep shopping with us using your phone number, and our Admin will grant you a special discount based on your purchases!";
       } else {
-        text = "That's a great request! I'm still learning, but I can certainly help you find products if you tell me what you need (e.g., 'Cassava', 'Juice', 'Soap').";
+        const fallbackMsg = isOnline === false 
+          ? "I'm currently running in offline mode, but I can still help you find products! " 
+          : "That's a great request! ";
+        text = fallbackMsg + "I'm still learning, but I can certainly help you find products if you tell me what you need (e.g., 'Cassava', 'Juice', 'Soap').";
       }
     }
 
@@ -78,5 +87,5 @@ export const useSimbaAI = () => {
     return { text, matchedProducts };
   };
 
-  return { getResponse, isLoading };
+  return { getResponse, isLoading, isOnline };
 };

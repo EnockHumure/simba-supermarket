@@ -16,7 +16,7 @@ interface SimbaBotProps {
 
 const SimbaBot: React.FC<SimbaBotProps> = ({ onViewProduct }) => {
   const { user, activeDiscount } = useUser();
-  const { getResponse, isLoading } = useSimbaAI();
+  const { getResponse, isLoading, isOnline } = useSimbaAI();
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
@@ -65,28 +65,42 @@ const SimbaBot: React.FC<SimbaBotProps> = ({ onViewProduct }) => {
   return (
     <div className={`simba-bot-container ${isOpen ? 'open' : ''}`}>
       {!isOpen && (
-        <button className="bot-trigger" onClick={() => setIsOpen(true)}>
+        <button 
+          className="bot-trigger" 
+          onClick={() => setIsOpen(true)}
+          aria-label="Open Simba AI Assistant"
+        >
           <span className="bot-icon">SB</span>
           <span className="bot-label">Ask Simba Bot</span>
         </button>
       )}
 
       {isOpen && (
-        <div className="bot-window">
+        <div className="bot-window" role="dialog" aria-label="Simba AI Assistant">
           <div className="bot-header">
             <div className="header-info">
               <span className="bot-avatar">SB</span>
               <div>
                 <h3>Simba Bot</h3>
-                <p>Find products and shortcuts</p>
+                <p>
+                  {isOnline === false ? (
+                    <span className="status-offline">Offline Mode (Search Only)</span>
+                  ) : (
+                    "Find products and shortcuts"
+                  )}
+                </p>
               </div>
             </div>
-            <button className="close-bot" onClick={() => setIsOpen(false)}>
+            <button 
+              className="close-bot" 
+              onClick={() => setIsOpen(false)}
+              aria-label="Close Assistant"
+            >
               x
             </button>
           </div>
 
-          <div className="bot-messages">
+          <div className="bot-messages" aria-live="polite">
             {messages.map((message, index) => (
               <div key={index} className={`message-container ${message.isBot ? 'bot' : 'user'}`}>
                 <div className={`message ${message.isBot ? 'bot' : 'user'}`}>{message.text}</div>
@@ -97,6 +111,7 @@ const SimbaBot: React.FC<SimbaBotProps> = ({ onViewProduct }) => {
                         key={product.id}
                         className="bot-product-btn"
                         onClick={() => onViewProduct(product)}
+                        aria-label={`View details for ${product.name}`}
                       >
                         View {product.name}
                       </button>
@@ -116,8 +131,9 @@ const SimbaBot: React.FC<SimbaBotProps> = ({ onViewProduct }) => {
               value={input}
               onChange={(event) => setInput(event.target.value)}
               disabled={isLoading}
+              aria-label="Ask a question"
             />
-            <button type="submit" disabled={isLoading}>
+            <button type="submit" disabled={isLoading} aria-label="Send message">
               Send
             </button>
           </form>

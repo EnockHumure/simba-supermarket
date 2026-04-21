@@ -19,7 +19,7 @@ const Sidebar: React.FC<SidebarProps> = ({
   const { language } = useSettings();
 
   return (
-    <aside className="sidebar">
+    <aside className="sidebar" aria-label="Category Filters">
       <div className="sidebar-header">
         <p className="section-kicker">Departments</p>
         <h3>Shop by category</h3>
@@ -30,6 +30,8 @@ const Sidebar: React.FC<SidebarProps> = ({
         <button
           className={`sidebar-item ${selectedCategory === null ? 'active' : ''}`}
           onClick={() => onSelectCategory(null)}
+          aria-pressed={selectedCategory === null}
+          aria-label="Show all products"
         >
           <span>All Products</span>
           <strong>{Object.values(categoryCounts).reduce((total, count) => total + count, 0)}</strong>
@@ -40,6 +42,8 @@ const Sidebar: React.FC<SidebarProps> = ({
             key={category}
             className={`sidebar-item ${selectedCategory === category ? 'active' : ''}`}
             onClick={() => onSelectCategory(category)}
+            aria-pressed={selectedCategory === category}
+            aria-label={`Filter by ${translateCategoryLabel(category, language)}`}
           >
             <span>{translateCategoryLabel(category, language)}</span>
             <strong>{categoryCounts[category] || 0}</strong>

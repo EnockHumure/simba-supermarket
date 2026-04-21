@@ -1,77 +1,80 @@
 .sidebar {
   position: sticky;
-  top: 96px;
-  border-radius: 18px;
-  padding: 14px;
-  background: rgba(255, 255, 255, 0.84);
-  border: 1px solid rgba(73, 38, 111, 0.1);
-  box-shadow: var(--simba-shadow);
-  backdrop-filter: blur(16px);
+  top: 70px;
+  padding: 16px 0;
+  background: transparent;
+}
+
+.sidebar-header {
+  padding: 0 12px;
+  margin-bottom: 16px;
 }
 
 .sidebar-header h3 {
-  margin-top: 6px;
-  font-size: 1.08rem;
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--simba-primary);
 }
 
-.sidebar-header p:last-child {
-  margin-top: 8px;
-  color: var(--simba-muted);
+.sidebar-header p {
+  display: none;
 }
 
 .sidebar-list {
-  margin-top: 12px;
-  display: grid;
-  gap: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
 .sidebar-item {
-  min-height: 42px;
-  padding: 0 10px;
-  border-radius: 12px;
+  min-height: 48px;
+  padding: 0 16px;
+  border-radius: 8px;
   display: flex;
-  justify-content: space-between;
-  gap: 12px;
   align-items: center;
-  text-align: left;
-  background: #fff;
-  border: 1px solid rgba(73, 38, 111, 0.08);
-  transition: transform 0.18s ease, border-color 0.18s ease;
+  justify-content: space-between;
+  background: var(--simba-white);
+  border: 1px solid transparent;
+  transition: all 0.2s ease;
+  color: var(--simba-ink);
 }
 
 .sidebar-item span {
-  max-width: 180px;
-  font-size: 0.88rem;
+  font-size: 0.9rem;
+  font-weight: 500;
 }
 
 .sidebar-item strong {
-  min-width: 24px;
-  height: 24px;
-  border-radius: 999px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(93, 35, 150, 0.08);
-  color: var(--simba-purple);
-}
-
-.sidebar-item.active {
-  color: #fff;
-  background: linear-gradient(135deg, #5d2396, #7a37b6);
-  border-color: transparent;
-}
-
-.sidebar-item.active strong {
-  color: #fff;
-  background: rgba(255, 255, 255, 0.16);
+  display: none; /* Simplify look */
 }
 
 .sidebar-item:hover {
-  transform: translateX(3px);
+  background: #fff5f5;
+  color: var(--simba-primary);
+}
+
+.sidebar-item.active {
+  background: #fff5f5;
+  color: var(--simba-primary);
+  border-left: 4px solid var(--simba-primary);
+  font-weight: 800;
 }
 
 @media (max-width: 1180px) {
   .sidebar {
     position: static;
+    display: flex;
+    overflow-x: auto;
+    padding: 10px 0;
+  }
+  
+  .sidebar-list {
+    flex-direction: row;
+    padding: 0 10px;
+  }
+  
+  .sidebar-item {
+    white-space: nowrap;
   }
 }
+

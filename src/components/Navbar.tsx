@@ -28,10 +28,14 @@ const Navbar: React.FC<NavbarProps> = ({
 
   return (
     <header className="navbar-shell">
-      <nav className="navbar">
-        <button className="navbar-brand" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
+      <nav className="navbar" aria-label="Main Navigation">
+        <button 
+          className="navbar-brand" 
+          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+          aria-label="Simba Rwanda Home"
+        >
           <span className="brand-mark">
-            <img src="/favicon.svg" alt="Simba" />
+            <img src="https://simbasupermarket.rw/wp-content/uploads/2023/05/Simba-Logo-1.png" alt="Simba Supermarket Logo" />
           </span>
           <span className="brand-copy">
             <strong>simba</strong>
@@ -41,7 +45,11 @@ const Navbar: React.FC<NavbarProps> = ({
 
         <label className="navbar-location">
           <span>{t('deliveringTo')}</span>
-          <select value={selectedLocation} onChange={(event) => onLocationChange(event.target.value)}>
+          <select 
+            value={selectedLocation} 
+            onChange={(event) => onLocationChange(event.target.value)}
+            aria-label="Select Delivery Location"
+          >
             <option>Kigali CBD</option>
             <option>Kimironko</option>
             <option>Kacyiru</option>
@@ -59,13 +67,18 @@ const Navbar: React.FC<NavbarProps> = ({
             placeholder={t('searchPlaceholder')}
             value={searchTerm}
             onChange={(event) => onSearchChange(event.target.value)}
+            aria-label="Search Products"
           />
         </div>
 
         <div className="navbar-controls">
           <label className="navbar-select-control">
             <span>Language</span>
-            <select value={language} onChange={(event) => setLanguage(event.target.value as Language)}>
+            <select 
+              value={language} 
+              onChange={(event) => setLanguage(event.target.value as Language)}
+              aria-label="Select Language"
+            >
               {Object.entries(translations).map(([code, value]) => (
                 <option key={code} value={code}>
                   {value.languageName}
@@ -74,7 +87,11 @@ const Navbar: React.FC<NavbarProps> = ({
             </select>
           </label>
 
-          <button className="theme-toggle" onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}>
+          <button 
+            className="theme-toggle" 
+            onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
+            aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
+          >
             {theme === 'light' ? t('darkMode') : t('lightMode')}
           </button>
         </div>
@@ -87,17 +104,21 @@ const Navbar: React.FC<NavbarProps> = ({
             </strong>
           </div>
 
-          <button className="navbar-cart" onClick={onCartClick}>
+          <button 
+            className="navbar-cart" 
+            onClick={onCartClick}
+            aria-label={`View Cart, ${totalItems} items`}
+          >
             <span>{t('cart')}</span>
             <strong>{totalItems}</strong>
           </button>
 
           {user ? (
-            <button className="switch-account-btn" onClick={logout}>
+            <button className="switch-account-btn" onClick={logout} aria-label="Logout">
               {t('switchAccount')}
             </button>
           ) : (
-            <button className="switch-account-btn" onClick={onLoginClick}>
+            <button className="switch-account-btn" onClick={onLoginClick} aria-label="Sign In">
               {t('signInSimba')}
             </button>
           )}

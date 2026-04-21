@@ -1,6 +1,7 @@
 import React, { useMemo, useRef, useState } from 'react';
 import { UserProvider, useUser } from './context/UserContext';
-import { CartProvider, type Product } from './context/CartContext';
+import { ProductProvider } from './context/ProductContext';
+import { CartProvider, useCart, type Product } from './context/CartContext';
 import { SettingsProvider, useSettings } from './context/SettingsContext';
 import { useProducts } from './hooks/useProducts';
 import Navbar from './components/Navbar';
@@ -90,6 +91,7 @@ const AppContent: React.FC = () => {
   } = useProducts();
 
   const { user, isLoyal, activeDiscount, updateProfile, isAdmin } = useUser();
+  const { checkout } = useCart();
   const { language, t } = useSettings();
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isAdminOpen, setIsAdminOpen] = useState(false);
@@ -146,7 +148,8 @@ const AppContent: React.FC = () => {
 
     const newTotal = (user.totalPurchases || 0) + 1;
     updateProfile(user.email, { totalPurchases: newTotal });
-    window.alert(`Checkout successful for ${user.name}. Total completed orders: ${newTotal}.`);
+    checkout(user.email);
+    window.alert(`Order received for ${user.name}. You can track status in the Admin panel for this demo.`);
     setIsCartOpen(false);
   };
 
@@ -430,9 +433,11 @@ const App: React.FC = () => {
   return (
     <SettingsProvider>
       <UserProvider>
-        <CartProvider>
-          <AppContent />
-        </CartProvider>
+        <ProductProvider>
+          <CartProvider>
+            <AppContent />
+          </CartProvider>
+        </ProductProvider>
       </UserProvider>
     </SettingsProvider>
   );

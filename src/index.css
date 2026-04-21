@@ -1,44 +1,31 @@
 :root {
-  font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+  /* Simba Rwanda Authentic Palette */
+  --simba-primary: #e31b23;      /* Simba Red */
+  --simba-primary-dark: #c0161d;
+  --simba-secondary: #ffd200;    /* Simba Gold/Yellow */
+  --simba-orange: #f28c28;       /* Simba Orange accent */
+  
+  --simba-bg: #f8f9fa;
+  --simba-white: #ffffff;
+  --simba-ink: #1a1a1b;
+  --simba-muted: #5f6368;
+  --simba-line: #e8eaed;
+  --simba-shadow: 0 4px 12px rgba(227, 27, 35, 0.08);
+  
+  font-family: "Open Sans", system-ui, -apple-system, sans-serif;
   line-height: 1.5;
   font-weight: 400;
-  color: #1d1433;
-  background:
-    radial-gradient(circle at top left, rgba(255, 196, 45, 0.28), transparent 28%),
-    linear-gradient(180deg, #fff8eb 0%, #ffffff 32%, #f4f1ff 100%);
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  --simba-purple: #f28c28;
-  --simba-purple-dark: #cf6f10;
-  --simba-gold: #ffd166;
-  --simba-orange: #f28c28;
-  --simba-cream: #fff6de;
-  --simba-ink: #201233;
-  --simba-muted: #6b6181;
-  --simba-line: rgba(164, 94, 12, 0.14);
-  --simba-surface: rgba(255, 255, 255, 0.88);
-  --simba-shadow: 0 20px 48px rgba(190, 113, 20, 0.16);
-  --page-bg:
-    radial-gradient(circle at top left, rgba(242, 140, 40, 0.18), transparent 28%),
-    linear-gradient(180deg, #fff9ef 0%, #ffffff 34%, #fff4e8 100%);
+  color: var(--simba-ink);
+  background: var(--simba-bg);
 }
 
 :root[data-theme='dark'] {
-  color: #f5f0ff;
-  background:
-    radial-gradient(circle at top left, rgba(242, 140, 40, 0.16), transparent 24%),
-    linear-gradient(180deg, #23160a 0%, #1d1208 32%, #2b1c0f 100%);
-  --simba-cream: #2a1a0e;
-  --simba-ink: #fff4e8;
-  --simba-muted: #dec4a7;
-  --simba-line: rgba(255, 209, 155, 0.14);
-  --simba-surface: rgba(43, 28, 15, 0.84);
-  --simba-shadow: 0 28px 64px rgba(0, 0, 0, 0.34);
-  --page-bg:
-    radial-gradient(circle at top left, rgba(242, 140, 40, 0.16), transparent 24%),
-    linear-gradient(180deg, #23160a 0%, #1d1208 32%, #2b1c0f 100%);
+  --simba-bg: #121212;
+  --simba-white: #1e1e1e;
+  --simba-ink: #f1f3f4;
+  --simba-muted: #9aa0a6;
+  --simba-line: #3c4043;
+  --simba-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
 }
 
 * {
@@ -54,7 +41,7 @@ body {
   min-width: 320px;
   min-height: 100vh;
   color: var(--simba-ink);
-  background: var(--page-bg);
+  background: var(--simba-bg);
 }
 
 body,
@@ -73,6 +60,7 @@ select {
 
 button {
   cursor: pointer;
+  background: none;
 }
 
 a {
@@ -94,3 +82,5 @@ h6,
 p {
   margin: 0;
 }
+
+

@@ -101,6 +101,12 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   const isLoyal = user ? user.manualDiscount > 0 || user.totalPurchases >= 5 : false;
   const activeDiscount = user ? user.manualDiscount : 0;
+  
+  /**
+   * SECURITY NOTE: In a production app, isAdmin should be verified via a 
+   * secure backend JWT or session token. Using a client-side phone check 
+   * against local storage is for demonstration/prototyping only.
+   */
   const isAdmin = user?.phone === ADMIN_PHONE;
 
   return (

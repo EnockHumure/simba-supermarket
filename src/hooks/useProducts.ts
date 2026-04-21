@@ -1,15 +1,14 @@
 import { useMemo, useState } from 'react';
-import productsData from '../simba_products.json';
+import { useProductData } from '../context/ProductContext';
 import type { Product } from '../context/CartContext';
 import { useSettings } from '../context/SettingsContext';
 import { translateCategoryLabel, translateProductLabel } from '../i18n';
 
 export const useProducts = () => {
   const { language } = useSettings();
+  const { allProducts } = useProductData();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-
-  const allProducts = productsData.products as Product[];
 
   const categories = useMemo(() => {
     return Array.from(new Set(allProducts.map((product) => product.category)));
@@ -30,7 +29,7 @@ export const useProducts = () => {
   }, [allProducts, language, searchTerm, selectedCategory]);
 
   return {
-    products: filteredProducts,
+    products: filteredProducts.filter(p => p.inStock),
     allProducts,
     categories,
     searchTerm,
