@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { useUser } from '../context/UserContext';
 import { useSimbaAI } from '../hooks/useSimbaAI';
 import type { Product } from '../context/CartContext';
 import './SimbaBot.css';
@@ -15,7 +14,6 @@ interface SimbaBotProps {
 }
 
 const SimbaBot: React.FC<SimbaBotProps> = ({ onViewProduct }) => {
-  const { user } = useUser();
   const { getResponse, isLoading } = useSimbaAI();
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
