@@ -12,6 +12,7 @@ interface NavbarProps {
   selectedLocation: string;
   onLocationChange: (value: string) => void;
   onLoginClick: () => void;
+  onLogout: () => void;
 }
 
 const Navbar: React.FC<NavbarProps> = ({
@@ -21,9 +22,10 @@ const Navbar: React.FC<NavbarProps> = ({
   selectedLocation,
   onLocationChange,
   onLoginClick,
+  onLogout,
 }) => {
   const { totalItems } = useCart();
-  const { user, activeDiscount, logout, isAdmin } = useUser();
+  const { user, activeDiscount, isAdmin } = useUser();
   const { language, setLanguage, theme, setTheme, t } = useSettings();
 
   return (
@@ -114,8 +116,8 @@ const Navbar: React.FC<NavbarProps> = ({
           </button>
 
           {user ? (
-            <button className="switch-account-btn" onClick={logout} aria-label="Logout">
-              {t('switchAccount')}
+            <button className="switch-account-btn" onClick={onLogout} aria-label="Logout">
+              Logout
             </button>
           ) : (
             <button className="switch-account-btn" onClick={onLoginClick} aria-label="Sign In">

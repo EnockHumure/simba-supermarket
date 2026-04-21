@@ -56,6 +56,10 @@ const SimbaBot: React.FC<SimbaBotProps> = ({ onViewProduct }) => {
         productLinks: aiResponse.matchedProducts,
       },
     ]);
+
+    if (aiResponse.shouldRedirect) {
+      onViewProduct(aiResponse.shouldRedirect);
+    }
   };
 
   if (!user) {

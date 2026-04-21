@@ -3,18 +3,23 @@ import { useProductData } from '../context/ProductContext';
 import { useSettings } from '../context/SettingsContext';
 import { translateCategoryLabel, translateProductLabel } from '../i18n';
 
-export const useProducts = () => {
+export const useProducts = (allowedCategories?: string[]) => {
   const { language } = useSettings();
   const { allProducts } = useProductData();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
+  const filteredByService = useMemo(() => {
+    if (!allowedCategories || allowedCategories.length === 0) return allProducts;
+    return allProducts.filter(p => allowedCategories.includes(p.category));
+  }, [allProducts, allowedCategories]);
+
   const categories = useMemo(() => {
-    return Array.from(new Set(allProducts.map((product) => product.category)));
-  }, [allProducts]);
+    return Array.from(new Set(filteredByService.map((product) => product.category)));
+  }, [filteredByService]);
 
   const filteredProducts = useMemo(() => {
-    return allProducts.filter((product) => {
+    return filteredByService.filter((product) => {
       const term = searchTerm.trim().toLowerCase();
       const matchesSearch =
         term.length === 0 ||
@@ -25,11 +30,11 @@ export const useProducts = () => {
       const matchesCategory = selectedCategory ? product.category === selectedCategory : true;
       return matchesSearch && matchesCategory;
     });
-  }, [allProducts, language, searchTerm, selectedCategory]);
+  }, [filteredByService, language, searchTerm, selectedCategory]);
 
   return {
     products: filteredProducts.filter(p => p.inStock),
-    allProducts,
+    allProducts: filteredByService,
     categories,
     searchTerm,
     setSearchTerm,

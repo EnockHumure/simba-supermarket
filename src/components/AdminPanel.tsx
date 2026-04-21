@@ -16,6 +16,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose }) => {
   const { orders, updateOrderStatus } = useCart();
   const { allProducts, toggleStock } = useProductData();
   const [activeTab, setActiveTab] = useState<AdminTab>('orders');
+  const [customerSearch, setCustomerSearch] = useState('');
 
   if (!isOpen) {
     return null;
@@ -25,7 +26,11 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose }) => {
     updateProfile(email, { manualDiscount: discount });
   };
 
-  const profilesArray = Object.values(allProfiles);
+  const filteredProfiles = Object.values(allProfiles).filter(p => 
+    p.email.toLowerCase().includes(customerSearch.toLowerCase()) || 
+    p.phone?.includes(customerSearch) ||
+    p.name.toLowerCase().includes(customerSearch.toLowerCase())
+  );
 
   return (
     <div className="admin-overlay" onClick={onClose}>
@@ -131,6 +136,14 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose }) => {
           {activeTab === 'customers' && (
             <div className="admin-section">
               <h3>Customer Loyalty Management</h3>
+              <div className="admin-search-bar">
+                <input 
+                  type="text" 
+                  placeholder="Search by name, email or phone..." 
+                  value={customerSearch}
+                  onChange={(e) => setCustomerSearch(e.target.value)}
+                />
+              </div>
               <table className="admin-table">
                 <thead>
                   <tr>
@@ -141,12 +154,12 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose }) => {
                   </tr>
                 </thead>
                 <tbody>
-                  {profilesArray.length === 0 ? (
+                  {filteredProfiles.length === 0 ? (
                     <tr>
-                      <td colSpan={4}>No customer profiles stored yet.</td>
+                      <td colSpan={4}>No matching customers found.</td>
                     </tr>
                   ) : (
-                    profilesArray.map((profile: UserProfile) => (
+                    filteredProfiles.map((profile: UserProfile) => (
                       <tr key={profile.phone || profile.email}>
                         <td>{profile.name}</td>
                         <td>{profile.phone || profile.email}</td>
@@ -160,6 +173,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose }) => {
                             <option value={5}>5%</option>
                             <option value={10}>10%</option>
                             <option value={15}>15%</option>
+                            <option value={20}>20% (VIP)</option>
                           </select>
                         </td>
                       </tr>

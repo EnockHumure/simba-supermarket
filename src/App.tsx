@@ -33,19 +33,19 @@ const serviceDefinitions: Record<
   supermarket: {
     title: 'Supermarket',
     subtitle: 'Groceries, household essentials, drinks, and general shopping from Simba.',
-    categories: ['General', 'Food Products', 'Kitchenware & Electronics', 'Baby Products'],
+    categories: ['General', 'Food Products', 'Kitchenware & Electronics', 'Baby Products', 'Sports & Wellness', 'Cosmetics & Personal Care'],
     accent: 'Supermarket',
   },
   restaurant: {
     title: 'Restaurant',
     subtitle: 'Coffee shop style picks, drinks, quick food, and ready-to-enjoy items.',
-    categories: ['Food Products', 'Alcoholic Drinks', 'Cosmetics & Personal Care'],
+    categories: ['Food Products', 'Alcoholic Drinks'],
     accent: 'Restaurant',
   },
   bakery: {
     title: 'Bakery',
     subtitle: 'Bread, pastries, cakes, breakfast items, and bakery factory products.',
-    categories: ['Cosmetics & Personal Care', 'Food Products'],
+    categories: ['Food Products'],
     accent: 'Bakery',
   },
 };
@@ -80,6 +80,9 @@ const faqs = [
 ];
 
 const AppContent: React.FC = () => {
+  const [activeService, setActiveService] = useState<ServiceKey>('supermarket');
+  const activeServiceMeta = serviceDefinitions[activeService];
+
   const {
     products,
     allProducts,
@@ -88,19 +91,23 @@ const AppContent: React.FC = () => {
     setSearchTerm,
     selectedCategory,
     setSelectedCategory,
-  } = useProducts();
+  } = useProducts(activeServiceMeta.categories);
 
-  const { user, isLoyal, activeDiscount, updateProfile, isAdmin } = useUser();
+  const { user, isLoyal, activeDiscount, updateProfile, isAdmin, logout } = useUser();
   const { checkout } = useCart();
   const { language, t } = useSettings();
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isAdminOpen, setIsAdminOpen] = useState(false);
   const [isUserModalOpen, setIsUserModalOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-  const [activeService, setActiveService] = useState<ServiceKey>('supermarket');
   const [activeFaq, setActiveFaq] = useState(0);
   const [selectedLocation, setSelectedLocation] = useState('Kigali CBD');
   const productsRef = useRef<HTMLElement | null>(null);
+
+  const handleLogout = () => {
+    logout();
+    window.location.reload();
+  };
 
   const categoryCounts = useMemo(
     () =>
@@ -172,6 +179,7 @@ const AppContent: React.FC = () => {
         selectedLocation={selectedLocation}
         onLocationChange={setSelectedLocation}
         onLoginClick={() => setIsUserModalOpen(true)}
+        onLogout={handleLogout}
       />
 
       <main className="app-shell">

@@ -5,6 +5,7 @@ import type { Product } from '../context/CartContext';
 interface AIResponse {
   text: string;
   matchedProducts: Product[];
+  shouldRedirect?: Product;
 }
 
 export const useSimbaAI = () => {
@@ -63,12 +64,16 @@ export const useSimbaAI = () => {
     matchedProducts = Array.from(new Map(matchedProducts.map(p => [p.id, p])).values()).slice(0, 3);
 
     let text = ollamaResult?.text || "";
+    let shouldRedirect: Product | undefined = undefined;
 
-    if (!text) {
+    const isGreeting = lowerInput.match(/\b(hello|hi|hey|greetings|morning|evening|muraho)\b/);
+
+    if (isGreeting) {
+      text = "Hello! I am Simba Bot, your personal assistant. I help you find fresh products from Simba Supermarket, check discounts, and manage your Kigali delivery orders quickly.";
+    } else if (!text) {
       if (matchedProducts.length > 0) {
-        text = `Sure! I found ${matchedProducts.length} items related to your request. Click the buttons below to see details:`;
-      } else if (lowerInput.includes('hello') || lowerInput.includes('hi')) {
-        text = "Hello! I'm Simba Bot. I can help you find fresh products, check discounts, or find store locations. What are you looking for today?";
+        text = `Sure! I found ${matchedProducts.length} items related to your request. I've highlighted the best match for you.`;
+        shouldRedirect = matchedProducts[0];
       } else if (lowerInput.includes('buy')) {
         text = "I'd be happy to help you shop! What specific product are you looking for? You can search for anything from our fresh collection.";
       } else if (lowerInput.includes('discount') || lowerInput.includes('loyalty')) {
@@ -84,7 +89,7 @@ export const useSimbaAI = () => {
     }
 
     setIsLoading(false);
-    return { text, matchedProducts };
+    return { text, matchedProducts, shouldRedirect };
   };
 
   return { getResponse, isLoading, isOnline };
