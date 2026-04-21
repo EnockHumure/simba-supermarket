@@ -112,7 +112,6 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose, onCheckout }) 
               className="checkout-btn"
               onClick={() => {
                 onCheckout();
-                clearCart();
               }}
             >
               {t('confirmCheckout')}
