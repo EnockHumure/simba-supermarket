@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { useUser, type UserProfile } from '../context/UserContext';
 import { useCart, type OrderStatus } from '../context/CartContext';
 import { useProductData } from '../context/ProductContext';
-import { useSettings } from '../context/SettingsContext';
 import './AdminPanel.css';
 
 interface AdminPanelProps {
@@ -16,7 +15,6 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose }) => {
   const { allProfiles, updateProfile } = useUser();
   const { orders, updateOrderStatus } = useCart();
   const { allProducts, toggleStock } = useProductData();
-  const { t } = useSettings();
   const [activeTab, setActiveTab] = useState<AdminTab>('orders');
 
   if (!isOpen) {

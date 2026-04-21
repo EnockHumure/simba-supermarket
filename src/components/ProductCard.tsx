@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useCart, type Product } from '../context/CartContext';
 import { useSettings } from '../context/SettingsContext';
 import { translateCategoryLabel, translateProductLabel } from '../i18n';

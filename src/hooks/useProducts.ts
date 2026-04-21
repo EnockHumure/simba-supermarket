@@ -1,6 +1,5 @@
 import { useMemo, useState } from 'react';
 import { useProductData } from '../context/ProductContext';
-import type { Product } from '../context/CartContext';
 import { useSettings } from '../context/SettingsContext';
 import { translateCategoryLabel, translateProductLabel } from '../i18n';
 
