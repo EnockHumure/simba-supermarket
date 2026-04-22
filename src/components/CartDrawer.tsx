@@ -29,7 +29,7 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose, onCheckout }) 
             <h2>{t('simbaCart')}</h2>
           </div>
           <button className="close-btn" onClick={onClose}>
-            x
+            ✕
           </button>
         </div>
 

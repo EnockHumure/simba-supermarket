@@ -46,7 +46,18 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const { activeDiscount } = useUser();
   const [cart, setCart] = useState<CartItem[]>([]);
-  const [orders, setOrders] = useState<Order[]>([]);
+  
+  const getOrders = (): Order[] => {
+    const data = localStorage.getItem('simba_orders');
+    return data ? JSON.parse(data) : [];
+  };
+
+  const saveOrders = (orders: Order[]) => {
+    localStorage.setItem('simba_orders', JSON.stringify(orders));
+    setOrders(orders);
+  };
+
+  const [orders, setOrders] = useState<Order[]>(getOrders());
 
   const addToCart = (product: Product) => {
     setCart((prevCart) => {
@@ -86,14 +97,16 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       customerEmail: email
     };
 
-    setOrders(prev => [newOrder, ...prev]);
+    const updatedOrders = [newOrder, ...orders];
+    saveOrders(updatedOrders);
     clearCart();
   };
 
   const updateOrderStatus = (orderId: string, status: OrderStatus) => {
-    setOrders(prev => prev.map(order => 
+    const updatedOrders = orders.map(order => 
       order.id === orderId ? { ...order, status } : order
-    ));
+    );
+    saveOrders(updatedOrders);
   };
 
   const totalItems = cart.reduce((total, item) => total + item.quantity, 0);

@@ -50,16 +50,70 @@ const serviceDefinitions: Record<
   },
 };
 
-const rwandaLocations = [
-  'Kigali CBD',
-  'Kimironko',
-  'Kacyiru',
-  'Remera',
-  'Nyamirambo',
-  'Kicukiro',
-  'Nyarutarama',
-  'Kanombe',
+const simbaLocations = [
+  {
+    name: 'Union Trade Centre (City Center)',
+    address: '1 KN 4 Ave, Kigali',
+    coordinates: '3336+MHV',
+    description: 'Largest supermarket in Kigali city center with cooked food section',
+  },
+  {
+    name: 'Simba Remera',
+    address: 'KN 5 Rd, Kigali',
+    coordinates: '',
+    description: 'Full grocery and home items selection',
+  },
+  {
+    name: 'Simba Kacyiru',
+    address: 'KG 541 St, Kigali',
+    coordinates: '',
+    description: 'Complete food and household products',
+  },
+  {
+    name: 'Simba Nyarutarama',
+    address: '24Q5+R2R, Kigali',
+    coordinates: '24Q5+R2R',
+    description: 'Full range of groceries and essentials',
+  },
+  {
+    name: 'Simba Kimironko',
+    address: 'KG 192 St, Kigali',
+    coordinates: '342F+3V5',
+    description: 'Popular neighborhood supermarket',
+  },
+  {
+    name: 'Simba Nyamirambo',
+    address: '23H4+26V, Kigali',
+    coordinates: '23H4+26V',
+    description: 'Local community supermarket',
+  },
+  {
+    name: 'Simba Kicukiro',
+    address: '24G3+MCV, Kigali',
+    coordinates: '24G3+MCV',
+    description: 'Convenient location for Kicukiro residents',
+  },
+  {
+    name: 'Simba Gikondo',
+    address: 'KK 35 Ave, Kigali',
+    coordinates: '',
+    description: 'Industrial area supermarket',
+  },
+  {
+    name: 'Simba Kanombe',
+    address: '24J3+Q3, Kigali',
+    coordinates: '24J3+Q3',
+    description: 'Airport area location',
+  },
+  {
+    name: 'Simba Gisenyi',
+    address: '8754+P7W, Gisenyi',
+    coordinates: '8754+P7W',
+    description: 'Western Rwanda branch',
+  },
 ];
+
+const rwandaLocations = simbaLocations.map(loc => loc.name);
 
 const faqs = [
   {
@@ -101,7 +155,7 @@ const AppContent: React.FC = () => {
   const [isUserModalOpen, setIsUserModalOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [activeFaq, setActiveFaq] = useState(0);
-  const [selectedLocation, setSelectedLocation] = useState('Kigali CBD');
+  const [selectedLocation, setSelectedLocation] = useState('Union Trade Centre (City Center)');
   const productsRef = useRef<HTMLElement | null>(null);
 
   const handleLogout = () => {
@@ -409,6 +463,43 @@ const AppContent: React.FC = () => {
             <div className="coverage-note">
               <strong>Current drop zone:</strong> {selectedLocation}
             </div>
+          </div>
+        </section>
+
+        <section className="section locations-section">
+          <div className="section-heading">
+            <div>
+              <p className="section-kicker">Visit Us</p>
+              <h2>Simba Supermarket Locations Across Rwanda</h2>
+              <p>Find your nearest Simba store with 10 branches serving Kigali and beyond.</p>
+            </div>
+          </div>
+          <div className="locations-grid">
+            {simbaLocations.map((location, idx) => (
+              <div key={idx} className="location-card">
+                <div className="location-header">
+                  <span className="location-number">{idx + 1}</span>
+                  <h4>{location.name}</h4>
+                </div>
+                <div className="location-body">
+                  <p className="location-address">
+                    <span className="location-icon">📍</span>
+                    {location.address}
+                  </p>
+                  <p className="location-description">{location.description}</p>
+                  {location.coordinates && (
+                    <a 
+                      href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(location.coordinates + ' ' + location.address)}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="location-map-link"
+                    >
+                      View on Google Maps →
+                    </a>
+                  )}
+                </div>
+              </div>
+            ))}
           </div>
         </section>
       </main>
