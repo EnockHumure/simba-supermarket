@@ -5,7 +5,6 @@ import type { Product } from '../context/CartContext';
 interface AIResponse {
   text: string;
   matchedProducts: Product[];
-  shouldRedirect?: Product;
 }
 
 const allProducts = productsData.products as Product[];
@@ -55,21 +54,14 @@ export const useSimbaAI = () => {
 
     const matched = search(input);
 
-    let text: string;
-    let shouldRedirect: Product | undefined;
-
-    if (matched.length === 0) {
-      text = `No products found for "${input}". Try a different term like "milk", "bread", or "coffee".`;
-    } else if (matched.length === 1) {
-      text = `Found 1 match for "${input}":`;
-      shouldRedirect = matched[0];
-    } else {
-      text = `Found ${matched.length} products matching "${input}":`;
-      shouldRedirect = matched[0];
-    }
+    const text = matched.length === 0
+      ? `No products found for "${input}". Try a different term like "milk", "bread", or "coffee".`
+      : matched.length === 1
+      ? `Found 1 match for "${input}":`
+      : `Found ${matched.length} products matching "${input}":`;
 
     setIsLoading(false);
-    return { text, matchedProducts: matched, shouldRedirect };
+    return { text, matchedProducts: matched };
   };
 
   return { getResponse, isLoading };
