@@ -28,6 +28,7 @@ const serviceDefinitions: Record<
     title: string;
     subtitle: string;
     categories: string[];
+    keywords?: string[];
     accent: string;
   }
 > = {
@@ -40,13 +41,15 @@ const serviceDefinitions: Record<
   restaurant: {
     title: 'Restaurant',
     subtitle: 'Coffee shop style picks, drinks, quick food, and ready-to-enjoy items.',
-    categories: ['Food Products', 'Alcoholic Drinks'],
+    categories: ['Alcoholic Drinks'],
+    keywords: ['coffee', 'drink', 'juice', 'water', 'soda', 'beer', 'wine', 'whisky', 'vodka', 'tea', 'cola'],
     accent: 'Restaurant',
   },
   bakery: {
     title: 'Bakery',
     subtitle: 'Bread, pastries, cakes, breakfast items, and bakery factory products.',
     categories: ['Food Products'],
+    keywords: ['bread', 'cake', 'biscuit', 'cookie', 'flour', 'sugar', 'milk', 'butter', 'egg', 'yeast', 'muffin'],
     accent: 'Bakery',
   },
 };
@@ -175,10 +178,29 @@ const AppContent: React.FC = () => {
   );
 
   const serviceProducts = useMemo(() => {
-    return allProducts
-      .filter((product) => activeServiceMeta.categories.includes(product.category))
-      .slice(0, 8);
-  }, [activeServiceMeta.categories, allProducts]);
+    const filtered = allProducts.filter((product) => 
+      activeServiceMeta.categories.includes(product.category)
+    );
+
+    // Apply keyword filtering for restaurant and bakery
+    if (activeService === 'restaurant' && activeServiceMeta.keywords) {
+      return filtered.filter(product => 
+        activeServiceMeta.keywords!.some(keyword => 
+          product.name.toLowerCase().includes(keyword)
+        )
+      ).slice(0, 8);
+    }
+
+    if (activeService === 'bakery' && activeServiceMeta.keywords) {
+      return filtered.filter(product => 
+        activeServiceMeta.keywords!.some(keyword => 
+          product.name.toLowerCase().includes(keyword)
+        )
+      ).slice(0, 8);
+    }
+
+    return filtered.slice(0, 8);
+  }, [activeServiceMeta.categories, activeServiceMeta.keywords, activeService, allProducts]);
 
   const freshDeals = useMemo(() => {
     return [...allProducts].sort((a, b) => a.price - b.price).slice(0, 4);
