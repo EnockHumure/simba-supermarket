@@ -114,8 +114,8 @@ const callGroqAPI = async (userMessage: string): Promise<{ response: string; key
     const keywordsPart = aiMessage.split('KEYWORDS:')[1]?.trim() || '';
     const keywords = keywordsPart
       .split(',')
-      .map(k => k.trim().toLowerCase())
-      .filter(k => k.length > 0);
+      .map((k: string) => k.trim().toLowerCase())
+      .filter((k: string) => k.length > 0);
 
     return {
       response: responsePart || aiMessage,

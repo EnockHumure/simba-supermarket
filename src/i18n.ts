@@ -135,9 +135,6 @@ export const translations = {
     unflag: 'Unflag',
     noReviews: 'No reviews yet',
     loginBadge: 'simba rwanda',
-    loginTitle: 'Create your Simba account',
-    loginDescription:
-      'Create an account with your email to save orders, build loyalty over time, and unlock future discounts.',
     simbaIntroTitle: 'About Simba',
     simbaIntroBody:
       'Simba Supermarket Ltd serves Kigali with supermarket, bakery, restaurant, and coffee shop services across multiple branches.',
@@ -281,9 +278,6 @@ export const translations = {
     unflag: 'Kuraho',
     noReviews: 'Nta gitekerezo',
     loginBadge: 'simba rwanda',
-    loginTitle: 'Fungura konti ya Simba',
-    loginDescription:
-      'Fungura konti ukoresheje email kugira ngo ubike amateka y ibyo waguze kandi ubone igabanywa mu gihe kiri imbere.',
     simbaIntroTitle: 'Amakuru ya Simba',
     simbaIntroBody:
       'Simba ni supermarket ikorera mu Rwanda yibanda ku guhaha byihuse, ibicuruzwa byizewe n’ibihembo ku bakiriya.',
@@ -427,9 +421,6 @@ export const translations = {
     unflag: 'Retirer le signalement',
     noReviews: 'Aucun avis',
     loginBadge: 'simba rwanda',
-    loginTitle: 'Creez votre compte Simba',
-    loginDescription:
-      'Creez un compte avec votre email pour enregistrer vos commandes et obtenir des reductions avec le temps.',
     simbaIntroTitle: 'Information Simba',
     simbaIntroBody:
       'Simba est une experience de supermarche basee au Rwanda, orientee vers la rapidite et la fidelite client.',
@@ -573,9 +564,6 @@ export const translations = {
     unflag: 'Ondoa ripoti',
     noReviews: 'Hakuna maoni',
     loginBadge: 'simba rwanda',
-    loginTitle: 'Fungua akaunti ya Simba',
-    loginDescription:
-      'Fungua akaunti kwa email ili uhifadhi oda zako na kupata punguzo baada ya muda wa matumizi.',
     simbaIntroTitle: 'Taarifa za Simba',
     simbaIntroBody:
       'Simba ni uzoefu wa supermarket ya Rwanda unaolenga ununuzi wa haraka, bidhaa za kuaminika na uaminifu wa wateja.',

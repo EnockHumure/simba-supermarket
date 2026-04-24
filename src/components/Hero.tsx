@@ -55,8 +55,8 @@ const Hero: React.FC<HeroProps> = ({
         </div>
 
         <div className="hero-order-card">
-          <h2>{t(activeService)}</h2>
-          <p>{t(`${activeService}Desc`)}</p>
+          <h2>{t(activeService as any)}</h2>
+          <p>{t(`${activeService}Desc` as any)}</p>
 
           <label>
             <span>{t('chooseDropZone')}</span>

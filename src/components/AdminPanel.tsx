@@ -45,7 +45,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose }) => {
   );
 
   const activeOrders = useMemo(() => 
-    orders.filter(o => o.status !== 'delivered').length,
+    orders.filter(o => o.status !== 'picked_up' && o.status !== 'cancelled').length,
     [orders]
   );
 
@@ -235,10 +235,11 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose }) => {
                           onChange={(e) => updateOrderStatus(order.id, e.target.value as OrderStatus)}
                         >
                           <option value="received">📥 Received</option>
-                          <option value="picking">🛒 Picking</option>
-                          <option value="packing">📦 Packing</option>
-                          <option value="on_way">🚚 On the Way</option>
-                          <option value="delivered">✅ Delivered</option>
+                          <option value="assigned">👤 Assigned</option>
+                          <option value="preparing">🔄 Preparing</option>
+                          <option value="ready">✅ Ready</option>
+                          <option value="picked_up">🎉 Picked Up</option>
+                          <option value="cancelled">❌ Cancelled</option>
                         </select>
                       </div>
                     </div>
