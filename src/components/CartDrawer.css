@@ -129,6 +129,58 @@
 }
 
 .payment-section {
+  margin-bottom: 16px;
+}
+
+.pickup-section {
+  margin-bottom: 16px;
+}
+
+.pickup-label {
+  display: block;
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--simba-ink);
+  margin-bottom: 8px;
+}
+
+.pickup-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  background: var(--simba-bg);
+  border-radius: 10px;
+  border: 2px solid var(--simba-primary);
+}
+
+.pickup-icon {
+  font-size: 1.2rem;
+}
+
+.pickup-info strong {
+  color: var(--simba-primary);
+  font-size: 0.95rem;
+}
+
+.pickup-select {
+  width: 100%;
+  min-height: 48px;
+  padding: 0 16px;
+  border-radius: 10px;
+  border: 2px solid var(--simba-line);
+  background: var(--simba-white);
+  font-size: 0.95rem;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+
+.pickup-select:focus {
+  border-color: var(--simba-primary);
+  outline: none;
+}
+
+.payment-section {
   display: grid;
   gap: 10px;
 }

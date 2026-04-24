@@ -22,7 +22,10 @@ const SimbaBot: React.FC<SimbaBotProps> = ({ onViewProduct }) => {
 
   useEffect(() => {
     if (messages.length === 0) {
-      setMessages([{ text: "Hi! Type any product name and I'll find it for you.", isBot: true }]);
+      setMessages([{ 
+        text: "Hi! I'm SimbaBot, your AI shopping assistant. Ask me anything like 'I need breakfast items' or 'Do you have fresh milk?'", 
+        isBot: true 
+      }]);
     }
   }, [messages.length]);
 
@@ -59,10 +62,10 @@ const SimbaBot: React.FC<SimbaBotProps> = ({ onViewProduct }) => {
         <button 
           className="bot-trigger" 
           onClick={() => setIsOpen(true)}
-          aria-label="Open Simba AI Assistant"
+          aria-label="Open SimbaBot AI Assistant"
         >
-          <span className="bot-icon">SB</span>
-          <span className="bot-label">Ask Simba Bot</span>
+          <span className="bot-icon">🤖</span>
+          <span className="bot-label">Ask SimbaBot AI</span>
         </button>
       )}
 
@@ -70,10 +73,10 @@ const SimbaBot: React.FC<SimbaBotProps> = ({ onViewProduct }) => {
         <div className="bot-window" role="dialog" aria-label="Simba AI Assistant">
           <div className="bot-header">
             <div className="header-info">
-              <span className="bot-avatar">SB</span>
+              <span className="bot-avatar">🤖</span>
               <div>
-                <h3>Simba Bot</h3>
-                <p>Product finder</p>
+                <h3>SimbaBot AI</h3>
+                <p>Powered by Groq</p>
               </div>
             </div>
             <button 
@@ -106,18 +109,18 @@ const SimbaBot: React.FC<SimbaBotProps> = ({ onViewProduct }) => {
                 )}
               </div>
             ))}
-            {isLoading && <div className="message bot loading">Searching the Simba catalogue...</div>}
+            {isLoading && <div className="message bot loading">🤔 Thinking...</div>}
             <div ref={chatEndRef} />
           </div>
 
           <form className="bot-input" onSubmit={handleSend}>
             <input
               type="text"
-              placeholder="Search: milk, bread, coffee..."
+              placeholder="Ask: 'I need breakfast items' or 'Show me cleaning products'"
               value={input}
               onChange={(event) => setInput(event.target.value)}
               disabled={isLoading}
-              aria-label="Search for a product"
+              aria-label="Ask SimbaBot AI"
             />
             <button type="submit" disabled={isLoading} aria-label="Send message">
               Send

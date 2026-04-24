@@ -55,11 +55,11 @@ const Hero: React.FC<HeroProps> = ({
         </div>
 
         <div className="hero-order-card">
-          <h2>{activeMeta.title}</h2>
-          <p>{activeMeta.subtitle}</p>
+          <h2>{t(activeService)}</h2>
+          <p>{t(`${activeService}Desc`)}</p>
 
           <label>
-            <span>Choose drop zone</span>
+            <span>{t('chooseDropZone')}</span>
             <select value={selectedLocation} onChange={(event) => onLocationChange(event.target.value)}>
               {locationOptions.map((location) => (
                 <option key={location} value={location}>
@@ -72,11 +72,11 @@ const Hero: React.FC<HeroProps> = ({
           <div className="hero-order-meta">
             <div>
               <strong>15-35 min</strong>
-              <span>Estimated delivery</span>
+              <span>{t('estimatedDelivery')}</span>
             </div>
             <div>
               <strong>{selectedLocation}</strong>
-              <span>Active Rwanda location</span>
+              <span>{t('activeLocation')}</span>
             </div>
           </div>
 

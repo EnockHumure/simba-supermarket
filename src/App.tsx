@@ -11,8 +11,9 @@ import CartDrawer from './components/CartDrawer';
 import Hero from './components/Hero';
 import UserModal from './components/UserModal';
 import ProductModal from './components/ProductModal';
-import AdminPanel from './components/AdminPanel';
+import BranchPanel from './components/BranchPanel';
 import SimbaBot from './components/SimbaBot';
+import ReviewModal from './components/ReviewModal';
 import './App.css';
 import { translateCategoryLabel, translateProductLabel } from './i18n';
 
@@ -148,12 +149,13 @@ const AppContent: React.FC = () => {
   } = useProducts(activeServiceMeta.categories);
 
   const { user, isLoyal, activeDiscount, updateProfile, isAdmin, logout } = useUser();
-  const { checkout } = useCart();
+  const { checkout, orders, submitReview } = useCart();
   const { language, t } = useSettings();
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isAdminOpen, setIsAdminOpen] = useState(false);
   const [isUserModalOpen, setIsUserModalOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [reviewOrder, setReviewOrder] = useState<any>(null);
   const [activeFaq, setActiveFaq] = useState(0);
   const [selectedLocation, setSelectedLocation] = useState('Union Trade Centre (City Center)');
   const productsRef = useRef<HTMLElement | null>(null);
@@ -200,17 +202,42 @@ const AppContent: React.FC = () => {
     productsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
 
-  const handleCheckout = () => {
+  const handleCheckout = (branchName: string, pickupTime: string) => {
     if (!user) {
+      window.alert('Please login to place an order.');
+      setIsUserModalOpen(true);
       return;
     }
 
     const newTotal = (user.totalPurchases || 0) + 1;
     updateProfile(user.email, { totalPurchases: newTotal });
-    checkout(user.email);
-    window.alert(`Order received for ${user.name}. You can track status in the Admin panel for this demo.`);
+    checkout(user.email, user.name, user.phone, branchName, pickupTime);
+    window.alert(`Order confirmed for pick-up at ${branchName} in ${pickupTime}. You can review your experience after pickup.`);
     setIsCartOpen(false);
   };
+
+  const handleReviewSubmit = (rating: number, comment: string) => {
+    if (reviewOrder) {
+      submitReview(reviewOrder.id, rating, comment);
+      window.alert(t('reviewSuccess'));
+      setReviewOrder(null);
+    }
+  };
+
+  // Check for picked up orders that haven't been reviewed
+  const unreviewed = orders.filter(
+    o => o.status === 'picked_up' && !o.reviewed && o.customerEmail === user?.email
+  );
+
+  // Auto-prompt for review after 2 seconds if there are unreviewed orders
+  React.useEffect(() => {
+    if (unreviewed.length > 0 && !reviewOrder) {
+      const timer = setTimeout(() => {
+        setReviewOrder(unreviewed[0]);
+      }, 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [unreviewed.length, reviewOrder]);
 
   const openAdminPanel = () => {
     if (!isAdmin) {
@@ -248,24 +275,24 @@ const AppContent: React.FC = () => {
         {user && (
           <section className={`welcome-banner ${activeDiscount > 0 ? 'vip' : ''}`}>
             <div>
-              <p className="section-kicker">Your Simba account</p>
-              <h2>Murakaza neza, {user.name}.</h2>
+              <p className="section-kicker">{t('yourSimbaAccount')}</p>
+              <h2>{t('welcomeMessage')}, {user.name}.</h2>
               <p>
-                Delivering to <strong>{selectedLocation}</strong> for account <strong>{user.email}</strong>.
+                {t('deliveringToAccount')} <strong>{selectedLocation}</strong> {t('forAccount')} <strong>{user.email}</strong>.
               </p>
             </div>
             <div className="welcome-banner-meta">
               <div>
-                <span className="welcome-banner-label">Completed orders</span>
+                <span className="welcome-banner-label">{t('completedOrders')}</span>
                 <strong>{user.totalPurchases || 0}</strong>
               </div>
               <div>
-                <span className="welcome-banner-label">Admin discount</span>
+                <span className="welcome-banner-label">{t('adminDiscount')}</span>
                 <strong>{activeDiscount}%</strong>
               </div>
               <div>
-                <span className="welcome-banner-label">Status</span>
-                <strong>{isLoyal ? 'Priority shopper' : 'Standard shopper'}</strong>
+                <span className="welcome-banner-label">{t('status')}</span>
+                <strong>{isLoyal ? t('priorityShopper') : t('standardShopper')}</strong>
               </div>
             </div>
           </section>
@@ -274,11 +301,11 @@ const AppContent: React.FC = () => {
         <section className="section">
           <div className="section-heading">
             <div>
-              <p className="section-kicker">{activeServiceMeta.accent}</p>
-              <h2>{activeServiceMeta.title}</h2>
+              <p className="section-kicker">{t(activeService)}</p>
+              <h2>{t(activeService)}</h2>
             </div>
             <button className="ghost-button" onClick={scrollToProducts}>
-              Browse full Simba catalogue
+              {t('browseCatalogue')}
             </button>
           </div>
           <div className="service-spotlight-grid">
@@ -300,15 +327,15 @@ const AppContent: React.FC = () => {
             <section className="market-highlights">
               <div className="highlight-card">
                 <span className="highlight-value">15-35 min</span>
-                <span className="highlight-label">estimated Kigali delivery</span>
+                <span className="highlight-label">{t('estimatedKigaliDelivery')}</span>
               </div>
               <div className="highlight-card">
                 <span className="highlight-value">{categories.length}</span>
-                <span className="highlight-label">store departments live</span>
+                <span className="highlight-label">{t('storeDepartments')}</span>
               </div>
               <div className="highlight-card">
                 <span className="highlight-value">{allProducts.length}+</span>
-                <span className="highlight-label">products in the Simba dataset</span>
+                <span className="highlight-label">{t('productsInDataset')}</span>
               </div>
             </section>
 
@@ -316,8 +343,8 @@ const AppContent: React.FC = () => {
               <div className="panel">
                 <div className="section-heading compact">
                   <div>
-                    <p className="section-kicker">Budget lane</p>
-                    <h3>Low-price Simba picks</h3>
+                    <p className="section-kicker">{t('budgetLane')}</p>
+                    <h3>{t('lowPricePicks')}</h3>
                   </div>
                 </div>
                 <div className="mini-product-list">
@@ -336,8 +363,8 @@ const AppContent: React.FC = () => {
               <div className="panel">
                 <div className="section-heading compact">
                   <div>
-                    <p className="section-kicker">Big basket</p>
-                    <h3>Premium and larger-value products</h3>
+                    <p className="section-kicker">{t('bigBasket')}</p>
+                    <h3>{t('premiumProducts')}</h3>
                   </div>
                 </div>
                 <div className="mini-product-list">
@@ -357,18 +384,18 @@ const AppContent: React.FC = () => {
             <section className="section product-section" ref={productsRef}>
               <div className="section-heading">
                 <div>
-                  <p className="section-kicker">Main shop</p>
-                  <h2>{selectedCategory ? translateCategoryLabel(selectedCategory, language) : 'Everything on Simba'}</h2>
+                  <p className="section-kicker">{t('mainShop')}</p>
+                  <h2>{selectedCategory ? translateCategoryLabel(selectedCategory, language) : t('everythingOnSimba')}</h2>
                   <p>
                     {searchTerm
-                      ? `Showing results for "${searchTerm}" in Simba's Rwanda catalogue.`
-                      : `Browse all available products for ${selectedLocation}.`}
+                      ? `${t('showingResults')} "${searchTerm}" ${t('inCatalogue')}.`
+                      : `${t('browseProducts')} ${selectedLocation}.`}
                   </p>
                 </div>
                 <div className="catalogue-meta">
-                  <span>{products.length} results</span>
+                  <span>{products.length} {t('results')}</span>
                   <button className="ghost-button" onClick={() => setSelectedCategory(null)}>
-                    Reset filter
+                    {t('resetFilter')}
                   </button>
                 </div>
               </div>
@@ -380,8 +407,8 @@ const AppContent: React.FC = () => {
                   ))
                 ) : (
                   <div className="empty-state">
-                    <h3>No products matched that view.</h3>
-                    <p>Try another Kigali service lane, clear the category filter, or search with a simpler product term.</p>
+                    <h3>{t('noProductsTitle')}</h3>
+                    <p>{t('noProductsDesc')}</p>
                   </div>
                 )}
               </div>
@@ -392,9 +419,9 @@ const AppContent: React.FC = () => {
         <section className="section">
           <div className="section-heading">
             <div>
-              <p className="section-kicker">Personalized block</p>
-              <h2>{user ? 'Picked for your next Simba order' : 'A quick Simba starter basket'}</h2>
-              <p>These products are surfaced to make the homepage feel closer to a modern delivery platform.</p>
+              <p className="section-kicker">{t('personalizedBlock')}</p>
+              <h2>{user ? t('pickedForYou') : t('starterBasket')}</h2>
+              <p>{t('personalizedDesc')}</p>
             </div>
           </div>
           <div className="service-spotlight-grid">
@@ -406,13 +433,13 @@ const AppContent: React.FC = () => {
 
         <section className="download-banner">
           <div>
-            <p className="section-kicker">Simba Rwanda</p>
-            <h2>Friendly shopping, faster browsing.</h2>
-            <p>Search, categories, cart, optional login, and Simba assistant all stay available in one simple flow.</p>
+            <p className="section-kicker">{t('heroKicker')}</p>
+            <h2>{t('friendlyShopping')}</h2>
+            <p>{t('simpleFlow')}</p>
           </div>
           <div className="download-actions">
             <button className="primary-button" onClick={scrollToProducts}>
-              Start shopping
+              {t('startShopping')}
             </button>
             <button className="ghost-button dark" onClick={openAdminPanel}>
               {t('adminAccess')}
@@ -425,28 +452,39 @@ const AppContent: React.FC = () => {
             <div className="section-heading compact">
               <div>
                 <p className="section-kicker">FAQ</p>
-                <h3>Common Simba questions</h3>
+                <h3>{t('faqTitle')}</h3>
               </div>
             </div>
             <div className="faq-list">
-              {faqs.map((faq, index) => (
-                <button
-                  key={faq.question}
-                  className={`faq-item ${activeFaq === index ? 'active' : ''}`}
-                  onClick={() => setActiveFaq(index)}
-                >
-                  <span>{faq.question}</span>
-                  <p>{activeFaq === index ? faq.answer : 'Tap to expand'}</p>
-                </button>
-              ))}
+              <button
+                className={`faq-item ${activeFaq === 0 ? 'active' : ''}`}
+                onClick={() => setActiveFaq(0)}
+              >
+                <span>{t('faq1Q')}</span>
+                <p>{activeFaq === 0 ? t('faq1A') : t('tapToExpand')}</p>
+              </button>
+              <button
+                className={`faq-item ${activeFaq === 1 ? 'active' : ''}`}
+                onClick={() => setActiveFaq(1)}
+              >
+                <span>{t('faq2Q')}</span>
+                <p>{activeFaq === 1 ? t('faq2A') : t('tapToExpand')}</p>
+              </button>
+              <button
+                className={`faq-item ${activeFaq === 2 ? 'active' : ''}`}
+                onClick={() => setActiveFaq(2)}
+              >
+                <span>{t('faq3Q')}</span>
+                <p>{activeFaq === 2 ? t('faq3A') : t('tapToExpand')}</p>
+              </button>
             </div>
           </div>
 
           <div className="panel coverage-panel">
             <div className="section-heading compact">
               <div>
-                <p className="section-kicker">Coverage</p>
-                <h3>Rwanda-oriented delivery messaging</h3>
+                <p className="section-kicker">{t('coverage')}</p>
+                <h3>{t('rwandaDelivery')}</h3>
               </div>
             </div>
             <div className="coverage-grid">
@@ -461,7 +499,7 @@ const AppContent: React.FC = () => {
               ))}
             </div>
             <div className="coverage-note">
-              <strong>Current drop zone:</strong> {selectedLocation}
+              <strong>{t('currentDropZone')}:</strong> {selectedLocation}
             </div>
           </div>
         </section>
@@ -469,9 +507,9 @@ const AppContent: React.FC = () => {
         <section className="section locations-section">
           <div className="section-heading">
             <div>
-              <p className="section-kicker">Visit Us</p>
-              <h2>Simba Supermarket Locations Across Rwanda</h2>
-              <p>Find your nearest Simba store with 10 branches serving Kigali and beyond.</p>
+              <p className="section-kicker">{t('visitUs')}</p>
+              <h2>{t('locationsTitle')}</h2>
+              <p>{t('locationsDesc')}</p>
             </div>
           </div>
           <div className="locations-grid">
@@ -494,7 +532,7 @@ const AppContent: React.FC = () => {
                       rel="noopener noreferrer"
                       className="location-map-link"
                     >
-                      View on Google Maps →
+                      {t('viewOnMaps')} →
                     </a>
                   )}
                 </div>
@@ -510,23 +548,35 @@ const AppContent: React.FC = () => {
         </div>
       )}
 
-      <CartDrawer isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} onCheckout={handleCheckout} />
+      <CartDrawer 
+        isOpen={isCartOpen} 
+        onClose={() => setIsCartOpen(false)} 
+        onCheckout={handleCheckout}
+        selectedLocation={selectedLocation}
+      />
       <ProductModal product={selectedProduct} onClose={() => setSelectedProduct(null)} />
-      <AdminPanel isOpen={isAdminOpen} onClose={() => setIsAdminOpen(false)} />
+      <BranchPanel isOpen={isAdminOpen} onClose={() => setIsAdminOpen(false)} />
       <SimbaBot onViewProduct={(product) => setSelectedProduct(product)} />
+      {reviewOrder && (
+        <ReviewModal
+          order={reviewOrder}
+          onClose={() => setReviewOrder(null)}
+          onSubmit={handleReviewSubmit}
+        />
+      )}
 
       <footer className="footer">
         <div className="footer-brand-section">
           <strong>Simba Rwanda</strong>
-          <p>Rapid grocery experience inspired by Getir, adapted for Kigali and the Simba catalogue.</p>
+          <p>{t('footerDesc')}</p>
           <div className="footer-socials">
             <a href="https://www.facebook.com/simbasupermarket/" target="_blank" rel="noopener noreferrer" aria-label="Facebook">Facebook</a>
             <a href="https://x.com/SimbaRwanda" target="_blank" rel="noopener noreferrer" aria-label="X (Twitter)">X</a>
             <a href="https://www.instagram.com/simba_supermarket/" target="_blank" rel="noopener noreferrer" aria-label="Instagram">Instagram</a>
-            <a href="https://share.google/D9neQXWE1MfMeNz81" target="_blank" rel="noopener noreferrer" className="location-link" aria-label="Simba Locations">Our Locations</a>
+            <a href="https://share.google/D9neQXWE1MfMeNz81" target="_blank" rel="noopener noreferrer" className="location-link" aria-label="Simba Locations">{t('visitUs')}</a>
           </div>
         </div>
-        <p className="footer-copyright">Copyright 2026 Simba Supermarket. Rwanda-focused commerce demo.</p>
+        <p className="footer-copyright">{t('copyright')}</p>
       </footer>
     </div>
   );

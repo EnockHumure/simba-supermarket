@@ -7,14 +7,30 @@ import './CartDrawer.css';
 interface CartDrawerProps {
   isOpen: boolean;
   onClose: () => void;
-  onCheckout: () => void;
+  onCheckout: (branchName: string, pickupTime: string) => void;
+  selectedLocation: string;
 }
 
-const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose, onCheckout }) => {
+const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose, onCheckout, selectedLocation }) => {
   const { cart, addToCart, removeFromCart, totalPrice, subtotal, discount, clearCart } = useCart();
   const { activeDiscount } = useUser();
   const { t } = useSettings();
   const [paymentMethod, setPaymentMethod] = useState('card');
+  const [pickupTime, setPickupTime] = useState('30min');
+
+  const generatePickupTimes = () => {
+    const times = [];
+    const now = new Date();
+    for (let i = 30; i <= 120; i += 30) {
+      const time = new Date(now.getTime() + i * 60000);
+      const hours = time.getHours().toString().padStart(2, '0');
+      const minutes = time.getMinutes().toString().padStart(2, '0');
+      times.push({ value: `${i}min`, label: `${hours}:${minutes} (${i} min)` });
+    }
+    return times;
+  };
+
+  const pickupTimes = generatePickupTimes();
 
   if (!isOpen) {
     return null;
@@ -81,6 +97,27 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose, onCheckout }) 
               </div>
             </div>
 
+            <div className="pickup-section">
+              <label className="pickup-label">{t('pickupBranch')}</label>
+              <div className="pickup-info">
+                <span className="pickup-icon">📍</span>
+                <strong>{selectedLocation}</strong>
+              </div>
+            </div>
+
+            <div className="pickup-section">
+              <label className="pickup-label">{t('pickupTime')}</label>
+              <select 
+                className="pickup-select"
+                value={pickupTime}
+                onChange={(e) => setPickupTime(e.target.value)}
+              >
+                {pickupTimes.map(time => (
+                  <option key={time.value} value={time.value}>{time.label}</option>
+                ))}
+              </select>
+            </div>
+
             <div className="payment-section">
               <label className="payment-label">{t('paymentMethod')}</label>
               <div className="payment-options">
@@ -111,7 +148,7 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose, onCheckout }) 
             <button
               className="checkout-btn"
               onClick={() => {
-                onCheckout();
+                onCheckout(selectedLocation, pickupTime);
               }}
             >
               {t('confirmCheckout')}
