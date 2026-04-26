@@ -41,15 +41,15 @@ const serviceDefinitions: Record<
   restaurant: {
     title: 'Restaurant',
     subtitle: 'Coffee shop style picks, drinks, quick food, and ready-to-enjoy items.',
-    categories: ['Alcoholic Drinks'],
-    keywords: ['coffee', 'drink', 'juice', 'water', 'soda', 'beer', 'wine', 'whisky', 'vodka', 'tea', 'cola'],
+    categories: ['Alcoholic Drinks', 'General'],
+    keywords: ['beer', 'wine', 'whisky', 'vodka', 'cognac', 'gin', 'rum', 'tequila', 'champagne', 'brandy', 'juice', 'soda', 'water', 'cola', 'sprite', 'fanta'],
     accent: 'Restaurant',
   },
   bakery: {
     title: 'Bakery',
     subtitle: 'Bread, pastries, cakes, breakfast items, and bakery factory products.',
-    categories: ['Food Products'],
-    keywords: ['bread', 'cake', 'biscuit', 'cookie', 'flour', 'sugar', 'milk', 'butter', 'egg', 'yeast', 'muffin'],
+    categories: ['Cosmetics & Personal Care', 'Alcoholic Drinks', 'General'],
+    keywords: ['bread', 'cake', 'flour', 'sugar', 'butter', 'egg', 'yeast', 'biscuit', 'cookie', 'muffin', 'croissant', 'donut', 'pastry'],
     accent: 'Bakery',
   },
 };
@@ -224,7 +224,7 @@ const AppContent: React.FC = () => {
     productsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
 
-  const handleCheckout = (branchName: string, pickupTime: string) => {
+  const handleCheckout = (branchName: string, pickupTime: string, paymentMethod: string, momoDeposit?: number) => {
     if (!user) {
       window.alert('Please login to place an order.');
       setIsUserModalOpen(true);
@@ -233,8 +233,10 @@ const AppContent: React.FC = () => {
 
     const newTotal = (user.totalPurchases || 0) + 1;
     updateProfile(user.email, { totalPurchases: newTotal });
-    checkout(user.email, user.name, user.phone, branchName, pickupTime);
-    window.alert(`Order confirmed for pick-up at ${branchName} in ${pickupTime}. You can review your experience after pickup.`);
+    checkout(user.email, user.name, user.phone, branchName, pickupTime, paymentMethod, momoDeposit);
+    
+    const depositMsg = momoDeposit ? ` A deposit of ${momoDeposit} RWF has been charged via Mobile Money.` : '';
+    window.alert(`✅ Order confirmed!\n\nPick-up: ${branchName}\nTime: ${pickupTime}\nPayment: ${paymentMethod}${depositMsg}\n\nYou can track your order status in your order history.`);
     setIsCartOpen(false);
   };
 
@@ -463,9 +465,11 @@ const AppContent: React.FC = () => {
             <button className="primary-button" onClick={scrollToProducts}>
               {t('startShopping')}
             </button>
-            <button className="ghost-button dark" onClick={openAdminPanel}>
-              {t('adminAccess')}
-            </button>
+            {isAdmin && (
+              <button className="primary-button" onClick={openAdminPanel} style={{ background: 'linear-gradient(135deg, #4caf50, #2e7d32)' }}>
+                🔐 {t('adminAccess')}
+              </button>
+            )}
           </div>
         </section>
 
@@ -565,8 +569,8 @@ const AppContent: React.FC = () => {
       </main>
 
       {isAdmin && (
-        <div className="admin-access" onClick={openAdminPanel}>
-          {t('adminAccess')}
+        <div className="admin-access-fixed" onClick={openAdminPanel}>
+          🔐 {t('adminAccess')}
         </div>
       )}
 

@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
-import { ADMIN_PHONE, normalizeRwandanPhone } from '../i18n';
+import { ADMIN_PHONE, ADMIN_PASSWORD, normalizeRwandanPhone } from '../i18n';
 
 export interface UserProfile {
   name: string;
@@ -161,12 +161,7 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const isLoyal = user ? user.manualDiscount > 0 || user.totalPurchases >= 5 : false;
   const activeDiscount = user ? user.manualDiscount : 0;
   
-  /**
-   * SECURITY NOTE: In a production app, isAdmin should be verified via a 
-   * secure backend JWT or session token. Using a client-side phone check 
-   * against local storage is for demonstration/prototyping only.
-   */
-  const isAdmin = user?.phone === ADMIN_PHONE;
+  const isAdmin = user?.phone === ADMIN_PHONE && verifyPassword(ADMIN_PASSWORD, user.password);
 
   return (
     <UserContext.Provider value={{ user, allProfiles, signup, login, logout, updateProfile, resetPassword, isLoyal, activeDiscount, isAdmin }}>

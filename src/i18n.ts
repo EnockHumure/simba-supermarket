@@ -2,6 +2,7 @@ export type Language = 'en' | 'rw' | 'fr' | 'sw';
 export type ThemeMode = 'light' | 'dark';
 
 export const ADMIN_PHONE = '+250788695675';
+export const ADMIN_PASSWORD = 'Mataru@8';
 
 export const normalizeRwandanPhone = (value: string) => {
   const trimmed = value.replace(/\s+/g, '');

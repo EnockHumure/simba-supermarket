@@ -7,7 +7,7 @@ import './CartDrawer.css';
 interface CartDrawerProps {
   isOpen: boolean;
   onClose: () => void;
-  onCheckout: (branchName: string, pickupTime: string) => void;
+  onCheckout: (branchName: string, pickupTime: string, paymentMethod: string, momoDeposit?: number) => void;
   selectedLocation: string;
 }
 
@@ -143,12 +143,19 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose, onCheckout, se
                   {t('payWithMobile')}
                 </button>
               </div>
+              {paymentMethod === 'mobile' && (
+                <div className="momo-deposit-info">
+                  <span className="deposit-icon">💳</span>
+                  <p>A deposit of <strong>1,000 RWF</strong> will be charged via Mobile Money to confirm your pick-up.</p>
+                </div>
+              )}
             </div>
 
             <button
               className="checkout-btn"
               onClick={() => {
-                onCheckout(selectedLocation, pickupTime);
+                const momoDeposit = paymentMethod === 'mobile' ? 1000 : undefined;
+                onCheckout(selectedLocation, pickupTime, paymentMethod, momoDeposit);
               }}
             >
               {t('confirmCheckout')}

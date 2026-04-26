@@ -42,6 +42,8 @@ export interface Order {
   customerPhone?: string;
   branchName: string;
   pickupTime?: string;
+  paymentMethod: string;
+  momoDeposit?: number;
   assignedTo?: string; // Staff member name
   assignedAt?: number;
   readyAt?: number;
@@ -54,7 +56,7 @@ interface CartContextType {
   addToCart: (product: Product) => void;
   removeFromCart: (productId: number) => void;
   clearCart: () => void;
-  checkout: (email: string, name: string, phone: string | undefined, branchName: string, pickupTime: string) => void;
+  checkout: (email: string, name: string, phone: string | undefined, branchName: string, pickupTime: string, paymentMethod: string, momoDeposit?: number) => void;
   updateOrderStatus: (orderId: string, status: OrderStatus) => void;
   assignOrder: (orderId: string, staffName: string) => void;
   submitReview: (orderId: string, rating: number, comment: string) => void;
@@ -124,7 +126,7 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const discount = subtotal * (activeDiscount / 100);
   const totalPrice = subtotal - discount;
 
-  const checkout = (email: string, name: string, phone: string | undefined, branchName: string, pickupTime: string) => {
+  const checkout = (email: string, name: string, phone: string | undefined, branchName: string, pickupTime: string, paymentMethod: string, momoDeposit?: number) => {
     if (cart.length === 0) return;
     
     // Decrement stock for each item at the selected branch
@@ -143,6 +145,8 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       customerPhone: phone,
       branchName,
       pickupTime,
+      paymentMethod,
+      momoDeposit,
     };
 
     const updatedOrders = [newOrder, ...orders];
