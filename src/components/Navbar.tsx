@@ -3,6 +3,7 @@ import { useCart } from '../context/CartContext';
 import { useUser } from '../context/UserContext';
 import { useSettings } from '../context/SettingsContext';
 import { translations, type Language } from '../i18n';
+import simbaLogo from '../simba-logo.png';
 import './Navbar.css';
 
 interface NavbarProps {
@@ -36,10 +37,7 @@ const Navbar: React.FC<NavbarProps> = ({
           onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
           aria-label="Simba Rwanda Home"
         >
-          <span className="brand-mark">
-            <span className="brand-logo-text">SIMBA</span>
-            <span className="brand-logo-sub">SUPERMARKET</span>
-          </span>
+          <img src={simbaLogo} alt="Simba Supermarket" className="brand-logo-img" />
         </button>
 
         <label className="navbar-location">
@@ -72,17 +70,16 @@ const Navbar: React.FC<NavbarProps> = ({
 
         <div className="navbar-controls">
           <label className="navbar-select-control">
-            <span>Language</span>
+            <span>🌐</span>
             <select 
               value={language} 
               onChange={(event) => setLanguage(event.target.value as Language)}
               aria-label="Select Language"
             >
-              {Object.entries(translations).map(([code, value]) => (
-                <option key={code} value={code}>
-                  {value.languageName}
-                </option>
-              ))}
+              <option value="en">🇬🇧 English</option>
+              <option value="rw">🇷🇼 Kinyarwanda</option>
+              <option value="fr">🇫🇷 Français</option>
+              <option value="sw">🇹🇿 Kiswahili</option>
             </select>
           </label>
 

@@ -25,7 +25,7 @@ export const isValidRwandanPhone = (value: string) => {
 
 export const translations = {
   en: {
-    languageName: 'English',
+    languageName: '🌐',
     deliveringTo: 'Delivering to',
     searchPlaceholder: 'Search Simba products, categories, brands',
     guest: 'Shop as guest',
@@ -168,7 +168,7 @@ export const translations = {
     unauthorizedAdmin: 'Only the authorized Simba admin number can open the admin panel.',
   },
   rw: {
-    languageName: 'Kinyarwanda',
+    languageName: '🌐',
     deliveringTo: 'Aho tubagezaho',
     searchPlaceholder: 'Shakisha ibicuruzwa, ibyiciro cyangwa brands za Simba',
     guest: 'Hahira nk umushyitsi',
@@ -311,7 +311,7 @@ export const translations = {
     unauthorizedAdmin: 'Nimero yemerewe gusa ni yo ifungura urupapuro rwa admin rwa Simba.',
   },
   fr: {
-    languageName: 'Francais',
+    languageName: '🌐',
     deliveringTo: 'Livraison a',
     searchPlaceholder: 'Rechercher des produits, categories ou marques Simba',
     guest: 'Acheter sans compte',
@@ -454,7 +454,7 @@ export const translations = {
     unauthorizedAdmin: 'Seul le numero admin autorise peut ouvrir le panneau Simba.',
   },
   sw: {
-    languageName: 'Kiswahili',
+    languageName: '🌐',
     deliveringTo: 'Tunapeleka',
     searchPlaceholder: 'Tafuta bidhaa, makundi au chapa za Simba',
     guest: 'Nunua kama mgeni',

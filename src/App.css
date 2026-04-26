@@ -519,3 +519,102 @@
     justify-content: center;
   }
 }
+
+
+.admin-access-section {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  margin: 3rem 0;
+  padding: 0 1rem;
+}
+
+.admin-access-card {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 20px;
+  padding: 3rem 2rem;
+  text-align: center;
+  color: white;
+  box-shadow: 0 8px 32px rgba(102, 126, 234, 0.3);
+  transition: all 0.3s ease;
+}
+
+.admin-access-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 48px rgba(102, 126, 234, 0.4);
+}
+
+.admin-access-card.superadmin {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  box-shadow: 0 8px 32px rgba(245, 87, 108, 0.3);
+}
+
+.admin-access-card.superadmin:hover {
+  box-shadow: 0 12px 48px rgba(245, 87, 108, 0.4);
+}
+
+.admin-icon {
+  font-size: 4rem;
+  margin-bottom: 1.5rem;
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.admin-access-card h3 {
+  font-size: 1.75rem;
+  font-weight: 900;
+  margin: 0 0 1rem 0;
+}
+
+.admin-access-card p {
+  font-size: 1rem;
+  opacity: 0.95;
+  margin: 0 0 2rem 0;
+  line-height: 1.6;
+}
+
+.admin-request-btn,
+.superadmin-btn {
+  background: white;
+  color: #667eea;
+  border: none;
+  padding: 1rem 2rem;
+  font-size: 1.125rem;
+  font-weight: 700;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+}
+
+.superadmin-btn {
+  color: #f5576c;
+}
+
+.admin-request-btn:hover,
+.superadmin-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.3);
+}
+
+@media (max-width: 768px) {
+  .admin-access-section {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-access-card {
+    padding: 2rem 1.5rem;
+  }
+
+  .admin-icon {
+    font-size: 3rem;
+  }
+}

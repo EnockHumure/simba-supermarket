@@ -9,6 +9,13 @@ import Sidebar from './components/Sidebar';
 import ProductCard from './components/ProductCard';
 import CartDrawer from './components/CartDrawer';
 import Hero from './components/Hero';
+import HeroCarousel from './components/HeroCarousel';
+import CountingStats from './components/CountingStats';
+import ScrollAnimation from './components/ScrollAnimation';
+import CTABanner from './components/CTABanner';
+import Testimonials from './components/Testimonials';
+import AdminRegisterModal, { type AdminRequest } from './components/AdminRegisterModal';
+import SuperAdminPanel from './components/SuperAdminPanel';
 import UserModal from './components/UserModal';
 import ProductModal from './components/ProductModal';
 import BranchPanel from './components/BranchPanel';
@@ -156,6 +163,8 @@ const AppContent: React.FC = () => {
   const { language, t } = useSettings();
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isAdminOpen, setIsAdminOpen] = useState(false);
+  const [isAdminRegisterOpen, setIsAdminRegisterOpen] = useState(false);
+  const [isSuperAdminOpen, setIsSuperAdminOpen] = useState(false);
   const [isUserModalOpen, setIsUserModalOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [reviewOrder, setReviewOrder] = useState<any>(null);
@@ -272,6 +281,23 @@ const AppContent: React.FC = () => {
     setIsAdminOpen(true);
   };
 
+  const handleAdminRequest = (request: AdminRequest) => {
+    const existing = localStorage.getItem('simba_admin_requests');
+    const requests: AdminRequest[] = existing ? JSON.parse(existing) : [];
+    requests.push(request);
+    localStorage.setItem('simba_admin_requests', JSON.stringify(requests));
+    alert('✅ Admin request submitted! You will be notified once reviewed by superadmin.');
+  };
+
+  const openSuperAdmin = () => {
+    // Check if user is superadmin (phone: 0788695675 and password: Mataru@8)
+    if (user?.phone !== '+250788695675') {
+      alert('🔒 Only SuperAdmin can access this panel');
+      return;
+    }
+    setIsSuperAdminOpen(true);
+  };
+
   return (
     <div className="app">
       <UserModal isOpen={isUserModalOpen} onClose={() => setIsUserModalOpen(false)} />
@@ -286,6 +312,8 @@ const AppContent: React.FC = () => {
       />
 
       <main className="app-shell">
+        <HeroCarousel onAction={scrollToProducts} />
+        
         <Hero
           activeService={activeService}
           onServiceChange={setActiveService}
@@ -294,6 +322,15 @@ const AppContent: React.FC = () => {
           onPrimaryAction={scrollToProducts}
           serviceDefinitions={serviceDefinitions}
           locationOptions={rwandaLocations}
+        />
+
+        <CountingStats
+          stats={[
+            { value: 1000, label: 'Happy Customers', suffix: '+' },
+            { value: 600, label: 'Products Available', suffix: '+' },
+            { value: 10, label: 'Store Locations' },
+            { value: 5, label: 'Years Experience' },
+          ]}
         />
 
         {user && (
@@ -473,6 +510,33 @@ const AppContent: React.FC = () => {
           </div>
         </section>
 
+        <ScrollAnimation animation="fadeIn">
+          <Testimonials />
+        </ScrollAnimation>
+
+        <ScrollAnimation animation="zoom">
+          <div className="admin-access-section">
+            <div className="admin-access-card">
+              <div className="admin-icon">🔐</div>
+              <h3>Admin Access</h3>
+              <p>Request admin privileges to manage Simba Supermarket operations</p>
+              <button className="admin-request-btn" onClick={() => setIsAdminRegisterOpen(true)}>
+                📝 Request Admin Access
+              </button>
+            </div>
+            {user?.phone === '+250788695675' && (
+              <div className="admin-access-card superadmin">
+                <div className="admin-icon">👑</div>
+                <h3>SuperAdmin Panel</h3>
+                <p>Manage admin requests and system permissions</p>
+                <button className="superadmin-btn" onClick={openSuperAdmin}>
+                  👑 Open SuperAdmin Panel
+                </button>
+              </div>
+            )}
+          </div>
+        </ScrollAnimation>
+
         <section className="section bottom-grid">
           <div className="panel faq-panel">
             <div className="section-heading compact">
@@ -582,6 +646,15 @@ const AppContent: React.FC = () => {
       />
       <ProductModal product={selectedProduct} onClose={() => setSelectedProduct(null)} />
       <BranchPanel isOpen={isAdminOpen} onClose={() => setIsAdminOpen(false)} />
+      <AdminRegisterModal 
+        isOpen={isAdminRegisterOpen} 
+        onClose={() => setIsAdminRegisterOpen(false)}
+        onSubmit={handleAdminRequest}
+      />
+      <SuperAdminPanel 
+        isOpen={isSuperAdminOpen} 
+        onClose={() => setIsSuperAdminOpen(false)}
+      />
       <SimbaBot onViewProduct={(product) => setSelectedProduct(product)} />
       {reviewOrder && (
         <ReviewModal
