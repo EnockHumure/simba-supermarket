@@ -151,8 +151,8 @@
 .service-spotlight-grid,
 .product-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 12px;
 }
 
 .app-body {
@@ -498,8 +498,8 @@
   
   .service-spotlight-grid,
   .product-grid {
-    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-    gap: 12px;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 10px;
   }
   
   .dual-panel, .bottom-grid, .market-highlights, .download-banner, .welcome-banner {

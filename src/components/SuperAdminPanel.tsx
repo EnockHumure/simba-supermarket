@@ -35,6 +35,14 @@ const SuperAdminPanel: React.FC<SuperAdminPanelProps> = ({ isOpen, onClose }) =>
     );
     setRequests(updated);
     localStorage.setItem('simba_admin_requests', JSON.stringify(updated));
+    
+    // Update user role to admin
+    const profiles = JSON.parse(localStorage.getItem('simba_profiles') || '{}');
+    if (profiles[email]) {
+      profiles[email].role = 'admin';
+      localStorage.setItem('simba_profiles', JSON.stringify(profiles));
+    }
+    
     alert(`✅ Admin access approved for ${email}`);
     loadRequests();
   };
@@ -56,6 +64,14 @@ const SuperAdminPanel: React.FC<SuperAdminPanelProps> = ({ isOpen, onClose }) =>
       );
       setRequests(updated);
       localStorage.setItem('simba_admin_requests', JSON.stringify(updated));
+      
+      // Update user role back to customer
+      const profiles = JSON.parse(localStorage.getItem('simba_profiles') || '{}');
+      if (profiles[email]) {
+        profiles[email].role = 'customer';
+        localStorage.setItem('simba_profiles', JSON.stringify(profiles));
+      }
+      
       alert(`🔒 Admin access revoked for ${email}`);
       loadRequests();
     }

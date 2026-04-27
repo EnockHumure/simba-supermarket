@@ -7,14 +7,16 @@ import './UserModal.css';
 interface UserModalProps {
   isOpen: boolean;
   onClose: () => void;
+  initialMode?: 'login' | 'signup';
+  role?: 'customer' | 'admin' | 'superadmin';
 }
 
 type AuthMode = 'login' | 'signup' | 'forgot';
 
-const UserModal: React.FC<UserModalProps> = ({ isOpen, onClose }) => {
+const UserModal: React.FC<UserModalProps> = ({ isOpen, onClose, initialMode = 'login', role = 'customer' }) => {
   const { user, signup, login, resetPassword } = useUser();
   const { t } = useSettings();
-  const [mode, setMode] = useState<AuthMode>('login');
+  const [mode, setMode] = useState<AuthMode>(initialMode);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');

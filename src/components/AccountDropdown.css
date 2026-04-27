@@ -1,0 +1,113 @@
+.account-dropdown {
+  position: relative;
+}
+
+.account-dropdown-trigger {
+  background: var(--simba-white);
+  color: var(--simba-ink);
+  border: 2px solid var(--simba-primary);
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 0.9rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.3s ease;
+}
+
+.account-dropdown-trigger:hover {
+  background: var(--simba-primary);
+  color: white;
+}
+
+.dropdown-arrow {
+  font-size: 0.7rem;
+  transition: transform 0.3s ease;
+}
+
+.dropdown-arrow.open {
+  transform: rotate(180deg);
+}
+
+.account-dropdown-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  background: var(--simba-white);
+  border: 1px solid var(--simba-line);
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  min-width: 280px;
+  z-index: 1000;
+  animation: dropdownSlide 0.2s ease;
+  overflow: hidden;
+}
+
+@keyframes dropdownSlide {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.dropdown-section {
+  padding: 8px 0;
+}
+
+.dropdown-section-title {
+  padding: 8px 16px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: var(--simba-muted);
+  letter-spacing: 0.05em;
+}
+
+.dropdown-item {
+  width: 100%;
+  padding: 12px 16px;
+  background: transparent;
+  border: none;
+  text-align: left;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--simba-ink);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: all 0.2s ease;
+}
+
+.dropdown-item:hover {
+  background: var(--simba-primary-soft);
+  color: var(--simba-primary);
+}
+
+.dropdown-icon {
+  font-size: 1.2rem;
+  width: 24px;
+  text-align: center;
+}
+
+.dropdown-divider {
+  height: 1px;
+  background: var(--simba-line);
+  margin: 4px 0;
+}
+
+.auth-item {
+  font-weight: 700;
+  color: var(--simba-primary);
+}
+
+.auth-item:hover {
+  background: var(--simba-primary);
+  color: white;
+}

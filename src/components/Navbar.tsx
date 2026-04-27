@@ -4,6 +4,7 @@ import { useUser } from '../context/UserContext';
 import { useSettings } from '../context/SettingsContext';
 import { translations, type Language } from '../i18n';
 import simbaLogo from '../simba-logo.png';
+import AccountDropdown from './AccountDropdown';
 import './Navbar.css';
 
 interface NavbarProps {
@@ -13,7 +14,9 @@ interface NavbarProps {
   selectedLocation: string;
   onLocationChange: (value: string) => void;
   onLoginClick: () => void;
+  onSignupClick: () => void;
   onLogout: () => void;
+  onCategorySelect: (category: string) => void;
 }
 
 const Navbar: React.FC<NavbarProps> = ({
@@ -23,7 +26,9 @@ const Navbar: React.FC<NavbarProps> = ({
   selectedLocation,
   onLocationChange,
   onLoginClick,
+  onSignupClick,
   onLogout,
+  onCategorySelect,
 }) => {
   const { totalItems } = useCart();
   const { user, activeDiscount, isAdmin } = useUser();
@@ -93,13 +98,6 @@ const Navbar: React.FC<NavbarProps> = ({
         </div>
 
         <div className="navbar-actions">
-          <div className="navbar-account">
-            <span className="navbar-account-label">{user ? user.name : t('guest')}</span>
-            <strong>
-              {activeDiscount > 0 ? `${activeDiscount}% ${t('loyalty')}` : isAdmin ? 'Admin' : t('newShopper')}
-            </strong>
-          </div>
-
           <button 
             className="navbar-cart" 
             onClick={onCartClick}
@@ -110,13 +108,22 @@ const Navbar: React.FC<NavbarProps> = ({
           </button>
 
           {user ? (
-            <button className="switch-account-btn" onClick={onLogout} aria-label="Logout">
-              Logout
-            </button>
+            <>
+              <div className="navbar-user-info">
+                <span className="user-name">{user.name}</span>
+                {activeDiscount > 0 && <span className="user-badge">{activeDiscount}% {t('loyalty')}</span>}
+                {isAdmin && <span className="user-badge admin-badge">🔐 Admin</span>}
+              </div>
+              <button className="switch-account-btn" onClick={onLogout} aria-label="Logout">
+                Logout
+              </button>
+            </>
           ) : (
-            <button className="switch-account-btn" onClick={onLoginClick} aria-label="Sign In">
-              {t('signInSimba')}
-            </button>
+            <AccountDropdown 
+              onCategorySelect={onCategorySelect}
+              onLoginClick={onLoginClick}
+              onSignupClick={onSignupClick}
+            />
           )}
         </div>
       </nav>

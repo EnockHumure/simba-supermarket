@@ -16,12 +16,13 @@ import CTABanner from './components/CTABanner';
 import Testimonials from './components/Testimonials';
 import AdminRegisterModal, { type AdminRequest } from './components/AdminRegisterModal';
 import SuperAdminPanel from './components/SuperAdminPanel';
+import { InitializeSuperAdmin } from './components/InitializeSuperAdmin';
 import UserModal from './components/UserModal';
 import ProductModal from './components/ProductModal';
 import BranchPanel from './components/BranchPanel';
 import SimbaBot from './components/SimbaBot';
+import RoleSelectionModal from './components/RoleSelectionModal';
 import ReviewModal from './components/ReviewModal';
-import './App.css';
 import { translateCategoryLabel, translateProductLabel } from './i18n';
 
 type ServiceKey =
@@ -158,7 +159,7 @@ const AppContent: React.FC = () => {
     setSelectedCategory,
   } = useProducts(activeServiceMeta.categories);
 
-  const { user, isLoyal, activeDiscount, updateProfile, isAdmin, logout } = useUser();
+  const { user, isLoyal, activeDiscount, updateProfile, isAdmin, isSuperAdmin, logout } = useUser();
   const { checkout, orders, submitReview } = useCart();
   const { language, t } = useSettings();
   const [isCartOpen, setIsCartOpen] = useState(false);
@@ -166,11 +167,46 @@ const AppContent: React.FC = () => {
   const [isAdminRegisterOpen, setIsAdminRegisterOpen] = useState(false);
   const [isSuperAdminOpen, setIsSuperAdminOpen] = useState(false);
   const [isUserModalOpen, setIsUserModalOpen] = useState(false);
+  const [isRoleSelectionOpen, setIsRoleSelectionOpen] = useState(false);
+  const [authMode, setAuthMode] = useState<'login' | 'signup'>('login');
+  const [selectedRole, setSelectedRole] = useState<'customer' | 'admin' | 'superadmin'>('customer');
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [reviewOrder, setReviewOrder] = useState<any>(null);
   const [activeFaq, setActiveFaq] = useState(0);
   const [selectedLocation, setSelectedLocation] = useState('Union Trade Centre (City Center)');
   const productsRef = useRef<HTMLElement | null>(null);
+
+  const handleLoginClick = () => {
+    setAuthMode('login');
+    setIsRoleSelectionOpen(true);
+  };
+
+  const handleSignupClick = () => {
+    setAuthMode('signup');
+    setIsRoleSelectionOpen(true);
+  };
+
+  const handleRoleSelect = (role: 'customer' | 'admin' | 'superadmin') => {
+    setSelectedRole(role);
+    setIsRoleSelectionOpen(false);
+    
+    if (authMode === 'signup' && role === 'admin') {
+      // Redirect to admin request form
+      setIsAdminRegisterOpen(true);
+    } else {
+      // Open user modal for customer/admin/superadmin login or customer signup
+      setIsUserModalOpen(true);
+    }
+  };
+
+  const handleCategorySelect = (category: string) => {
+    if (category === 'All Products') {
+      setSelectedCategory(null);
+    } else {
+      setSelectedCategory(category);
+    }
+    scrollToProducts();
+  };
 
   const handleLogout = () => {
     logout();
@@ -290,9 +326,8 @@ const AppContent: React.FC = () => {
   };
 
   const openSuperAdmin = () => {
-    // Check if user is superadmin (phone: 0788695675 and password: Mataru@8)
-    if (user?.phone !== '+250788695675') {
-      alert('🔒 Only SuperAdmin can access this panel');
+    if (!isSuperAdmin) {
+      alert('🔒 Only SuperAdmin (humureenock@gmail.com) can access this panel');
       return;
     }
     setIsSuperAdminOpen(true);
@@ -300,15 +335,29 @@ const AppContent: React.FC = () => {
 
   return (
     <div className="app">
-      <UserModal isOpen={isUserModalOpen} onClose={() => setIsUserModalOpen(false)} />
+      <InitializeSuperAdmin />
+      <RoleSelectionModal 
+        isOpen={isRoleSelectionOpen}
+        onClose={() => setIsRoleSelectionOpen(false)}
+        mode={authMode}
+        onRoleSelect={handleRoleSelect}
+      />
+      <UserModal 
+        isOpen={isUserModalOpen} 
+        onClose={() => setIsUserModalOpen(false)}
+        initialMode={authMode}
+        role={selectedRole}
+      />
       <Navbar
         searchTerm={searchTerm}
         onSearchChange={setSearchTerm}
         onCartClick={() => setIsCartOpen(true)}
         selectedLocation={selectedLocation}
         onLocationChange={setSelectedLocation}
-        onLoginClick={() => setIsUserModalOpen(true)}
+        onLoginClick={handleLoginClick}
+        onSignupClick={handleSignupClick}
         onLogout={handleLogout}
+        onCategorySelect={handleCategorySelect}
       />
 
       <main className="app-shell">
@@ -524,7 +573,7 @@ const AppContent: React.FC = () => {
                 📝 Request Admin Access
               </button>
             </div>
-            {user?.phone === '+250788695675' && (
+            {user?.email === 'humureenock@gmail.com' && isSuperAdmin && (
               <div className="admin-access-card superadmin">
                 <div className="admin-icon">👑</div>
                 <h3>SuperAdmin Panel</h3>

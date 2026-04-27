@@ -18,13 +18,32 @@
 }
 
 :root[data-theme='dark'] {
-  --simba-bg: #121212;
-  --simba-white: #1e1e1e;
-  --simba-ink: #f8f9fa;
-  --simba-muted: #a0a0a0;
-  --simba-line: #333333;
-  --simba-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  --simba-bg: #0d0d0d;
+  --simba-white: #1a1a1a;
+  --simba-ink: #e8e8e8;
+  --simba-muted: #b0b0b0;
+  --simba-line: #2a2a2a;
+  --simba-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
   --simba-primary-soft: #2a1010;
+  --simba-card-bg: #1f1f1f;
+  --simba-input-bg: #252525;
+}
+
+:root[data-theme='dark'] .navbar-search input,
+:root[data-theme='dark'] input,
+:root[data-theme='dark'] select,
+:root[data-theme='dark'] textarea {
+  background: var(--simba-input-bg);
+  color: var(--simba-ink);
+  border-color: var(--simba-line);
+}
+
+:root[data-theme='dark'] .highlight-card,
+:root[data-theme='dark'] .panel,
+:root[data-theme='dark'] .location-card,
+:root[data-theme='dark'] .mini-product-card {
+  background: var(--simba-card-bg);
+  border-color: var(--simba-line);
 }
 
 * {

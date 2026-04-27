@@ -4,11 +4,12 @@ import { ADMIN_PHONE, ADMIN_PASSWORD, normalizeRwandanPhone } from '../i18n';
 export interface UserProfile {
   name: string;
   email: string;
-  password: string; // Hashed password (in production, use bcrypt)
+  password: string;
   phone?: string;
   visitCount: number;
   totalPurchases: number;
-  manualDiscount: number; // Admin-controlled percentage
+  manualDiscount: number;
+  role: 'customer' | 'admin' | 'superadmin';
 }
 
 interface UserContextType {
@@ -22,6 +23,7 @@ interface UserContextType {
   isLoyal: boolean;
   activeDiscount: number;
   isAdmin: boolean;
+  isSuperAdmin: boolean;
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
@@ -70,6 +72,7 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       visitCount: 1,
       totalPurchases: 0,
       manualDiscount: 0,
+      role: 'customer',
     };
 
     const updatedProfiles = { ...profiles, [normalizedEmail]: profile };
@@ -161,10 +164,11 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const isLoyal = user ? user.manualDiscount > 0 || user.totalPurchases >= 5 : false;
   const activeDiscount = user ? user.manualDiscount : 0;
   
-  const isAdmin = user?.phone === ADMIN_PHONE && verifyPassword(ADMIN_PASSWORD, user.password);
+  const isSuperAdmin = user?.email === 'humureenock@gmail.com' && user?.role === 'superadmin';
+  const isAdmin = user?.role === 'admin' || isSuperAdmin;
 
   return (
-    <UserContext.Provider value={{ user, allProfiles, signup, login, logout, updateProfile, resetPassword, isLoyal, activeDiscount, isAdmin }}>
+    <UserContext.Provider value={{ user, allProfiles, signup, login, logout, updateProfile, resetPassword, isLoyal, activeDiscount, isAdmin, isSuperAdmin }}>
       {children}
     </UserContext.Provider>
   );
