@@ -1,104 +1,22 @@
-:root {
-  /* Simba Rwanda Premium Palette */
-  --simba-primary: #e31b23;      /* Simba Red */
-  --simba-primary-dark: #c0161d;
-  --simba-primary-soft: #fff5f5;
-  --simba-secondary: #ffd200;    /* Simba Gold */
-  --simba-orange: #f28c28;
-  
-  --simba-bg: #f8f9fa;
-  --simba-white: #ffffff;
-  --simba-ink: #1a1a1b;
-  --simba-muted: #5f6368;
-  --simba-line: #e8eaed;
-  --simba-shadow: 0 4px 12px rgba(227, 27, 35, 0.06);
-  
-  font-family: "Open Sans", system-ui, -apple-system, sans-serif;
-  line-height: 1.5;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --simba-primary: #e31b23;
+    --simba-secondary: #ffd200;
+    --simba-orange: #f28c28;
+    --simba-purple: #49266f;
+    --simba-ink: #201616;
+    --simba-muted: #766c6c;
+    --simba-bg: #fafafa;
+    --simba-line: #edeaea;
+    --simba-white: #ffffff;
+    --simba-shadow: 0 4px 12px rgba(32, 22, 22, 0.08);
+  }
+
+  body {
+    @apply bg-simba-bg text-simba-ink antialiased font-sans;
+  }
 }
-
-:root[data-theme='dark'] {
-  --simba-bg: #0d0d0d;
-  --simba-white: #1a1a1a;
-  --simba-ink: #e8e8e8;
-  --simba-muted: #b0b0b0;
-  --simba-line: #2a2a2a;
-  --simba-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
-  --simba-primary-soft: #2a1010;
-  --simba-card-bg: #1f1f1f;
-  --simba-input-bg: #252525;
-}
-
-:root[data-theme='dark'] .navbar-search input,
-:root[data-theme='dark'] input,
-:root[data-theme='dark'] select,
-:root[data-theme='dark'] textarea {
-  background: var(--simba-input-bg);
-  color: var(--simba-ink);
-  border-color: var(--simba-line);
-}
-
-:root[data-theme='dark'] .highlight-card,
-:root[data-theme='dark'] .panel,
-:root[data-theme='dark'] .location-card,
-:root[data-theme='dark'] .mini-product-card {
-  background: var(--simba-card-bg);
-  border-color: var(--simba-line);
-}
-
-* {
-  box-sizing: border-box;
-}
-
-html {
-  scroll-behavior: smooth;
-}
-
-body {
-  margin: 0;
-  min-width: 320px;
-  min-height: 100vh;
-  color: var(--simba-ink);
-  background: var(--simba-bg);
-}
-
-body,
-button,
-input,
-select,
-textarea {
-  font: inherit;
-}
-
-button,
-input,
-select {
-  border: 0;
-}
-
-button {
-  cursor: pointer;
-  background: none;
-}
-
-a {
-  color: inherit;
-  text-decoration: none;
-}
-
-img {
-  display: block;
-  max-width: 100%;
-}
-
-h1,
-h2,
-h3,
-h4,
-h5,
-h6,
-p {
-  margin: 0;
-}
-
-

@@ -2,8 +2,6 @@ import React, { useState } from 'react';
 import { useCart } from '../context/CartContext';
 import { useUser } from '../context/UserContext';
 import { useSettings } from '../context/SettingsContext';
-import './CartDrawer.css';
-
 import DeliveryMap from './DeliveryMap';
 import { simbaLocations } from '../locations';
 
@@ -54,100 +52,109 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose, onCheckout, se
     setPaymentDetails(prev => ({ ...prev, [name]: value }));
   };
 
-  if (!isOpen) {
-    return null;
-  }
+  if (!isOpen) return null;
 
   return (
-    <div className="cart-overlay" onClick={onClose}>
-      <aside className="cart-drawer" onClick={(event) => event.stopPropagation()}>
-        <div className="cart-header">
+    <div className="fixed inset-0 z-[100] flex justify-end">
+      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
+      
+      <aside className="relative w-full max-w-[460px] h-full bg-white shadow-2xl flex flex-col animate-in slide-in-from-right duration-300">
+        <div className="p-6 border-b border-simba-line flex justify-between items-center">
           <div>
-            <p className="section-kicker">{t('yourOrder')}</p>
-            <h2>{checkoutStep === 'cart' ? t('simbaCart') : 'Payment Details'}</h2>
+            <p className="text-[10px] font-black uppercase tracking-widest text-simba-orange leading-none mb-1">{t('yourOrder')}</p>
+            <h2 className="text-xl font-black text-simba-ink">{checkoutStep === 'cart' ? t('simbaCart') : 'Payment Details'}</h2>
           </div>
-          <button className="close-btn" onClick={onClose}>
+          <button className="w-10 h-10 rounded-full bg-simba-bg flex items-center justify-center text-lg hover:bg-simba-primary hover:text-white transition-all" onClick={onClose}>
             ✕
           </button>
         </div>
 
-        <div className="cart-content">
+        <div className="flex-1 overflow-y-auto p-6">
           {cart.length === 0 ? (
-            <div className="empty-cart">
-              <h3>{t('emptyCartTitle')}</h3>
-              <p>{t('emptyCartBody')}</p>
+            <div className="flex flex-col items-center justify-center h-full text-center space-y-3">
+              <span className="text-6xl">🛒</span>
+              <h3 className="text-lg font-black text-simba-ink">{t('emptyCartTitle')}</h3>
+              <p className="text-sm text-simba-muted max-w-[280px]">{t('emptyCartBody')}</p>
             </div>
           ) : checkoutStep === 'cart' ? (
-            <ul className="cart-items">
+            <div className="space-y-4">
               {cart.map((item) => (
-                <li key={item.id} className="cart-item">
-                  <img src={item.image} alt={item.name} className="cart-item-image" />
-                  <div className="cart-item-info">
-                    <p className="cart-item-name">{item.name}</p>
-                    <span className="cart-item-unit">{item.price.toLocaleString()} RWF each</span>
-                    <div className="cart-item-controls">
-                      <button onClick={() => removeFromCart(item.id)}>-</button>
-                      <span>{item.quantity}</span>
-                      <button onClick={() => addToCart(item)}>+</button>
+                <div key={item.id} className="flex gap-4 p-3 rounded-xl bg-simba-bg border border-simba-line items-center">
+                  <div className="w-16 h-16 bg-white rounded-lg p-2 flex-shrink-0">
+                    <img src={item.image} alt={item.name} className="w-full h-full object-contain" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-bold text-simba-ink truncate">{item.name}</p>
+                    <span className="text-[10px] text-simba-muted font-bold block mt-0.5">{item.price.toLocaleString()} RWF each</span>
+                    <div className="flex items-center gap-3 mt-2 bg-white rounded-lg p-1 border border-simba-line w-fit">
+                      <button className="w-6 h-6 flex items-center justify-center font-black text-simba-primary hover:bg-simba-bg rounded-md" onClick={() => removeFromCart(item.id)}>-</button>
+                      <span className="text-xs font-black min-w-[16px] text-center">{item.quantity}</span>
+                      <button className="w-6 h-6 flex items-center justify-center font-black text-simba-primary hover:bg-simba-bg rounded-md" onClick={() => addToCart(item)}>+</button>
                     </div>
                   </div>
-                  <div className="cart-item-price">{(item.price * item.quantity).toLocaleString()} RWF</div>
-                </li>
+                  <div className="text-right flex-shrink-0">
+                    <p className="text-sm font-black text-simba-ink">{(item.price * item.quantity).toLocaleString()} RWF</p>
+                  </div>
+                </div>
               ))}
-            </ul>
+            </div>
           ) : (
-            <div className="payment-details-form">
-              <button className="back-btn" onClick={() => setCheckoutStep('cart')}>← Back to Items</button>
+            <div className="space-y-6">
+              <button className="text-xs font-bold text-simba-primary flex items-center gap-2 hover:underline" onClick={() => setCheckoutStep('cart')}>
+                ← Back to Items
+              </button>
               
               {paymentMethod === 'mobile' && (
-                <div className="detail-group">
-                  <label>Mobile Money Number</label>
-                  <input 
-                    type="tel" 
-                    name="phone"
-                    placeholder="078... or 079..." 
-                    value={paymentDetails.phone}
-                    onChange={handleDetailChange}
-                    className="detail-input"
-                  />
-                  <p className="input-hint">Enter your MoMo or Airtel number for the 1,000 RWF deposit.</p>
+                <div className="space-y-3 p-5 rounded-2xl bg-simba-bg border border-simba-line">
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-sm font-bold text-simba-ink">Mobile Money Number</label>
+                    <input 
+                      type="tel" 
+                      name="phone"
+                      placeholder="078... or 079..." 
+                      className="w-full p-3 rounded-xl border border-simba-line bg-white focus:border-simba-primary outline-none text-sm font-bold transition-all"
+                      value={paymentDetails.phone}
+                      onChange={handleDetailChange}
+                    />
+                    <p className="text-[10px] text-simba-muted font-medium">Enter your MoMo or Airtel number for the 1,000 RWF deposit.</p>
+                  </div>
                 </div>
               )}
 
               {paymentMethod === 'card' && (
-                <div className="card-fields">
-                  <div className="detail-group">
-                    <label>Card Number</label>
+                <div className="space-y-4 p-5 rounded-2xl bg-simba-bg border border-simba-line">
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-sm font-bold text-simba-ink">Card Number</label>
                     <input 
                       type="text" 
                       name="cardNumber"
                       placeholder="4444 4444 4444 4444" 
+                      className="w-full p-3 rounded-xl border border-simba-line bg-white focus:border-simba-primary outline-none text-sm font-bold"
                       value={paymentDetails.cardNumber}
                       onChange={handleDetailChange}
-                      className="detail-input"
                     />
                   </div>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
-                    <div className="detail-group">
-                      <label>Expiry Date</label>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="flex flex-col gap-1.5">
+                      <label className="text-sm font-bold text-simba-ink">Expiry Date</label>
                       <input 
                         type="text" 
                         name="expiry"
                         placeholder="MM/YY" 
+                        className="w-full p-3 rounded-xl border border-simba-line bg-white focus:border-simba-primary outline-none text-sm font-bold"
                         value={paymentDetails.expiry}
                         onChange={handleDetailChange}
-                        className="detail-input"
                       />
                     </div>
-                    <div className="detail-group">
-                      <label>CVV</label>
+                    <div className="flex flex-col gap-1.5">
+                      <label className="text-sm font-bold text-simba-ink">CVV</label>
                       <input 
                         type="text" 
                         name="cvv"
                         placeholder="123" 
+                        className="w-full p-3 rounded-xl border border-simba-line bg-white focus:border-simba-primary outline-none text-sm font-bold"
                         value={paymentDetails.cvv}
                         onChange={handleDetailChange}
-                        className="detail-input"
                       />
                     </div>
                   </div>
@@ -155,8 +162,10 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose, onCheckout, se
               )}
 
               {paymentMethod === 'cash' && (
-                <div className="cash-notice">
-                  <p>No additional details needed for Cash on Delivery. You will pay when you pick up your items at <strong>{selectedLocation}</strong>.</p>
+                <div className="p-5 bg-simba-primary/5 border border-simba-primary rounded-2xl text-center">
+                  <p className="text-sm font-medium text-simba-ink leading-relaxed">
+                    No additional details needed for Cash on Delivery. You will pay when you pick up your items at <strong className="font-black text-simba-primary">{selectedLocation}</strong>.
+                  </p>
                 </div>
               )}
             </div>
@@ -164,50 +173,44 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose, onCheckout, se
         </div>
 
         {cart.length > 0 && (
-          <div className="cart-footer">
+          <div className="p-6 bg-simba-bg/50 border-t border-simba-line space-y-6">
             {checkoutStep === 'cart' && (
-              <>
-                <div className="cart-summary">
-                  <div className="summary-row">
+              <div className="space-y-6">
+                <div className="space-y-2 border-b border-simba-line pb-4">
+                  <div className="flex justify-between text-sm text-simba-muted font-medium">
                     <span>{t('subtotal')}</span>
-                    <strong>{subtotal.toLocaleString()} RWF</strong>
+                    <span>{subtotal.toLocaleString()} RWF</span>
                   </div>
                   {activeDiscount > 0 && (
-                    <div className="summary-row discount">
-                      <span>
-                        {t('discount')} ({activeDiscount}%)
-                      </span>
-                      <strong>-{discount.toLocaleString()} RWF</strong>
+                    <div className="flex justify-between text-sm text-green-600 font-bold">
+                      <span>{t('discount')} ({activeDiscount}%)</span>
+                      <span>-{discount.toLocaleString()} RWF</span>
                     </div>
                   )}
-                  <div className="summary-row total">
+                  <div className="flex justify-between text-lg font-black text-simba-primary pt-1">
                     <span>{t('total')}</span>
-                    <strong>{totalPrice.toLocaleString()} RWF</strong>
+                    <span>{totalPrice.toLocaleString()} RWF</span>
                   </div>
                 </div>
 
-                <div className="pickup-section">
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <label className="pickup-label">{t('pickupBranch')}</label>
-                    <button 
-                      className="map-toggle-btn"
-                      onClick={() => setShowMap(!showMap)}
-                      style={{ fontSize: '0.75rem', color: 'var(--simba-primary)', fontWeight: 700, textDecoration: 'underline' }}
-                    >
+                <div className="space-y-3">
+                  <div className="flex justify-between items-center">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-simba-muted">{t('pickupBranch')}</label>
+                    <button className="text-[10px] font-black text-simba-primary underline" onClick={() => setShowMap(!showMap)}>
                       {showMap ? 'Hide Route' : 'Show Route'}
                     </button>
                   </div>
-                  <div className="pickup-info">
-                    <span className="pickup-icon">📍</span>
-                    <strong>{selectedLocation}</strong>
+                  <div className="flex items-center gap-3 p-3 bg-white border-2 border-simba-primary rounded-xl">
+                    <span className="text-xl">📍</span>
+                    <strong className="text-sm font-black text-simba-ink">{selectedLocation}</strong>
                   </div>
-                  {showMap && <DeliveryMap targetBranch={targetBranch} />}
+                  {showMap && <div className="h-40 rounded-xl overflow-hidden border border-simba-line shadow-inner"><DeliveryMap targetBranch={targetBranch} /></div>}
                 </div>
 
-                <div className="pickup-section">
-                  <label className="pickup-label">{t('pickupTime')}</label>
+                <div className="space-y-3">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-simba-muted">{t('pickupTime')}</label>
                   <select 
-                    className="pickup-select"
+                    className="w-full p-3 rounded-xl border border-simba-line bg-white text-sm font-bold outline-none focus:border-simba-primary"
                     value={pickupTime}
                     onChange={(e) => setPickupTime(e.target.value)}
                   >
@@ -217,64 +220,47 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose, onCheckout, se
                   </select>
                 </div>
 
-                <div className="payment-section">
-                  <label className="payment-label">{t('paymentMethod')}</label>
-                  <div className="payment-options">
-                    <button
-                      type="button"
-                      className={`payment-option ${paymentMethod === 'card' ? 'active' : ''}`}
-                      onClick={() => setPaymentMethod('card')}
-                    >
-                      <span className="method-icon">💳</span>
-                      <div className="method-info">
-                        <strong>{t('payWithCard')}</strong>
-                        <span>Visa / MasterCard</span>
-                      </div>
-                    </button>
-                    <button
-                      type="button"
-                      className={`payment-option ${paymentMethod === 'cash' ? 'active' : ''}`}
-                      onClick={() => setPaymentMethod('cash')}
-                    >
-                      <span className="method-icon">💵</span>
-                      <div className="method-info">
-                        <strong>{t('payWithCash')}</strong>
-                        <span>Pay at branch</span>
-                      </div>
-                    </button>
-                    <button
-                      type="button"
-                      className={`payment-option ${paymentMethod === 'mobile' ? 'active' : ''}`}
-                      onClick={() => setPaymentMethod('mobile')}
-                    >
-                      <span className="method-icon">📱</span>
-                      <div className="method-info">
-                        <strong>{t('payWithMobile')}</strong>
-                        <span>MoMo / Airtel</span>
-                      </div>
-                    </button>
+                <div className="space-y-3">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-simba-muted">{t('paymentMethod')}</label>
+                  <div className="grid grid-cols-1 gap-2">
+                    {[
+                      { id: 'card', icon: '💳', title: t('payWithCard'), sub: 'Visa / MasterCard' },
+                      { id: 'cash', icon: '💵', title: t('payWithCash'), sub: 'Pay at branch' },
+                      { id: 'mobile', icon: '📱', title: t('payWithMobile'), sub: 'MoMo / Airtel' }
+                    ].map((m) => (
+                      <button
+                        key={m.id}
+                        className={`flex items-center gap-4 p-3 rounded-xl border-2 transition-all text-left ${paymentMethod === m.id ? 'border-simba-primary bg-simba-primary/5' : 'border-simba-line bg-white'}`}
+                        onClick={() => setPaymentMethod(m.id)}
+                      >
+                        <span className="w-10 h-10 bg-simba-bg rounded-lg flex items-center justify-center text-xl">{m.icon}</span>
+                        <div className="flex flex-col">
+                          <strong className="text-xs font-black text-simba-ink leading-tight">{m.title}</strong>
+                          <span className="text-[10px] text-simba-muted font-bold mt-0.5">{m.sub}</span>
+                        </div>
+                      </button>
+                    ))}
                   </div>
                   {paymentMethod === 'mobile' && (
-                    <div className="momo-deposit-info">
-                      <span className="deposit-icon">🔔</span>
-                      <p>A deposit of <strong>1,000 RWF</strong> will be charged via Mobile Money to confirm your order.</p>
+                    <div className="flex gap-3 p-3 bg-yellow-50 border border-yellow-200 rounded-xl">
+                      <span className="text-lg">🔔</span>
+                      <p className="text-[10px] font-medium text-yellow-800 leading-tight">A deposit of <strong>1,000 RWF</strong> will be charged via Mobile Money to confirm your order.</p>
                     </div>
                   )}
                 </div>
-              </>
+              </div>
             )}
 
-            <button
-              className="checkout-btn"
-              onClick={handleCheckoutClick}
-            >
-              {checkoutStep === 'cart' ? 'Continue to Payment' : t('confirmCheckout')}
-            </button>
-            {checkoutStep === 'cart' && (
-              <button className="clear-btn" onClick={clearCart}>
-                {t('clearBasket')}
+            <div className="space-y-3 pt-2">
+              <button className="w-full py-4 bg-simba-primary text-white rounded-xl font-black text-lg shadow-xl hover:shadow-2xl transition-all active:scale-95" onClick={handleCheckoutClick}>
+                {checkoutStep === 'cart' ? 'Continue to Payment' : t('confirmCheckout')}
               </button>
-            )}
+              {checkoutStep === 'cart' && (
+                <button className="w-full text-xs font-bold text-simba-muted hover:text-simba-primary transition-colors underline" onClick={clearCart}>
+                  {t('clearBasket')}
+                </button>
+              )}
+            </div>
           </div>
         )}
       </aside>

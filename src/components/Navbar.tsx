@@ -2,10 +2,9 @@ import React from 'react';
 import { useCart } from '../context/CartContext';
 import { useUser } from '../context/UserContext';
 import { useSettings } from '../context/SettingsContext';
-import { translations, type Language } from '../i18n';
+import { type Language } from '../i18n';
 import simbaLogo from '../simba-logo.png';
 import AccountDropdown from './AccountDropdown';
-import './Navbar.css';
 
 interface NavbarProps {
   searchTerm: string;
@@ -33,19 +32,20 @@ const Navbar: React.FC<NavbarProps> = ({
   const { language, setLanguage, theme, setTheme, t } = useSettings();
 
   return (
-    <header className="navbar-shell">
-      <nav className="navbar" aria-label="Main Navigation">
+    <header className="sticky top-0 z-[50] bg-white border-b border-simba-line shadow-sm">
+      <nav className="max-w-[1200px] mx-auto px-4 h-20 flex items-center gap-6" aria-label="Main Navigation">
         <button 
-          className="navbar-brand" 
+          className="flex-shrink-0" 
           onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
           aria-label="Simba Rwanda Home"
         >
-          <img src={simbaLogo} alt="Simba Supermarket" className="brand-logo-img" />
+          <img src={simbaLogo} alt="Simba Supermarket" className="h-12 object-contain" />
         </button>
 
-        <label className="navbar-location">
+        <label className="hidden lg:flex flex-col text-[11px] font-bold text-simba-muted uppercase">
           <span>{t('deliveringTo')}</span>
           <select 
+            className="bg-transparent text-simba-ink text-sm font-extrabold outline-none cursor-pointer"
             value={selectedLocation} 
             onChange={(event) => onLocationChange(event.target.value)}
             aria-label="Select Delivery Location"
@@ -61,8 +61,9 @@ const Navbar: React.FC<NavbarProps> = ({
           </select>
         </label>
 
-        <div className="navbar-search">
+        <div className="flex-1 relative max-w-xl">
           <input
+            className="w-full bg-simba-bg border border-simba-line rounded-xl px-4 py-3 text-sm focus:border-simba-primary focus:ring-1 focus:ring-simba-primary outline-none transition-all"
             type="text"
             placeholder={t('searchPlaceholder')}
             value={searchTerm}
@@ -71,23 +72,24 @@ const Navbar: React.FC<NavbarProps> = ({
           />
         </div>
 
-        <div className="navbar-controls">
-          <label className="navbar-select-control">
-            <span>🌐</span>
+        <div className="hidden md:flex items-center gap-4">
+          <label className="flex items-center gap-2 bg-simba-bg border border-simba-line rounded-lg px-3 py-2 cursor-pointer">
+            <span className="text-lg">🌐</span>
             <select 
+              className="bg-transparent text-xs font-bold outline-none"
               value={language} 
               onChange={(event) => setLanguage(event.target.value as Language)}
               aria-label="Select Language"
             >
-              <option value="en">🇬🇧 English</option>
-              <option value="rw">🇷🇼 Kinyarwanda</option>
-              <option value="fr">🇫🇷 Français</option>
-              <option value="sw">🇹🇿 Kiswahili</option>
+              <option value="en">GB English</option>
+              <option value="rw">RW Kinyarwanda</option>
+              <option value="fr">FR Français</option>
+              <option value="sw">TZ Kiswahili</option>
             </select>
           </label>
 
           <button 
-            className="theme-toggle" 
+            className="px-3 py-2 bg-simba-bg border border-simba-line rounded-lg text-xs font-bold text-simba-muted hover:text-simba-primary transition-colors" 
             onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
             aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
           >
@@ -95,27 +97,33 @@ const Navbar: React.FC<NavbarProps> = ({
           </button>
         </div>
 
-        <div className="navbar-actions">
+        <div className="flex items-center gap-3">
           <button 
-            className="navbar-cart" 
+            className="flex items-center gap-3 bg-simba-primary text-white px-5 py-2.5 rounded-xl font-bold hover:shadow-lg transition-all active:scale-95" 
             onClick={onCartClick}
             aria-label={`View Cart, ${totalItems} items`}
           >
-            <span>{t('cart')}</span>
-            <strong>{totalItems}</strong>
+            <span className="text-sm">{t('cart')}</span>
+            <strong className="bg-white/20 px-2 py-0.5 rounded-md text-sm">{totalItems}</strong>
           </button>
 
           {user ? (
-            <>
-              <div className="navbar-user-info">
-                <span className="user-name">{user.name}</span>
-                {activeDiscount > 0 && <span className="user-badge">{activeDiscount}% {t('loyalty')}</span>}
-                {isAdmin && <span className="user-badge admin-badge">🔐 Admin</span>}
+            <div className="flex items-center gap-3 pl-3 border-l border-simba-line">
+              <div className="flex flex-col items-end">
+                <span className="text-sm font-bold text-simba-ink">{user.name}</span>
+                <div className="flex gap-1 mt-0.5">
+                  {activeDiscount > 0 && <span className="bg-green-100 text-green-700 text-[10px] px-1.5 py-0.5 rounded font-black">{activeDiscount}% {t('loyalty')}</span>}
+                  {isAdmin && <span className="bg-simba-purple/10 text-simba-purple text-[10px] px-1.5 py-0.5 rounded font-black">🔐 Admin</span>}
+                </div>
               </div>
-              <button className="switch-account-btn" onClick={onLogout} aria-label="Logout">
+              <button 
+                className="text-xs font-bold text-simba-muted hover:text-simba-primary transition-colors underline" 
+                onClick={onLogout} 
+                aria-label="Logout"
+              >
                 Logout
               </button>
-            </>
+            </div>
           ) : (
             <AccountDropdown 
               onLoginClick={onLoginClick}

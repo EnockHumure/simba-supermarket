@@ -3,24 +3,21 @@ import { UserProvider, useUser } from './context/UserContext';
 import { ProductProvider } from './context/ProductContext';
 import { CartProvider, useCart, type Product } from './context/CartContext';
 import { SettingsProvider, useSettings } from './context/SettingsContext';
-import { useProducts } from './hooks/useProducts';
 import Navbar from './components/Navbar';
-import Sidebar from './components/Sidebar';
-import ProductCard from './components/ProductCard';
-import CartDrawer from './components/CartDrawer';
 import Hero from './components/Hero';
 import HeroCarousel from './components/HeroCarousel';
-import CountingStats from './components/CountingStats';
-import ScrollAnimation from './components/ScrollAnimation';
-import CTABanner from './components/CTABanner';
+import ProductCard from './components/ProductCard';
+import ProductModal from './components/ProductModal';
+import CartDrawer from './components/CartDrawer';
+import Sidebar from './components/Sidebar';
 import Testimonials from './components/Testimonials';
+import CTABanner from './components/CTABanner';
+import CountingStats from './components/CountingStats';
+import AdminPanel from './components/AdminPanel';
 import AdminRegisterModal, { type AdminRequest } from './components/AdminRegisterModal';
 import SuperAdminPanel from './components/SuperAdminPanel';
 import { InitializeSuperAdmin } from './components/InitializeSuperAdmin';
 import UserModal from './components/UserModal';
-import ProductModal from './components/ProductModal';
-import AdminPanel from './components/AdminPanel';
-import BranchPanel from './components/BranchPanel';
 import SimbaBot from './components/SimbaBot';
 import SimbaExperience from './components/SimbaExperience';
 import RoleSelectionModal from './components/RoleSelectionModal';
@@ -28,687 +25,206 @@ import ReviewModal from './components/ReviewModal';
 import { translateCategoryLabel, translateProductLabel } from './i18n';
 import simbaLogo from './simba-logo.png';
 
-type ServiceKey =
-  | 'supermarket'
-  | 'restaurant'
-  | 'bakery';
-
-const serviceDefinitions: Record<
-  ServiceKey,
-  {
-    title: string;
-    subtitle: string;
-    categories: string[];
-    keywords?: string[];
-    accent: string;
-  }
-> = {
-  supermarket: {
-    title: 'Supermarket',
-    subtitle: 'Groceries, household essentials, drinks, and general shopping from Simba.',
-    categories: ['General', 'Food Products', 'Kitchenware & Electronics', 'Baby Products', 'Sports & Wellness', 'Cosmetics & Personal Care'],
-    accent: 'Supermarket',
-  },
-  restaurant: {
-    title: 'Restaurant',
-    subtitle: 'Coffee shop style picks, drinks, quick food, and ready-to-enjoy items.',
-    categories: ['Alcoholic Drinks', 'General'],
-    keywords: ['beer', 'wine', 'whisky', 'vodka', 'cognac', 'gin', 'rum', 'tequila', 'champagne', 'brandy', 'juice', 'soda', 'water', 'cola', 'sprite', 'fanta'],
-    accent: 'Restaurant',
-  },
-  bakery: {
-    title: 'Bakery',
-    subtitle: 'Bread, pastries, cakes, breakfast items, and bakery factory products.',
-    categories: ['Cosmetics & Personal Care', 'Alcoholic Drinks', 'General'],
-    keywords: ['bread', 'cake', 'flour', 'sugar', 'butter', 'egg', 'yeast', 'biscuit', 'cookie', 'muffin', 'croissant', 'donut', 'pastry'],
-    accent: 'Bakery',
-  },
-};
-
-import { simbaLocations } from './locations';
-
-const rwandaLocations = simbaLocations.map(loc => loc.name);
-
-const faqs = [
-  {
-    question: 'How fast does Simba deliver in Kigali?',
-    answer:
-      'Express orders are positioned as 15 to 35 minute deliveries depending on the neighborhood and basket size.',
-  },
-  {
-    question: 'Can I keep my loyalty profile on the new site?',
-    answer:
-      'Yes. Simba still identifies shoppers by their Rwandan phone number and restores visit history, loyalty status, and admin discounts.',
-  },
-  {
-    question: 'Does Simba support bigger household orders?',
-    answer:
-      'Yes. The Rwanda-focused sections include fast baskets for quick orders and stock-up lanes for larger home orders.',
-  },
-];
-
 const AppContent: React.FC = () => {
-  const [activeService, setActiveService] = useState<ServiceKey>('supermarket');
-  const activeServiceMeta = serviceDefinitions[activeService];
-  const [visibleCount, setVisibleCount] = useState(24);
-  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
-
-  const {
-    products,
-    allProducts,
-    categories,
-    searchTerm,
-    setSearchTerm,
-    selectedCategory,
-    setSelectedCategory,
-  } = useProducts(activeServiceMeta.categories);
-
-  const { user, isLoyal, activeDiscount, updateProfile, isAdmin, isSuperAdmin, logout } = useUser();
-  const { checkout, orders, submitReview } = useCart();
+  const { user, isAdmin, isSuperAdmin, logout } = useUser();
+  const { products: allProducts } = useCart();
   const { language, t } = useSettings();
+  const { checkout, orders, submitReview } = useCart();
+
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [selectedSubcategory, setSelectedSubcategory] = useState<number | null>(null);
   const [isCartOpen, setIsCartOpen] = useState(false);
-  const [isAdminOpen, setIsAdminOpen] = useState(false);
-  const [isAdminRegisterOpen, setIsAdminRegisterOpen] = useState(false);
-  const [isSuperAdminOpen, setIsSuperAdminOpen] = useState(false);
-  const [isUserModalOpen, setIsUserModalOpen] = useState(false);
-  const [isRoleSelectionOpen, setIsRoleSelectionOpen] = useState(false);
-  const [authMode, setAuthMode] = useState<'login' | 'signup'>('login');
-  const [selectedRole, setSelectedRole] = useState<'customer' | 'admin' | 'superadmin'>('customer');
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [isAdminOpen, setIsAdminOpen] = useState(false);
+  const [isSuperAdminOpen, setIsSuperAdminOpen] = useState(false);
+  const [isAdminRegisterOpen, setIsAdminRegisterOpen] = useState(false);
+  const [isUserModalOpen, setIsUserModalOpen] = useState(false);
+  const [isRoleModalOpen, setIsRoleModalOpen] = useState(false);
+  const [selectedLocation, setSelectedLocation] = useState('Kigali CBD');
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [reviewOrder, setReviewOrder] = useState<any>(null);
-  const [activeFaq, setActiveFaq] = useState(0);
-  const [selectedLocation, setSelectedLocation] = useState('Union Trade Centre (City Center)');
-  const productsRef = useRef<HTMLElement | null>(null);
 
-  const handleLoginClick = () => {
-    setAuthMode('login');
-    setIsRoleSelectionOpen(true);
-  };
+  const productSectionRef = useRef<HTMLDivElement>(null);
 
-  const handleSignupClick = () => {
-    setAuthMode('signup');
-    setIsRoleSelectionOpen(true);
-  };
+  const products = useMemo(() => {
+    return allProducts.filter((p) => {
+      const matchesSearch = p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                            p.category.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesCategory = selectedCategory ? p.category === selectedCategory : true;
+      const matchesSubcategory = selectedSubcategory ? p.subcategoryId === selectedSubcategory : true;
+      return matchesSearch && matchesCategory && matchesSubcategory;
+    });
+  }, [allProducts, searchTerm, selectedCategory, selectedSubcategory]);
 
-  const handleRoleSelect = (role: 'customer' | 'admin' | 'superadmin') => {
-    setSelectedRole(role);
-    setIsRoleSelectionOpen(false);
-    
-    if (authMode === 'signup' && role === 'admin') {
-      // Redirect to admin request form
-      setIsAdminRegisterOpen(true);
-    } else {
-      // Open user modal for customer/admin/superadmin login or customer signup
-      setIsUserModalOpen(true);
-    }
-  };
-
-  const handleLogout = () => {
-    logout();
-    window.location.reload();
-  };
-
-  const categoryCounts = useMemo(
-    () =>
-      allProducts.reduce<Record<string, number>>((acc, product) => {
-        acc[product.category] = (acc[product.category] || 0) + 1;
-        return acc;
-      }, {}),
-    [allProducts]
-  );
-
-  const serviceProducts = useMemo(() => {
-    const filtered = allProducts.filter((product) => 
-      activeServiceMeta.categories.includes(product.category)
-    );
-
-    // Apply keyword filtering for restaurant and bakery
-    if (activeService === 'restaurant' && activeServiceMeta.keywords) {
-      return filtered.filter(product => 
-        activeServiceMeta.keywords!.some(keyword => 
-          product.name.toLowerCase().includes(keyword)
-        )
-      );
-    }
-
-    if (activeService === 'bakery' && activeServiceMeta.keywords) {
-      return filtered.filter(product => 
-        activeServiceMeta.keywords!.some(keyword => 
-          product.name.toLowerCase().includes(keyword)
-        )
-      );
-    }
-
-    return filtered;
-  }, [activeServiceMeta.categories, activeServiceMeta.keywords, activeService, allProducts]);
-
-  const freshDeals = useMemo(() => {
-    return [...allProducts]
-      .filter(p => p.price > 1) // Filter out clearly wrong data
-      .sort((a, b) => a.price - b.price)
-      .slice(0, 4);
+  const categories = useMemo(() => {
+    const cats = Array.from(new Set(allProducts.map((p) => p.category)));
+    return cats.sort();
   }, [allProducts]);
-
-  const premiumPicks = useMemo(() => {
-    return [...allProducts]
-      .filter(p => p.price > 1)
-      .sort((a, b) => b.price - a.price)
-      .slice(0, 4);
-  }, [allProducts]);
-
-  const newForYou = useMemo(() => {
-    if (!user) {
-      return serviceProducts.slice(0, 4);
-    }
-
-    return allProducts
-      .filter((product) => product.name.toLowerCase().includes('simba') || product.category === 'General')
-      .slice(0, 4);
-  }, [allProducts, serviceProducts, user]);
 
   const scrollToProducts = () => {
-    productsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    productSectionRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
   const handleCheckout = (branchName: string, pickupTime: string, paymentMethod: string, momoDeposit?: number) => {
     if (!user) {
-      window.alert('Please login to place an order.');
       setIsUserModalOpen(true);
       return;
     }
-
-    const newTotal = (user.totalPurchases || 0) + 1;
-    updateProfile(user.email, { totalPurchases: newTotal });
     checkout(user.email, user.name, user.phone, branchName, pickupTime, paymentMethod, momoDeposit);
-    
-    const depositMsg = momoDeposit ? ` A deposit of ${momoDeposit} RWF has been charged via Mobile Money.` : '';
-    window.alert(`✅ Order confirmed!\n\nPick-up: ${branchName}\nTime: ${pickupTime}\nPayment: ${paymentMethod}${depositMsg}\n\nYou can track your order status in your order history.`);
     setIsCartOpen(false);
+    alert('Order placed successfully! Check your account for status.');
+  };
+
+  const handleAdminRequest = (request: AdminRequest) => {
+    const existing = JSON.parse(localStorage.getItem('simba_admin_requests') || '[]');
+    localStorage.setItem('simba_admin_requests', JSON.stringify([...existing, { ...request, status: 'pending', timestamp: Date.now() }]));
+    alert('Your request has been submitted to the SuperAdmin for approval.');
   };
 
   const handleReviewSubmit = (rating: number, comment: string) => {
     if (reviewOrder) {
       submitReview(reviewOrder.id, rating, comment);
-      window.alert(t('reviewSuccess'));
       setReviewOrder(null);
+      alert('Thank you for your review!');
     }
-  };
-
-  // Check for picked up orders that haven't been reviewed
-  const unreviewed = orders.filter(
-    o => o.status === 'picked_up' && !o.reviewed && o.customerEmail === user?.email
-  );
-
-  // Auto-prompt for review after 2 seconds if there are unreviewed orders
-  React.useEffect(() => {
-    if (unreviewed.length > 0 && !reviewOrder) {
-      const timer = setTimeout(() => {
-        setReviewOrder(unreviewed[0]);
-      }, 2000);
-      return () => clearTimeout(timer);
-    }
-  }, [unreviewed.length, reviewOrder]);
-
-  const openAdminPanel = () => {
-    if (!isAdmin) {
-      window.alert(t('unauthorizedAdmin'));
-      return;
-    }
-
-    setIsAdminOpen(true);
-  };
-
-  const handleAdminRequest = (request: AdminRequest) => {
-    const existing = localStorage.getItem('simba_admin_requests');
-    const requests: AdminRequest[] = existing ? JSON.parse(existing) : [];
-    requests.push(request);
-    localStorage.setItem('simba_admin_requests', JSON.stringify(requests));
-    alert('✅ Admin request submitted! You will be notified once reviewed by superadmin.');
-  };
-
-  const openSuperAdmin = () => {
-    if (!isSuperAdmin) {
-      alert('🔒 Only SuperAdmin (humureenock@gmail.com) can access this panel');
-      return;
-    }
-    setIsSuperAdminOpen(true);
   };
 
   return (
-    <div className="app">
-      <InitializeSuperAdmin />
-      <RoleSelectionModal 
-        isOpen={isRoleSelectionOpen}
-        onClose={() => setIsRoleSelectionOpen(false)}
-        mode={authMode}
-        onRoleSelect={handleRoleSelect}
-      />
-      <UserModal 
-        isOpen={isUserModalOpen} 
-        onClose={() => setIsUserModalOpen(false)}
-        initialMode={authMode}
-        role={selectedRole}
-      />
-      <Navbar
+    <div className="min-h-screen bg-simba-bg">
+      <Navbar 
         searchTerm={searchTerm}
         onSearchChange={setSearchTerm}
         onCartClick={() => setIsCartOpen(true)}
         selectedLocation={selectedLocation}
         onLocationChange={setSelectedLocation}
-        onLoginClick={handleLoginClick}
-        onSignupClick={handleSignupClick}
-        onLogout={handleLogout}
+        onLoginClick={() => setIsUserModalOpen(true)}
+        onSignupClick={() => setIsUserModalOpen(true)}
+        onLogout={logout}
       />
 
-      <main className="app-shell">
-        <HeroCarousel onAction={scrollToProducts} />
-        
-        <Hero
-          activeService={activeService}
-          onServiceChange={setActiveService}
-          selectedLocation={selectedLocation}
-          onLocationChange={setSelectedLocation}
-          onPrimaryAction={scrollToProducts}
-          serviceDefinitions={serviceDefinitions}
-          locationOptions={rwandaLocations}
-        />
+      <main className="max-w-[1200px] mx-auto px-4 py-8 flex flex-col gap-12">
+        <div className="flex flex-col gap-12">
+          <HeroCarousel onExplore={scrollToProducts} />
+          <CountingStats />
+        </div>
 
-        <CountingStats
-          stats={[
-            { value: 1000, label: 'Happy Customers', suffix: '+' },
-            { value: 600, label: 'Products Available', suffix: '+' },
-            { value: 10, label: 'Store Locations' },
-            { value: 5, label: 'Years Experience' },
-          ]}
-        />
-
-        {user && (
-          <section className={`welcome-banner ${activeDiscount > 0 ? 'vip' : ''}`}>
-            <div>
-              <p className="section-kicker">{t('yourSimbaAccount')}</p>
-              <h2>{t('welcomeMessage')}, {user.name}.</h2>
-              <p>
-                {t('deliveringToAccount')} <strong>{selectedLocation}</strong> {t('forAccount')} <strong>{user.email}</strong>.
-              </p>
-            </div>
-            <div className="welcome-banner-meta">
-              <div>
-                <span className="welcome-banner-label">{t('completedOrders')}</span>
-                <strong>{user.totalPurchases || 0}</strong>
-              </div>
-              <div>
-                <span className="welcome-banner-label">{t('adminDiscount')}</span>
-                <strong>{activeDiscount}%</strong>
-              </div>
-              <div>
-                <span className="welcome-banner-label">{t('status')}</span>
-                <strong>{isLoyal ? t('priorityShopper') : t('standardShopper')}</strong>
-              </div>
-            </div>
-          </section>
-        )}
-
-        <section className="section">
-          <div className="section-heading">
-            <div>
-              <p className="section-kicker">{t(activeService)}</p>
-              <h2>{t(activeService)}</h2>
-            </div>
-            <div style={{ display: 'flex', gap: '8px' }}>
-              <div className="view-toggle" style={{ display: 'flex', background: 'var(--simba-line)', padding: '4px', borderRadius: '8px' }}>
-                <button 
-                  className={`toggle-btn ${viewMode === 'grid' ? 'active' : ''}`}
-                  onClick={() => setViewMode('grid')}
-                  style={{ 
-                    padding: '6px 12px', 
-                    borderRadius: '6px', 
-                    fontSize: '0.8rem',
-                    background: viewMode === 'grid' ? 'var(--simba-white)' : 'transparent',
-                    boxShadow: viewMode === 'grid' ? '0 2px 4px rgba(0,0,0,0.1)' : 'none',
-                    fontWeight: 700
-                  }}
-                >
-                  Grid
-                </button>
-                <button 
-                  className={`toggle-btn ${viewMode === 'list' ? 'active' : ''}`}
-                  onClick={() => setViewMode('list')}
-                  style={{ 
-                    padding: '6px 12px', 
-                    borderRadius: '6px', 
-                    fontSize: '0.8rem',
-                    background: viewMode === 'list' ? 'var(--simba-white)' : 'transparent',
-                    boxShadow: viewMode === 'list' ? '0 2px 4px rgba(0,0,0,0.1)' : 'none',
-                    fontWeight: 700
-                  }}
-                >
-                  List
-                </button>
-              </div>
-              <button className="ghost-button" onClick={scrollToProducts}>
-                {t('browseCatalogue')}
-              </button>
-            </div>
-          </div>
-          <div className={`service-spotlight-grid ${viewMode === 'list' ? 'list-view' : ''}`}>
-            {serviceProducts.slice(0, visibleCount).map((product) => (
-              <ProductCard key={`${activeService}-${product.id}`} product={product} onClick={setSelectedProduct} viewMode={viewMode} />
-            ))}
-          </div>
-          {visibleCount < serviceProducts.length && (
-            <div style={{ textAlign: 'center', marginTop: '2rem' }}>
-              <button 
-                className="primary-button" 
-                onClick={() => setVisibleCount(prev => prev + 24)}
-                style={{ minWidth: '200px' }}
-              >
-                Load More Products
-              </button>
-            </div>
-          )}
-        </section>
-
-        <section className="section app-body">
+        <div className="flex flex-col lg:flex-row gap-8 items-start">
           <Sidebar 
             categories={categories}
             selectedCategory={selectedCategory}
-            onSelectCategory={setSelectedCategory}
-            categoryCounts={categoryCounts}
+            onSelectCategory={(cat) => {
+              setSelectedCategory(cat);
+              setSelectedSubcategory(null);
+              scrollToProducts();
+            }}
+            selectedSubcategory={selectedSubcategory}
+            onSelectSubcategory={(sub) => {
+              setSelectedSubcategory(sub);
+              scrollToProducts();
+            }}
           />
-          <div className="market-content">
-            <section className="market-highlights">
-              <div className="highlight-card">
-                <span className="highlight-value">15-35 min</span>
-                <span className="highlight-label">{t('estimatedKigaliDelivery')}</span>
-              </div>
-              <div className="highlight-card">
-                <span className="highlight-value">{categories.length}</span>
-                <span className="highlight-label">{t('storeDepartments')}</span>
-              </div>
-              <div className="highlight-card">
-                <span className="highlight-value">{allProducts.length}+</span>
-                <span className="highlight-label">{t('productsInDataset')}</span>
-              </div>
-            </section>
 
-            <section className="dual-panel">
-              <div className="panel">
-                <div className="section-heading compact">
-                  <div>
-                    <p className="section-kicker">{t('budgetLane')}</p>
-                    <h3>{t('lowPricePicks')}</h3>
-                  </div>
-                </div>
-                <div className="mini-product-list">
-                  {freshDeals.map((product) => (
-                    <button key={`deal-${product.id}`} className="mini-product-card" onClick={() => setSelectedProduct(product)}>
-                      <img 
-                        src={product.image} 
-                        alt={product.name} 
-                        loading="lazy" 
-                        onError={(e) => (e.currentTarget.src = simbaLogo)}
-                      />
-                      <div>
-                        <strong>{translateProductLabel(product.name, language)}</strong>
-                        <span>{product.price.toLocaleString()} RWF</span>
-                      </div>
-                    </button>
-                  ))}
-                </div>
+          <div className="flex-1 min-w-0 flex flex-col gap-8" ref={productSectionRef}>
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 border-b border-simba-line pb-6">
+              <div>
+                <span className="text-[10px] font-black uppercase tracking-widest text-simba-orange leading-none">{t('supermarket')}</span>
+                <h2 className="text-3xl font-black text-simba-ink mt-1">
+                  {selectedCategory ? translateCategoryLabel(selectedCategory, language) : t('everythingOnSimba')}
+                </h2>
               </div>
-
-              <div className="panel">
-                <div className="section-heading compact">
-                  <div>
-                    <p className="section-kicker">{t('bigBasket')}</p>
-                    <h3>{t('premiumProducts')}</h3>
-                  </div>
-                </div>
-                <div className="mini-product-list">
-                  {premiumPicks.map((product) => (
-                    <button key={`premium-${product.id}`} className="mini-product-card" onClick={() => setSelectedProduct(product)}>
-                      <img 
-                        src={product.image} 
-                        alt={product.name} 
-                        loading="lazy" 
-                        onError={(e) => (e.currentTarget.src = simbaLogo)}
-                      />
-                      <div>
-                        <strong>{translateProductLabel(product.name, language)}</strong>
-                        <span>{product.price.toLocaleString()} RWF</span>
-                      </div>
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </section>
-
-            <section className="section product-section" ref={productsRef}>
-              <div className="section-heading">
-                <div>
-                  <p className="section-kicker">{t('mainShop')}</p>
-                  <h2>{selectedCategory ? translateCategoryLabel(selectedCategory, language) : t('everythingOnSimba')}</h2>
-                  <p>
-                    {searchTerm
-                      ? `${t('showingResults')} "${searchTerm}" ${t('inCatalogue')}.`
-                      : `${t('browseProducts')} ${selectedLocation}.`}
-                  </p>
-                </div>
-                <div className="catalogue-meta" style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-                  <div className="view-toggle" style={{ display: 'flex', background: 'var(--simba-line)', padding: '4px', borderRadius: '8px' }}>
-                    <button 
-                      className={`toggle-btn ${viewMode === 'grid' ? 'active' : ''}`}
-                      onClick={() => setViewMode('grid')}
-                      style={{ 
-                        padding: '6px 12px', 
-                        borderRadius: '6px', 
-                        fontSize: '0.8rem',
-                        background: viewMode === 'grid' ? 'var(--simba-white)' : 'transparent',
-                        boxShadow: viewMode === 'grid' ? '0 2px 4px rgba(0,0,0,0.1)' : 'none',
-                        fontWeight: 700
-                      }}
-                    >
-                      Grid
-                    </button>
-                    <button 
-                      className={`toggle-btn ${viewMode === 'list' ? 'active' : ''}`}
-                      onClick={() => setViewMode('list')}
-                      style={{ 
-                        padding: '6px 12px', 
-                        borderRadius: '6px', 
-                        fontSize: '0.8rem',
-                        background: viewMode === 'list' ? 'var(--simba-white)' : 'transparent',
-                        boxShadow: viewMode === 'list' ? '0 2px 4px rgba(0,0,0,0.1)' : 'none',
-                        fontWeight: 700
-                      }}
-                    >
-                      List
-                    </button>
-                  </div>
-                  <span>{products.length} {t('results')}</span>
-                  <button className="ghost-button" onClick={() => setSelectedCategory(null)}>
-                    {t('resetFilter')}
+              
+              <div className="flex items-center gap-4 w-full md:w-auto">
+                <div className="flex bg-white border border-simba-line rounded-lg p-1">
+                  <button 
+                    className={`px-4 py-1.5 rounded-md text-xs font-black transition-all ${viewMode === 'grid' ? 'bg-simba-primary text-white shadow-md' : 'text-simba-muted hover:text-simba-ink'}`}
+                    onClick={() => setViewMode('grid')}
+                  >
+                    Grid
+                  </button>
+                  <button 
+                    className={`px-4 py-1.5 rounded-md text-xs font-black transition-all ${viewMode === 'list' ? 'bg-simba-primary text-white shadow-md' : 'text-simba-muted hover:text-simba-ink'}`}
+                    onClick={() => setViewMode('list')}
+                  >
+                    List
                   </button>
                 </div>
+                <div className="ml-auto flex items-center gap-3">
+                  <span className="text-xs font-bold text-simba-muted">{products.length} {t('results')}</span>
+                  {selectedCategory && (
+                    <button className="text-xs font-black text-simba-primary underline" onClick={() => setSelectedCategory(null)}>
+                      {t('resetFilter')}
+                    </button>
+                  )}
+                </div>
               </div>
+            </div>
 
-              <div className={`product-grid ${viewMode === 'list' ? 'list-view' : ''}`}>
-                {products.length > 0 ? (
-                  products.map((product) => (
-                    <ProductCard key={product.id} product={product} onClick={setSelectedProduct} viewMode={viewMode} />
-                  ))
-                ) : (
-                  <div className="empty-state">
-                    <h3>{t('noProductsTitle')}</h3>
-                    <p>{t('noProductsDesc')}</p>
-                  </div>
-                )}
-              </div>
-            </section>
-          </div>
-        </section>
-
-        <section className="section">
-          <div className="section-heading">
-            <div>
-              <p className="section-kicker">{t('personalizedBlock')}</p>
-              <h2>{user ? t('pickedForYou') : t('starterBasket')}</h2>
-              <p>{t('personalizedDesc')}</p>
+            <div className={`${viewMode === 'grid' ? 'grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6' : 'flex flex-col gap-4'}`}>
+              {products.length > 0 ? (
+                products.map((product) => (
+                  <ProductCard key={product.id} product={product} onClick={setSelectedProduct} viewMode={viewMode} />
+                ))
+              ) : (
+                <div className="col-span-full py-20 text-center flex flex-col items-center gap-3">
+                  <span className="text-5xl">🔍</span>
+                  <h3 className="text-lg font-black text-simba-ink">{t('noProductsTitle')}</h3>
+                  <p className="text-sm text-simba-muted max-w-[300px]">{t('noProductsDesc')}</p>
+                </div>
+              )}
             </div>
           </div>
-          <div className={`service-spotlight-grid ${viewMode === 'list' ? 'list-view' : ''}`}>
-            {newForYou.map((product) => (
-              <ProductCard key={`personal-${product.id}`} product={product} onClick={setSelectedProduct} viewMode={viewMode} />
-            ))}
-          </div>
-        </section>
+        </div>
 
-        <section className="download-banner">
-          <div>
-            <p className="section-kicker">{t('heroKicker')}</p>
-            <h2>{t('friendlyShopping')}</h2>
-            <p>{t('simpleFlow')}</p>
-          </div>
-          <div className="download-actions">
-            <button className="primary-button" onClick={scrollToProducts}>
-              {t('startShopping')}
-            </button>
-            {isAdmin && (
-              <button className="primary-button" onClick={openAdminPanel} style={{ background: 'linear-gradient(135deg, #4caf50, #2e7d32)' }}>
-                🔐 {t('adminAccess')}
-              </button>
-            )}
-          </div>
-        </section>
-
-        <ScrollAnimation animation="fadeIn">
+        <CTABanner onExplore={scrollToProducts} />
+        
+        <div className="flex flex-col gap-20">
           <SimbaExperience />
-        </ScrollAnimation>
-
-        <ScrollAnimation animation="fadeIn">
           <Testimonials />
-        </ScrollAnimation>
+        </div>
 
-        <ScrollAnimation animation="zoom">
-          <div className="admin-access-section">
-            <div className="admin-access-card">
-              <div className="admin-icon">🔐</div>
-              <h3>Admin Access</h3>
-              <p>Request admin privileges to manage Simba Supermarket operations</p>
-              <button className="admin-request-btn" onClick={() => setIsAdminRegisterOpen(true)}>
-                📝 Request Admin Access
-              </button>
-            </div>
-            {user?.email === 'humureenock@gmail.com' && isSuperAdmin && (
-              <div className="admin-access-card superadmin">
-                <div className="admin-icon">👑</div>
-                <h3>SuperAdmin Panel</h3>
-                <p>Manage admin requests and system permissions</p>
-                <button className="superadmin-btn" onClick={openSuperAdmin}>
-                  👑 Open SuperAdmin Panel
-                </button>
-              </div>
-            )}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+          <div className="bg-gradient-to-br from-[#667eea] to-[#764ba2] rounded-[32px] p-10 text-white text-center shadow-xl hover:-translate-y-2 transition-transform cursor-pointer group" onClick={() => setIsAdminOpen(true)}>
+            <div className="text-6xl mb-6 group-hover:scale-110 transition-transform">💼</div>
+            <h3 className="text-2xl font-black mb-3">Simba Store Manager</h3>
+            <p className="text-sm opacity-90 leading-relaxed mb-8">Manage orders, update stock levels, and oversee branch performance.</p>
+            <button className="bg-white text-[#667eea] px-8 py-3 rounded-full font-black text-sm shadow-lg hover:shadow-xl transition-shadow">Access Branch Panel</button>
           </div>
-        </ScrollAnimation>
-
-        <section className="section bottom-grid">
-          <div className="panel faq-panel">
-            <div className="section-heading compact">
-              <div>
-                <p className="section-kicker">FAQ</p>
-                <h3>{t('faqTitle')}</h3>
-              </div>
-            </div>
-            <div className="faq-list">
-              <button
-                className={`faq-item ${activeFaq === 0 ? 'active' : ''}`}
-                onClick={() => setActiveFaq(0)}
-              >
-                <span>{t('faq1Q')}</span>
-                <p>{activeFaq === 0 ? t('faq1A') : t('tapToExpand')}</p>
-              </button>
-              <button
-                className={`faq-item ${activeFaq === 1 ? 'active' : ''}`}
-                onClick={() => setActiveFaq(1)}
-              >
-                <span>{t('faq2Q')}</span>
-                <p>{activeFaq === 1 ? t('faq2A') : t('tapToExpand')}</p>
-              </button>
-              <button
-                className={`faq-item ${activeFaq === 2 ? 'active' : ''}`}
-                onClick={() => setActiveFaq(2)}
-              >
-                <span>{t('faq3Q')}</span>
-                <p>{activeFaq === 2 ? t('faq3A') : t('tapToExpand')}</p>
-              </button>
-            </div>
+          
+          <div className="bg-gradient-to-br from-[#f093fb] to-[#f5576c] rounded-[32px] p-10 text-white text-center shadow-xl hover:-translate-y-2 transition-transform cursor-pointer group" onClick={() => setIsSuperAdminOpen(true)}>
+            <div className="text-6xl mb-6 group-hover:scale-110 transition-transform">👑</div>
+            <h3 className="text-2xl font-black mb-3">Simba System Owner</h3>
+            <p className="text-sm opacity-90 leading-relaxed mb-8">Global governance, revenue reports, and management approvals.</p>
+            <button className="bg-white text-[#f5576c] px-8 py-3 rounded-full font-black text-sm shadow-lg hover:shadow-xl transition-shadow">Access Owner Panel</button>
           </div>
-
-          <div className="panel coverage-panel">
-            <div className="section-heading compact">
-              <div>
-                <p className="section-kicker">{t('coverage')}</p>
-                <h3>{t('rwandaDelivery')}</h3>
-              </div>
-            </div>
-            <div className="coverage-grid">
-              {rwandaLocations.map((location) => (
-                <button
-                  key={location}
-                  className={`coverage-chip ${selectedLocation === location ? 'active' : ''}`}
-                  onClick={() => setSelectedLocation(location)}
-                >
-                  {location}
-                </button>
-              ))}
-            </div>
-            <div className="coverage-note">
-              <strong>{t('currentDropZone')}:</strong> {selectedLocation}
-            </div>
-          </div>
-        </section>
-
-        <section className="section locations-section">
-          <div className="section-heading">
-            <div>
-              <p className="section-kicker">{t('visitUs')}</p>
-              <h2>{t('locationsTitle')}</h2>
-              <p>{t('locationsDesc')}</p>
-            </div>
-          </div>
-          <div className="locations-grid">
-            {simbaLocations.map((location, idx) => (
-              <div key={idx} className="location-card">
-                <div className="location-header">
-                  <span className="location-number">{idx + 1}</span>
-                  <h4>{location.name}</h4>
-                </div>
-                <div className="location-body">
-                  <p className="location-address">
-                    <span className="location-icon">📍</span>
-                    {location.address}
-                  </p>
-                  <p className="location-description">{location.description}</p>
-                  <a 
-                    href={`https://www.google.com/maps/search/?api=1&query=${location.lat},${location.lng}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="location-map-link"
-                  >
-                    {t('viewOnMaps')} →
-                  </a>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
+        </div>
       </main>
 
-      {isAdmin && (
-        <div className="admin-access-fixed" onClick={openAdminPanel}>
-          🔐 {t('adminAccess')}
+      <footer className="bg-white border-t border-simba-line pt-20 pb-10">
+        <div className="max-w-[1200px] mx-auto px-4 flex flex-col md:flex-row justify-between gap-12">
+          <div className="max-w-md flex flex-col gap-6">
+            <img src={simbaLogo} alt="Simba" className="h-10 w-fit object-contain" />
+            <p className="text-sm text-simba-muted leading-relaxed">{t('footerDesc')}</p>
+            <div className="flex flex-wrap gap-4">
+              <a href="#" className="text-xs font-black text-simba-primary hover:underline">Instagram</a>
+              <a href="#" className="text-xs font-black text-simba-primary hover:underline">Facebook</a>
+              <a href="#" className="text-xs font-black text-simba-primary hover:underline">Twitter</a>
+              <a href="#" className="bg-simba-secondary text-simba-ink px-3 py-1 rounded-md text-[10px] font-black uppercase tracking-wider">Visit Kigali Stores</a>
+            </div>
+          </div>
+          <div className="flex flex-col gap-4 md:text-right md:justify-end">
+            <p className="text-[10px] font-black text-simba-muted uppercase tracking-[0.2em]">{t('copyright')}</p>
+          </div>
         </div>
+      </footer>
+
+      {isSuperAdmin && (
+        <button 
+          className="fixed right-6 bottom-6 z-40 h-14 px-8 rounded-full bg-gradient-to-r from-green-500 to-green-700 text-white font-black text-sm shadow-2xl hover:scale-105 active:scale-95 transition-all flex items-center gap-2"
+          onClick={() => setIsSuperAdminOpen(true)}
+        >
+          🔐 {t('adminAccess')}
+        </button>
       )}
 
       <CartDrawer 
@@ -717,22 +233,28 @@ const AppContent: React.FC = () => {
         onCheckout={handleCheckout}
         selectedLocation={selectedLocation}
       />
+      
       <ProductModal product={selectedProduct} onClose={() => setSelectedProduct(null)} />
+      
       <AdminPanel 
         isOpen={isAdminOpen} 
         onClose={() => setIsAdminOpen(false)} 
         selectedLocation={selectedLocation}
       />
+      
       <AdminRegisterModal 
         isOpen={isAdminRegisterOpen} 
         onClose={() => setIsAdminRegisterOpen(false)}
         onSubmit={handleAdminRequest}
       />
+      
       <SuperAdminPanel 
         isOpen={isSuperAdminOpen} 
         onClose={() => setIsSuperAdminOpen(false)}
       />
+      
       <SimbaBot onViewProduct={(product) => setSelectedProduct(product)} />
+      
       {reviewOrder && (
         <ReviewModal
           order={reviewOrder}
@@ -741,19 +263,9 @@ const AppContent: React.FC = () => {
         />
       )}
 
-      <footer className="footer">
-        <div className="footer-brand-section">
-          <strong>Simba Rwanda</strong>
-          <p>{t('footerDesc')}</p>
-          <div className="footer-socials">
-            <a href="https://www.facebook.com/simbasupermarket/" target="_blank" rel="noopener noreferrer" aria-label="Facebook">Facebook</a>
-            <a href="https://x.com/SimbaRwanda" target="_blank" rel="noopener noreferrer" aria-label="X (Twitter)">X</a>
-            <a href="https://www.instagram.com/simba_supermarket/" target="_blank" rel="noopener noreferrer" aria-label="Instagram">Instagram</a>
-            <a href="https://share.google/D9neQXWE1MfMeNz81" target="_blank" rel="noopener noreferrer" className="location-link" aria-label="Simba Locations">{t('visitUs')}</a>
-          </div>
-        </div>
-        <p className="footer-copyright">{t('copyright')}</p>
-      </footer>
+      <UserModal isOpen={isUserModalOpen} onClose={() => setIsUserModalOpen(false)} />
+      <RoleSelectionModal isOpen={isRoleModalOpen} onClose={() => setIsRoleModalOpen(false)} />
+      <InitializeSuperAdmin />
     </div>
   );
 };
