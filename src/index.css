@@ -1,6 +1,16 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+@theme {
+  --color-simba-primary: #e31b23;
+  --color-simba-secondary: #ffd200;
+  --color-simba-orange: #f28c28;
+  --color-simba-purple: #49266f;
+  --color-simba-ink: #201616;
+  --color-simba-muted: #766c6c;
+  --color-simba-bg: #fafafa;
+  --color-simba-line: #edeaea;
+  --color-simba-white: #ffffff;
+}
 
 @layer base {
   :root {

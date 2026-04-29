@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from 'react';
-import './CountingStats.css';
 
 interface Stat {
   value: number;
@@ -65,15 +64,15 @@ const CountingStats: React.FC<CountingStatsProps> = ({ stats }) => {
   }, [isVisible, stats]);
 
   return (
-    <div className="counting-stats" ref={ref}>
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-8" ref={ref}>
       {stats.map((stat, index) => (
-        <div key={index} className="stat-item">
-          <div className="stat-value">
+        <div key={index} className="bg-white p-8 rounded-[32px] border border-simba-line shadow-sm hover:shadow-md transition-shadow flex flex-col items-center text-center gap-2 group">
+          <div className="text-3xl md:text-4xl font-black text-simba-primary group-hover:scale-110 transition-transform">
             {stat.prefix}
             {counts[index].toLocaleString()}
             {stat.suffix}
           </div>
-          <div className="stat-label">{stat.label}</div>
+          <div className="text-[10px] font-black uppercase tracking-[0.2em] text-simba-muted">{stat.label}</div>
         </div>
       ))}
     </div>

@@ -22,18 +22,18 @@ import SimbaBot from './components/SimbaBot';
 import SimbaExperience from './components/SimbaExperience';
 import RoleSelectionModal from './components/RoleSelectionModal';
 import ReviewModal from './components/ReviewModal';
+import { useProductData } from './context/ProductContext';
 import { translateCategoryLabel, translateProductLabel } from './i18n';
 import simbaLogo from './simba-logo.png';
 
 const AppContent: React.FC = () => {
   const { user, isAdmin, isSuperAdmin, logout } = useUser();
-  const { products: allProducts } = useCart();
+  const { allProducts } = useProductData();
   const { language, t } = useSettings();
-  const { checkout, orders, submitReview } = useCart();
+  const { checkout, submitReview } = useCart();
 
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const [selectedSubcategory, setSelectedSubcategory] = useState<number | null>(null);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [isAdminOpen, setIsAdminOpen] = useState(false);
@@ -48,19 +48,32 @@ const AppContent: React.FC = () => {
   const productSectionRef = useRef<HTMLDivElement>(null);
 
   const products = useMemo(() => {
-    return allProducts.filter((p) => {
+    return allProducts.filter((p: Product) => {
       const matchesSearch = p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                             p.category.toLowerCase().includes(searchTerm.toLowerCase());
       const matchesCategory = selectedCategory ? p.category === selectedCategory : true;
-      const matchesSubcategory = selectedSubcategory ? p.subcategoryId === selectedSubcategory : true;
-      return matchesSearch && matchesCategory && matchesSubcategory;
+      return matchesSearch && matchesCategory;
     });
-  }, [allProducts, searchTerm, selectedCategory, selectedSubcategory]);
+  }, [allProducts, searchTerm, selectedCategory]);
 
   const categories = useMemo(() => {
-    const cats = Array.from(new Set(allProducts.map((p) => p.category)));
+    const cats = Array.from(new Set(allProducts.map((p: Product) => p.category)));
     return cats.sort();
   }, [allProducts]);
+
+  const categoryCounts = useMemo(() => {
+    const counts: Record<string, number> = {};
+    allProducts.forEach((p: Product) => {
+      counts[p.category] = (counts[p.category] || 0) + 1;
+    });
+    return counts;
+  }, [allProducts]);
+
+  const stats = [
+    { value: 10, label: t('activeLocation'), suffix: '+' },
+    { value: allProducts.length, label: t('productsInDataset') },
+    { value: 15, label: t('estimatedKigaliDelivery'), suffix: ' min' }
+  ];
 
   const scrollToProducts = () => {
     productSectionRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -106,7 +119,7 @@ const AppContent: React.FC = () => {
       <main className="max-w-[1200px] mx-auto px-4 py-8 flex flex-col gap-12">
         <div className="flex flex-col gap-12">
           <HeroCarousel onExplore={scrollToProducts} />
-          <CountingStats />
+          <CountingStats stats={stats} />
         </div>
 
         <div className="flex flex-col lg:flex-row gap-8 items-start">
@@ -115,14 +128,9 @@ const AppContent: React.FC = () => {
             selectedCategory={selectedCategory}
             onSelectCategory={(cat) => {
               setSelectedCategory(cat);
-              setSelectedSubcategory(null);
               scrollToProducts();
             }}
-            selectedSubcategory={selectedSubcategory}
-            onSelectSubcategory={(sub) => {
-              setSelectedSubcategory(sub);
-              scrollToProducts();
-            }}
+            categoryCounts={categoryCounts}
           />
 
           <div className="flex-1 min-w-0 flex flex-col gap-8" ref={productSectionRef}>
@@ -162,7 +170,7 @@ const AppContent: React.FC = () => {
 
             <div className={`${viewMode === 'grid' ? 'grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6' : 'flex flex-col gap-4'}`}>
               {products.length > 0 ? (
-                products.map((product) => (
+                products.map((product: Product) => (
                   <ProductCard key={product.id} product={product} onClick={setSelectedProduct} viewMode={viewMode} />
                 ))
               ) : (
@@ -176,7 +184,12 @@ const AppContent: React.FC = () => {
           </div>
         </div>
 
-        <CTABanner onExplore={scrollToProducts} />
+        <CTABanner 
+          title="Download Simba App" 
+          subtitle="Get 2,000 RWF off your first order when you download our mobile app."
+          buttonText="Get the App"
+          onAction={scrollToProducts}
+        />
         
         <div className="flex flex-col gap-20">
           <SimbaExperience />
@@ -264,7 +277,15 @@ const AppContent: React.FC = () => {
       )}
 
       <UserModal isOpen={isUserModalOpen} onClose={() => setIsUserModalOpen(false)} />
-      <RoleSelectionModal isOpen={isRoleModalOpen} onClose={() => setIsRoleModalOpen(false)} />
+      <RoleSelectionModal 
+        isOpen={isRoleModalOpen} 
+        onClose={() => setIsRoleModalOpen(false)} 
+        mode="login"
+        onRoleSelect={(role) => {
+          console.log('Selected role:', role);
+          setIsRoleModalOpen(false);
+        }}
+      />
       <InitializeSuperAdmin />
     </div>
   );
