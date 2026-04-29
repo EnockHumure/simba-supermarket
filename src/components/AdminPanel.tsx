@@ -183,7 +183,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose, selectedLocati
                   <h4>Recent Manager Actions</h4>
                   <ul className="action-list">
                     <li>✅ Order #SIM-9283 marked as Ready</li>
-                    <li>✏️ Price updated: Milk 1L -> 1,200 RWF</li>
+                    <li>✏️ Price updated: Milk 1L &rarr; 1,200 RWF</li>
                     <li>👤 VIP Discount granted to joshua@gmail.com</li>
                   </ul>
                 </div>
