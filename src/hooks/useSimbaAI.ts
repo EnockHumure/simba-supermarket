@@ -52,24 +52,41 @@ const keywordSearch = (input: string): Product[] => {
 // Build product catalog summary for Groq context
 const buildProductContext = (): string => {
   const categories = Array.from(new Set(allProducts.map(p => p.category)));
-  const sampleProducts = allProducts.slice(0, 50).map(p => 
-    `${p.name} (${p.price} RWF, ${p.category})`
-  ).join(', ');
+  
+  // Group sample products by category to give AI better "understanding"
+  const categorySamples = categories.map(cat => {
+    const productsInCat = allProducts
+      .filter(p => p.category === cat)
+      .slice(0, 10)
+      .map(p => p.name);
+    return `${cat}: ${productsInCat.join(', ')}`;
+  }).join('\n');
   
   return `You are SimbaBot, a helpful shopping assistant for Simba Supermarket in Rwanda. 
-We have ${allProducts.length} products across these categories: ${categories.join(', ')}.
-Sample products: ${sampleProducts}...
+We have ${allProducts.length} products across these main categories: ${categories.join(', ')}.
+
+Here are examples of products we carry in each department:
+${categorySamples}
 
 When users ask about products:
-1. Understand their intent (breakfast, cleaning, cooking, etc.)
-2. Recommend relevant product categories or specific items
-3. Be conversational and helpful
-4. Mention prices in RWF when relevant
-5. Keep responses concise (2-3 sentences max)
+1. Understand their intent (e.g., if they ask for "drinks", think about Alcoholic Drinks or Sodas)
+2. Recommend relevant product categories or specific items from the examples above
+3. Be conversational, professional and helpful
+4. Mention that prices are in RWF
+5. Explain our Payment Methods if asked:
+   - Card Payment (Secure online payment)
+   - Cash on Delivery (Pay when you pick up your items)
+   - Mobile Money (Requires a 1,000 RWF deposit to confirm the order)
+6. Mention our Delivery Tracking:
+   - We show an interactive route map in the cart.
+   - We calculate the exact distance and ETA from your current location to the Simba branch.
+   - Users can open directions directly in Google Maps.
+7. Keep responses concise (2-3 sentences max)
 
-IMPORTANT: Extract product keywords from your response and return them in this format:
+IMPORTANT: After your natural response, you MUST provide keywords for our search engine to find the EXACT or RELATED products.
+Format your output EXACTLY like this:
 RESPONSE: [your natural language response]
-KEYWORDS: [comma-separated keywords to search, e.g., milk, bread, eggs]`;
+KEYWORDS: [comma-separated list of 3-5 specific product names or terms, e.g., Inyange Milk, Heineken, Bread]`;
 };
 
 // Call Groq API for conversational understanding
@@ -137,21 +154,32 @@ const smartSearch = (keywords: string[]): Product[] => {
     let score = 0;
 
     for (const keyword of keywords) {
-      const kw = keyword.toLowerCase();
-      if (nameLower.includes(kw)) score += 3;
-      else if (catLower.includes(kw)) score += 2;
-      // Partial match
-      else if (nameLower.split(' ').some(word => word.startsWith(kw))) score += 1;
+      const kw = keyword.toLowerCase().trim();
+      if (kw.length < 2) continue;
+
+      // Exact name match (highest priority)
+      if (nameLower === kw) score += 10;
+      // Name contains keyword as a whole word
+      else if (new RegExp(`\\b${kw}\\b`, 'i').test(nameLower)) score += 5;
+      // Name contains keyword
+      else if (nameLower.includes(kw)) score += 3;
+      
+      // Category match
+      if (catLower.includes(kw)) score += 2;
+      
+      // Bonus for matching multiple keywords
     }
 
     if (score > 0) {
+      // In-stock products get a boost
+      if (product.inStock) score += 1;
       scoreMap.set(product.id, { product, score });
     }
   }
 
   return Array.from(scoreMap.values())
     .sort((a, b) => b.score - a.score)
-    .slice(0, 5)
+    .slice(0, 6)
     .map((e) => e.product);
 };
 

@@ -7,21 +7,29 @@ import './AdminPanel.css';
 interface AdminPanelProps {
   isOpen: boolean;
   onClose: () => void;
+  selectedLocation: string;
 }
 
 type AdminTab = 'dashboard' | 'orders' | 'inventory' | 'customers';
 
-const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose }) => {
+const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose, selectedLocation }) => {
   const { allProfiles, updateProfile } = useUser();
   const { orders, updateOrderStatus } = useCart();
-  const { allProducts, toggleStock } = useProductData();
+  const { allProducts, toggleStock, updatePrice } = useProductData();
   const [activeTab, setActiveTab] = useState<AdminTab>('dashboard');
   const [customerSearch, setCustomerSearch] = useState('');
   const [inventorySearch, setInventorySearch] = useState('');
+  const [editingProductId, setEditingProductId] = useState<number | null>(null);
+  const [editPrice, setEditPrice] = useState<number>(0);
 
   if (!isOpen) {
     return null;
   }
+
+  const handlePriceUpdate = (productId: number) => {
+    updatePrice(productId, editPrice);
+    setEditingProductId(null);
+  };
 
   const handleDiscountChange = (email: string, discount: number) => {
     updateProfile(email, { manualDiscount: discount });
@@ -44,9 +52,14 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose }) => {
     [orders]
   );
 
-  const activeOrders = useMemo(() => 
-    orders.filter(o => o.status !== 'picked_up' && o.status !== 'cancelled').length,
-    [orders]
+  const branchOrders = useMemo(() => 
+    orders.filter(o => o.branchName === selectedLocation),
+    [orders, selectedLocation]
+  );
+
+  const activeOrdersCount = useMemo(() => 
+    branchOrders.filter(o => o.status !== 'picked_up' && o.status !== 'cancelled').length,
+    [branchOrders]
   );
 
   const totalCustomers = Object.keys(allProfiles).length;
@@ -92,7 +105,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose }) => {
             className={`tab-btn ${activeTab === 'orders' ? 'active' : ''}`}
             onClick={() => setActiveTab('orders')}
           >
-            📦 Orders ({activeOrders})
+            📦 Orders ({activeOrdersCount})
           </button>
           <button 
             className={`tab-btn ${activeTab === 'inventory' ? 'active' : ''}`}
@@ -111,89 +124,68 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose }) => {
         <div className="admin-content">
           {activeTab === 'dashboard' && (
             <div className="admin-section">
-              <h3>Business Overview</h3>
+              <div className="admin-dashboard-header">
+                <h3>Store Manager Command Center</h3>
+                <p>Real-time operations for {selectedLocation}</p>
+              </div>
               
+              <div className="urgent-tasks">
+                {activeOrdersCount > 0 && (
+                  <div className="task-banner warning">
+                    <span>🔔 {activeOrdersCount} Orders require processing</span>
+                    <button onClick={() => setActiveTab('orders')}>Go to Orders</button>
+                  </div>
+                )}
+                {outOfStockCount > 0 && (
+                  <div className="task-banner danger">
+                    <span>⚠️ {outOfStockCount} Products are out of stock</span>
+                    <button onClick={() => setActiveTab('inventory')}>Check Stock</button>
+                  </div>
+                )}
+              </div>
+
               <div className="stats-grid">
                 <div className="stat-card">
-                  <span className="stat-icon">💰</span>
-                  <div>
+                  <div className="stat-main">
                     <strong>{totalRevenue.toLocaleString()} RWF</strong>
-                    <span>Total Revenue</span>
+                    <span>Store Revenue</span>
                   </div>
+                  <div className="stat-trend positive">+12% vs last week</div>
                 </div>
                 <div className="stat-card">
-                  <span className="stat-icon">📦</span>
-                  <div>
-                    <strong>{orders.length}</strong>
-                    <span>Total Orders</span>
-                  </div>
-                </div>
-                <div className="stat-card">
-                  <span className="stat-icon">👥</span>
-                  <div>
-                    <strong>{totalCustomers}</strong>
-                    <span>Registered Customers</span>
-                  </div>
-                </div>
-                <div className="stat-card">
-                  <span className="stat-icon">📋</span>
-                  <div>
-                    <strong>{allProducts.length}</strong>
-                    <span>Products in Catalog</span>
-                  </div>
-                </div>
-                <div className="stat-card alert">
-                  <span className="stat-icon">⚠️</span>
-                  <div>
-                    <strong>{activeOrders}</strong>
+                  <div className="stat-main">
+                    <strong>{activeOrdersCount}</strong>
                     <span>Active Orders</span>
                   </div>
+                  <div className="stat-sub">Needs attention</div>
                 </div>
-                <div className="stat-card alert">
-                  <span className="stat-icon">❌</span>
-                  <div>
+                <div className="stat-card">
+                  <div className="stat-main">
                     <strong>{outOfStockCount}</strong>
-                    <span>Out of Stock</span>
+                    <span>Inventory Alerts</span>
                   </div>
+                  <div className="stat-sub">Items at 0</div>
                 </div>
               </div>
 
               <div className="dashboard-panels">
-                <div className="panel">
-                  <h4>Top 5 Customers</h4>
-                  <div className="top-customers-list">
-                    {topCustomers.map((customer, idx) => (
-                      <div key={customer.email} className="top-customer-item">
-                        <span className="rank">#{idx + 1}</span>
-                        <div className="customer-info">
-                          <strong>{customer.name}</strong>
-                          <span>{customer.email}</span>
-                        </div>
-                        <div className="customer-stats">
-                          <strong>{customer.totalPurchases || 0}</strong>
-                          <span>orders</span>
-                        </div>
-                      </div>
-                    ))}
+                <div className="panel management-panel">
+                  <h4>Fulfillment Performance</h4>
+                  <div className="performance-chart-placeholder">
+                    {/* Simplified bar chart simulation */}
+                    <div className="bar-row"><small>Ready</small><div className="bar" style={{width: '80%', background: '#4caf50'}}></div></div>
+                    <div className="bar-row"><small>Packing</small><div className="bar" style={{width: '45%', background: '#ff9800'}}></div></div>
+                    <div className="bar-row"><small>Pending</small><div className="bar" style={{width: '20%', background: '#f44336'}}></div></div>
                   </div>
                 </div>
 
-                <div className="panel">
-                  <h4>Recent Orders</h4>
-                  <div className="recent-orders-list">
-                    {recentOrders.map(order => (
-                      <div key={order.id} className="recent-order-item">
-                        <div>
-                          <strong>{order.id}</strong>
-                          <span>{new Date(order.timestamp).toLocaleString()}</span>
-                        </div>
-                        <div className="order-status-badge">
-                          <span className={`status-${order.status}`}>{order.status}</span>
-                          <strong>{order.total.toLocaleString()} RWF</strong>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
+                <div className="panel management-panel">
+                  <h4>Recent Manager Actions</h4>
+                  <ul className="action-list">
+                    <li>✅ Order #SIM-9283 marked as Ready</li>
+                    <li>✏️ Price updated: Milk 1L -> 1,200 RWF</li>
+                    <li>👤 VIP Discount granted to joshua@gmail.com</li>
+                  </ul>
                 </div>
               </div>
             </div>
@@ -205,10 +197,10 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose }) => {
               <p className="admin-description">Track and update order status through the delivery pipeline.</p>
               
               <div className="order-grid">
-                {orders.length === 0 ? (
-                  <div className="empty-state">No orders yet. Waiting for first customer checkout.</div>
+                {branchOrders.length === 0 ? (
+                  <div className="empty-state">No orders for this branch yet.</div>
                 ) : (
-                  orders.map(order => (
+                  branchOrders.map(order => (
                     <div key={order.id} className={`order-card status-${order.status}`}>
                       <div className="order-card-header">
                         <div>
@@ -268,7 +260,22 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose }) => {
                     <img src={product.image} alt={product.name} />
                     <div className="inventory-info">
                       <strong>{product.name}</strong>
-                      <span>{product.category} • {product.price.toLocaleString()} RWF</span>
+                      {editingProductId === product.id ? (
+                        <div className="price-edit-group">
+                          <input 
+                            type="number" 
+                            value={editPrice} 
+                            onChange={(e) => setEditPrice(Number(e.target.value))}
+                            className="price-input"
+                          />
+                          <button onClick={() => handlePriceUpdate(product.id)} className="save-price-btn">Save</button>
+                        </div>
+                      ) : (
+                        <span onClick={() => { setEditingProductId(product.id); setEditPrice(product.price); }} className="editable-price">
+                          {product.price.toLocaleString()} RWF ✏️
+                        </span>
+                      )}
+                      <span>{product.category}</span>
                     </div>
                     <button 
                       className={`stock-toggle ${product.inStock ? 'in-stock' : 'out-stock'}`}

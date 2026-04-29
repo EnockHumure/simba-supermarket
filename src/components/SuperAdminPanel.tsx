@@ -12,13 +12,16 @@ const SuperAdminPanel: React.FC<SuperAdminPanelProps> = ({ isOpen, onClose }) =>
   const { t } = useSettings();
   const [requests, setRequests] = useState<AdminRequest[]>([]);
   const [approvedAdmins, setApprovedAdmins] = useState<AdminRequest[]>([]);
-  const [activeTab, setActiveTab] = useState<'pending' | 'approved' | 'rejected'>('pending');
+  const [activeTab, setActiveTab] = useState<'pending' | 'approved' | 'rejected' | 'settings' | 'reports'>('pending');
 
   useEffect(() => {
     if (isOpen) {
       loadRequests();
     }
   }, [isOpen]);
+
+  // Global metrics simulation
+  const globalRevenue = requests.filter(r => r.status === 'approved').length * 4500000; // Mock calculation
 
   const loadRequests = () => {
     const stored = localStorage.getItem('simba_admin_requests');
@@ -77,7 +80,7 @@ const SuperAdminPanel: React.FC<SuperAdminPanelProps> = ({ isOpen, onClose }) =>
     }
   };
 
-  const filteredRequests = requests.filter(r => r.status === activeTab);
+  const filteredRequests = requests.filter(r => r.status === (activeTab as any));
 
   if (!isOpen) return null;
 
@@ -102,77 +105,118 @@ const SuperAdminPanel: React.FC<SuperAdminPanelProps> = ({ isOpen, onClose }) =>
             className={`tab-btn ${activeTab === 'approved' ? 'active' : ''}`}
             onClick={() => setActiveTab('approved')}
           >
-            ✅ Approved ({requests.filter(r => r.status === 'approved').length})
+            👥 Admins
           </button>
           <button
-            className={`tab-btn ${activeTab === 'rejected' ? 'active' : ''}`}
-            onClick={() => setActiveTab('rejected')}
+            className={`tab-btn ${activeTab === 'reports' ? 'active' : ''}`}
+            onClick={() => setActiveTab('reports')}
           >
-            ❌ Rejected ({requests.filter(r => r.status === 'rejected').length})
+            📈 Reports
+          </button>
+          <button
+            className={`tab-btn ${activeTab === 'settings' ? 'active' : ''}`}
+            onClick={() => setActiveTab('settings')}
+          >
+            ⚙️ Settings
           </button>
         </div>
 
         <div className="superadmin-content">
-          {filteredRequests.length === 0 ? (
-            <div className="empty-state">
-              <p>No {activeTab} requests</p>
-            </div>
-          ) : (
-            <div className="requests-list">
-              {filteredRequests.map((request, index) => (
-                <div key={index} className={`request-card ${request.status}`}>
-                  <div className="request-header">
-                    <div>
-                      <h3>{request.name}</h3>
-                      <p className="request-email">{request.email}</p>
-                      <p className="request-phone">📱 {request.phone}</p>
-                    </div>
-                    <span className={`status-badge ${request.status}`}>
-                      {request.status === 'pending' && '⏳ Pending'}
-                      {request.status === 'approved' && '✅ Approved'}
-                      {request.status === 'rejected' && '❌ Rejected'}
-                    </span>
-                  </div>
-
-                  <div className="request-body">
-                    <div className="request-reason">
-                      <strong>Reason:</strong>
-                      <p>{request.reason}</p>
-                    </div>
-                    <div className="request-meta">
-                      <span>Requested: {new Date(request.timestamp).toLocaleString()}</span>
-                    </div>
-                  </div>
-
-                  <div className="request-actions">
-                    {request.status === 'pending' && (
-                      <>
-                        <button
-                          className="btn-approve"
-                          onClick={() => handleApprove(request.email)}
-                        >
-                          ✅ Approve
-                        </button>
-                        <button
-                          className="btn-reject"
-                          onClick={() => handleReject(request.email)}
-                        >
-                          ❌ Reject
-                        </button>
-                      </>
-                    )}
-                    {request.status === 'approved' && (
-                      <button
-                        className="btn-revoke"
-                        onClick={() => handleRevoke(request.email)}
-                      >
-                        🔒 Revoke Access
-                      </button>
-                    )}
-                  </div>
+          {activeTab === 'reports' && (
+            <div className="reports-view">
+              <h3>Global Performance Report</h3>
+              <div className="global-stats-grid">
+                <div className="g-stat">
+                  <span>Estimated Total Revenue</span>
+                  <strong>{globalRevenue.toLocaleString()} RWF</strong>
                 </div>
-              ))}
+                <div className="g-stat">
+                  <span>Active Store Admins</span>
+                  <strong>{requests.filter(r => r.status === 'approved').length}</strong>
+                </div>
+              </div>
             </div>
+          )}
+
+          {activeTab === 'settings' && (
+            <div className="settings-view">
+              <h3>Global System Settings</h3>
+              <div className="settings-form">
+                <div className="setting-item">
+                  <label>Base Delivery Fee (RWF)</label>
+                  <input type="number" defaultValue="2000" />
+                </div>
+                <div className="setting-item">
+                  <label>Maintenance Mode</label>
+                  <button className="toggle-off">Inactive</button>
+                </div>
+                <button className="btn-save">Apply Global Settings</button>
+              </div>
+            </div>
+          )}
+
+          {['pending', 'approved', 'rejected'].includes(activeTab) && (
+            filteredRequests.length === 0 ? (
+              <div className="empty-state">
+                <p>No {activeTab} requests</p>
+              </div>
+            ) : (
+              <div className="requests-list">
+                {filteredRequests.map((request, index) => (
+                  <div key={index} className={`request-card ${request.status}`}>
+                    <div className="request-header">
+                      <div>
+                        <h3>{request.name}</h3>
+                        <p className="request-email">{request.email}</p>
+                        <p className="request-phone">📱 {request.phone}</p>
+                      </div>
+                      <span className={`status-badge ${request.status}`}>
+                        {request.status === 'pending' && '⏳ Pending'}
+                        {request.status === 'approved' && '✅ Approved'}
+                        {request.status === 'rejected' && '❌ Rejected'}
+                      </span>
+                    </div>
+
+                    <div className="request-body">
+                      <div className="request-reason">
+                        <strong>Reason:</strong>
+                        <p>{request.reason}</p>
+                      </div>
+                      <div className="request-meta">
+                        <span>Requested: {new Date(request.timestamp).toLocaleString()}</span>
+                      </div>
+                    </div>
+
+                    <div className="request-actions">
+                      {request.status === 'pending' && (
+                        <>
+                          <button
+                            className="btn-approve"
+                            onClick={() => handleApprove(request.email)}
+                          >
+                            ✅ Approve
+                          </button>
+                          <button
+                            className="btn-reject"
+                            onClick={() => handleReject(request.email)}
+                          >
+                            ❌ Reject
+                          </button>
+                        </>
+                      )}
+                      {request.status === 'approved' && (
+                        <button
+                          className="btn-revoke"
+                          onClick={() => handleRevoke(request.email)}
+                        >
+                          🔒 Revoke Access
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )
           )}
         </div>
 

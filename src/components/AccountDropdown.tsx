@@ -3,13 +3,11 @@ import { useSettings } from '../context/SettingsContext';
 import './AccountDropdown.css';
 
 interface AccountDropdownProps {
-  onCategorySelect: (category: string) => void;
   onLoginClick: () => void;
   onSignupClick: () => void;
 }
 
 const AccountDropdown: React.FC<AccountDropdownProps> = ({
-  onCategorySelect,
   onLoginClick,
   onSignupClick,
 }) => {
@@ -28,21 +26,6 @@ const AccountDropdown: React.FC<AccountDropdownProps> = ({
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const categories = [
-    { name: 'All Products', icon: '🛒' },
-    { name: 'Cosmetics & Personal Care', icon: '💄' },
-    { name: 'Sports & Wellness', icon: '⚽' },
-    { name: 'Baby Products', icon: '👶' },
-    { name: 'Kitchenware & Electronics', icon: '🍳' },
-    { name: 'Food Products', icon: '🍕' },
-    { name: 'General', icon: '📦' },
-  ];
-
-  const handleCategoryClick = (category: string) => {
-    onCategorySelect(category);
-    setIsOpen(false);
-  };
-
   return (
     <div className="account-dropdown" ref={dropdownRef}>
       <button 
@@ -55,30 +38,12 @@ const AccountDropdown: React.FC<AccountDropdownProps> = ({
 
       {isOpen && (
         <div className="account-dropdown-menu">
-          <div className="dropdown-section">
-            <div className="dropdown-section-title">Categories</div>
-            {categories.map((cat) => (
-              <button
-                key={cat.name}
-                className="dropdown-item"
-                onClick={() => handleCategoryClick(cat.name)}
-              >
-                <span className="dropdown-icon">{cat.icon}</span>
-                {cat.name}
-              </button>
-            ))}
-          </div>
-
-          <div className="dropdown-divider"></div>
-
-          <div className="dropdown-section">
-            <button className="dropdown-item auth-item" onClick={() => { onLoginClick(); setIsOpen(false); }}>
-              🔑 Login
-            </button>
-            <button className="dropdown-item auth-item" onClick={() => { onSignupClick(); setIsOpen(false); }}>
-              ✨ Create Account
-            </button>
-          </div>
+          <button className="dropdown-item auth-item" onClick={() => { onLoginClick(); setIsOpen(false); }}>
+            🔑 Login
+          </button>
+          <button className="dropdown-item auth-item" onClick={() => { onSignupClick(); setIsOpen(false); }}>
+            ✨ Create Account
+          </button>
         </div>
       )}
     </div>

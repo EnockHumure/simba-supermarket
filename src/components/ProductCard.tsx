@@ -2,14 +2,16 @@ import React from 'react';
 import { useCart, type Product } from '../context/CartContext';
 import { useSettings } from '../context/SettingsContext';
 import { translateCategoryLabel, translateProductLabel } from '../i18n';
+import simbaLogo from '../simba-logo.png';
 import './ProductCard.css';
 
 interface ProductCardProps {
   product: Product;
   onClick: (product: Product) => void;
+  viewMode?: 'grid' | 'list';
 }
 
-const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) => {
+const ProductCard: React.FC<ProductCardProps> = ({ product, onClick, viewMode = 'grid' }) => {
   const { cart, addToCart, removeFromCart } = useCart();
   const { language } = useSettings();
   
@@ -28,7 +30,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) => {
 
   return (
     <article 
-      className="product-card" 
+      className={`product-card ${viewMode}`} 
       onClick={() => onClick(product)}
       role="button"
       tabIndex={0}
@@ -40,28 +42,43 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) => {
         }
       }}
     >
-      <div className="product-card-top">
-        <span className={`stock-pill ${product.inStock ? 'in-stock' : 'out-stock'}`} aria-label={product.inStock ? 'Item is in stock' : 'Item is unavailable'}>
-          {product.inStock ? 'In stock' : 'Unavailable'}
-        </span>
-        <span className="unit-pill">{product.unit}</span>
-      </div>
-
       <div className="product-image">
-        <img src={product.image} alt={translateProductLabel(product.name, language)} loading="lazy" />
+        <img 
+          src={product.image} 
+          alt={translateProductLabel(product.name, language)} 
+          loading="lazy" 
+          onError={(e) => (e.currentTarget.src = simbaLogo)}
+        />
       </div>
 
       <div className="product-info">
-        <p className="product-category">{translateCategoryLabel(product.category, language)}</p>
+        {viewMode === 'list' && <span className="col-label">Product Name</span>}
         <h4 className="product-name">{translateProductLabel(product.name, language)}</h4>
+        
+        {viewMode === 'list' && (
+          <div className="list-details">
+            <div className="list-col">
+              <span className="col-label">Category</span>
+              <p className="product-category">{translateCategoryLabel(product.category, language)}</p>
+            </div>
+            <div className="list-col">
+              <span className="col-label">Unit</span>
+              <p className="unit-pill-text">{product.unit}</p>
+            </div>
+          </div>
+        )}
+        
+        {viewMode === 'grid' && <p className="product-category">{translateCategoryLabel(product.category, language)}</p>}
 
         <div className="product-footer">
-          <div>
+          <div className="price-col">
+            {viewMode === 'list' && <span className="col-label">Price</span>}
             <strong className="product-price">{product.price.toLocaleString()} RWF</strong>
             <span className="product-subcopy">Tap for details</span>
           </div>
 
           <div className="stepper-container" onClick={e => e.stopPropagation()}>
+            {viewMode === 'list' && <span className="col-label" style={{ textAlign: 'right', display: 'block' }}>Add to Cart</span>}
             {quantity > 0 ? (
               <div className="stepper active">
                 <button 

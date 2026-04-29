@@ -16,7 +16,6 @@ interface NavbarProps {
   onLoginClick: () => void;
   onSignupClick: () => void;
   onLogout: () => void;
-  onCategorySelect: (category: string) => void;
 }
 
 const Navbar: React.FC<NavbarProps> = ({
@@ -28,7 +27,6 @@ const Navbar: React.FC<NavbarProps> = ({
   onLoginClick,
   onSignupClick,
   onLogout,
-  onCategorySelect,
 }) => {
   const { totalItems } = useCart();
   const { user, activeDiscount, isAdmin } = useUser();
@@ -120,7 +118,6 @@ const Navbar: React.FC<NavbarProps> = ({
             </>
           ) : (
             <AccountDropdown 
-              onCategorySelect={onCategorySelect}
               onLoginClick={onLoginClick}
               onSignupClick={onSignupClick}
             />

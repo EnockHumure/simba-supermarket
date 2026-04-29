@@ -1,0 +1,107 @@
+.simba-experience {
+  padding: 80px 0;
+  display: grid;
+  gap: 48px;
+}
+
+.simba-experience .section-header {
+  text-align: center;
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.experience-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(2, 280px);
+  gap: 20px;
+}
+
+.experience-card {
+  position: relative;
+  border-radius: 20px;
+  overflow: hidden;
+  background: var(--simba-white);
+  border: 1px solid var(--simba-line);
+  display: flex;
+  flex-direction: column;
+  transition: all 0.4s ease;
+}
+
+.experience-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.12);
+  border-color: var(--simba-primary);
+}
+
+.card-image-wrapper {
+  position: relative;
+  flex: 1;
+  overflow: hidden;
+}
+
+.card-image-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s ease;
+}
+
+.experience-card:hover img {
+  transform: scale(1.1);
+}
+
+.card-tag {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  padding: 6px 12px;
+  background: var(--simba-primary);
+  color: white;
+  border-radius: 20px;
+  font-size: 0.7rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  z-index: 2;
+}
+
+.card-content {
+  padding: 20px;
+  background: white;
+}
+
+.card-content h3 {
+  font-size: 1.1rem;
+  font-weight: 800;
+  margin-bottom: 8px;
+  color: var(--simba-ink);
+}
+
+.card-content p {
+  font-size: 0.85rem;
+  color: var(--simba-muted);
+  line-height: 1.5;
+}
+
+/* Mosaic Layout */
+.card-0 { grid-column: 1 / 3; grid-row: 1 / 3; } /* Large featured card */
+.card-1 { grid-column: 3 / 4; grid-row: 1 / 2; }
+.card-2 { grid-column: 4 / 5; grid-row: 1 / 2; }
+.card-3 { grid-column: 3 / 5; grid-row: 2 / 3; } /* Medium wide card */
+
+@media (max-width: 1000px) {
+  .experience-grid {
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: auto;
+  }
+  .card-0, .card-1, .card-2, .card-3 {
+    grid-column: span 1;
+    grid-row: auto;
+  }
+}
+
+@media (max-width: 600px) {
+  .experience-grid {
+    grid-template-columns: 1fr;
+  }
+}

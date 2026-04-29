@@ -19,11 +19,14 @@ import SuperAdminPanel from './components/SuperAdminPanel';
 import { InitializeSuperAdmin } from './components/InitializeSuperAdmin';
 import UserModal from './components/UserModal';
 import ProductModal from './components/ProductModal';
+import AdminPanel from './components/AdminPanel';
 import BranchPanel from './components/BranchPanel';
 import SimbaBot from './components/SimbaBot';
+import SimbaExperience from './components/SimbaExperience';
 import RoleSelectionModal from './components/RoleSelectionModal';
 import ReviewModal from './components/ReviewModal';
 import { translateCategoryLabel, translateProductLabel } from './i18n';
+import simbaLogo from './simba-logo.png';
 
 type ServiceKey =
   | 'supermarket'
@@ -62,68 +65,7 @@ const serviceDefinitions: Record<
   },
 };
 
-const simbaLocations = [
-  {
-    name: 'Union Trade Centre (City Center)',
-    address: '1 KN 4 Ave, Kigali',
-    coordinates: '3336+MHV',
-    description: 'Largest supermarket in Kigali city center with cooked food section',
-  },
-  {
-    name: 'Simba Remera',
-    address: 'KN 5 Rd, Kigali',
-    coordinates: '',
-    description: 'Full grocery and home items selection',
-  },
-  {
-    name: 'Simba Kacyiru',
-    address: 'KG 541 St, Kigali',
-    coordinates: '',
-    description: 'Complete food and household products',
-  },
-  {
-    name: 'Simba Nyarutarama',
-    address: '24Q5+R2R, Kigali',
-    coordinates: '24Q5+R2R',
-    description: 'Full range of groceries and essentials',
-  },
-  {
-    name: 'Simba Kimironko',
-    address: 'KG 192 St, Kigali',
-    coordinates: '342F+3V5',
-    description: 'Popular neighborhood supermarket',
-  },
-  {
-    name: 'Simba Nyamirambo',
-    address: '23H4+26V, Kigali',
-    coordinates: '23H4+26V',
-    description: 'Local community supermarket',
-  },
-  {
-    name: 'Simba Kicukiro',
-    address: '24G3+MCV, Kigali',
-    coordinates: '24G3+MCV',
-    description: 'Convenient location for Kicukiro residents',
-  },
-  {
-    name: 'Simba Gikondo',
-    address: 'KK 35 Ave, Kigali',
-    coordinates: '',
-    description: 'Industrial area supermarket',
-  },
-  {
-    name: 'Simba Kanombe',
-    address: '24J3+Q3, Kigali',
-    coordinates: '24J3+Q3',
-    description: 'Airport area location',
-  },
-  {
-    name: 'Simba Gisenyi',
-    address: '8754+P7W, Gisenyi',
-    coordinates: '8754+P7W',
-    description: 'Western Rwanda branch',
-  },
-];
+import { simbaLocations } from './locations';
 
 const rwandaLocations = simbaLocations.map(loc => loc.name);
 
@@ -148,6 +90,8 @@ const faqs = [
 const AppContent: React.FC = () => {
   const [activeService, setActiveService] = useState<ServiceKey>('supermarket');
   const activeServiceMeta = serviceDefinitions[activeService];
+  const [visibleCount, setVisibleCount] = useState(24);
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
 
   const {
     products,
@@ -199,15 +143,6 @@ const AppContent: React.FC = () => {
     }
   };
 
-  const handleCategorySelect = (category: string) => {
-    if (category === 'All Products') {
-      setSelectedCategory(null);
-    } else {
-      setSelectedCategory(category);
-    }
-    scrollToProducts();
-  };
-
   const handleLogout = () => {
     logout();
     window.location.reload();
@@ -233,7 +168,7 @@ const AppContent: React.FC = () => {
         activeServiceMeta.keywords!.some(keyword => 
           product.name.toLowerCase().includes(keyword)
         )
-      ).slice(0, 8);
+      );
     }
 
     if (activeService === 'bakery' && activeServiceMeta.keywords) {
@@ -241,18 +176,24 @@ const AppContent: React.FC = () => {
         activeServiceMeta.keywords!.some(keyword => 
           product.name.toLowerCase().includes(keyword)
         )
-      ).slice(0, 8);
+      );
     }
 
-    return filtered.slice(0, 8);
+    return filtered;
   }, [activeServiceMeta.categories, activeServiceMeta.keywords, activeService, allProducts]);
 
   const freshDeals = useMemo(() => {
-    return [...allProducts].sort((a, b) => a.price - b.price).slice(0, 4);
+    return [...allProducts]
+      .filter(p => p.price > 1) // Filter out clearly wrong data
+      .sort((a, b) => a.price - b.price)
+      .slice(0, 4);
   }, [allProducts]);
 
   const premiumPicks = useMemo(() => {
-    return [...allProducts].sort((a, b) => b.price - a.price).slice(0, 4);
+    return [...allProducts]
+      .filter(p => p.price > 1)
+      .sort((a, b) => b.price - a.price)
+      .slice(0, 4);
   }, [allProducts]);
 
   const newForYou = useMemo(() => {
@@ -357,7 +298,6 @@ const AppContent: React.FC = () => {
         onLoginClick={handleLoginClick}
         onSignupClick={handleSignupClick}
         onLogout={handleLogout}
-        onCategorySelect={handleCategorySelect}
       />
 
       <main className="app-shell">
@@ -414,25 +354,67 @@ const AppContent: React.FC = () => {
               <p className="section-kicker">{t(activeService)}</p>
               <h2>{t(activeService)}</h2>
             </div>
-            <button className="ghost-button" onClick={scrollToProducts}>
-              {t('browseCatalogue')}
-            </button>
+            <div style={{ display: 'flex', gap: '8px' }}>
+              <div className="view-toggle" style={{ display: 'flex', background: 'var(--simba-line)', padding: '4px', borderRadius: '8px' }}>
+                <button 
+                  className={`toggle-btn ${viewMode === 'grid' ? 'active' : ''}`}
+                  onClick={() => setViewMode('grid')}
+                  style={{ 
+                    padding: '6px 12px', 
+                    borderRadius: '6px', 
+                    fontSize: '0.8rem',
+                    background: viewMode === 'grid' ? 'var(--simba-white)' : 'transparent',
+                    boxShadow: viewMode === 'grid' ? '0 2px 4px rgba(0,0,0,0.1)' : 'none',
+                    fontWeight: 700
+                  }}
+                >
+                  Grid
+                </button>
+                <button 
+                  className={`toggle-btn ${viewMode === 'list' ? 'active' : ''}`}
+                  onClick={() => setViewMode('list')}
+                  style={{ 
+                    padding: '6px 12px', 
+                    borderRadius: '6px', 
+                    fontSize: '0.8rem',
+                    background: viewMode === 'list' ? 'var(--simba-white)' : 'transparent',
+                    boxShadow: viewMode === 'list' ? '0 2px 4px rgba(0,0,0,0.1)' : 'none',
+                    fontWeight: 700
+                  }}
+                >
+                  List
+                </button>
+              </div>
+              <button className="ghost-button" onClick={scrollToProducts}>
+                {t('browseCatalogue')}
+              </button>
+            </div>
           </div>
-          <div className="service-spotlight-grid">
-            {serviceProducts.map((product) => (
-              <ProductCard key={`${activeService}-${product.id}`} product={product} onClick={setSelectedProduct} />
+          <div className={`service-spotlight-grid ${viewMode === 'list' ? 'list-view' : ''}`}>
+            {serviceProducts.slice(0, visibleCount).map((product) => (
+              <ProductCard key={`${activeService}-${product.id}`} product={product} onClick={setSelectedProduct} viewMode={viewMode} />
             ))}
           </div>
+          {visibleCount < serviceProducts.length && (
+            <div style={{ textAlign: 'center', marginTop: '2rem' }}>
+              <button 
+                className="primary-button" 
+                onClick={() => setVisibleCount(prev => prev + 24)}
+                style={{ minWidth: '200px' }}
+              >
+                Load More Products
+              </button>
+            </div>
+          )}
         </section>
 
         <section className="section app-body">
-          <Sidebar
+          <Sidebar 
             categories={categories}
             selectedCategory={selectedCategory}
             onSelectCategory={setSelectedCategory}
             categoryCounts={categoryCounts}
           />
-
           <div className="market-content">
             <section className="market-highlights">
               <div className="highlight-card">
@@ -460,7 +442,12 @@ const AppContent: React.FC = () => {
                 <div className="mini-product-list">
                   {freshDeals.map((product) => (
                     <button key={`deal-${product.id}`} className="mini-product-card" onClick={() => setSelectedProduct(product)}>
-                      <img src={product.image} alt={product.name} loading="lazy" />
+                      <img 
+                        src={product.image} 
+                        alt={product.name} 
+                        loading="lazy" 
+                        onError={(e) => (e.currentTarget.src = simbaLogo)}
+                      />
                       <div>
                         <strong>{translateProductLabel(product.name, language)}</strong>
                         <span>{product.price.toLocaleString()} RWF</span>
@@ -480,7 +467,12 @@ const AppContent: React.FC = () => {
                 <div className="mini-product-list">
                   {premiumPicks.map((product) => (
                     <button key={`premium-${product.id}`} className="mini-product-card" onClick={() => setSelectedProduct(product)}>
-                      <img src={product.image} alt={product.name} loading="lazy" />
+                      <img 
+                        src={product.image} 
+                        alt={product.name} 
+                        loading="lazy" 
+                        onError={(e) => (e.currentTarget.src = simbaLogo)}
+                      />
                       <div>
                         <strong>{translateProductLabel(product.name, language)}</strong>
                         <span>{product.price.toLocaleString()} RWF</span>
@@ -502,7 +494,37 @@ const AppContent: React.FC = () => {
                       : `${t('browseProducts')} ${selectedLocation}.`}
                   </p>
                 </div>
-                <div className="catalogue-meta">
+                <div className="catalogue-meta" style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                  <div className="view-toggle" style={{ display: 'flex', background: 'var(--simba-line)', padding: '4px', borderRadius: '8px' }}>
+                    <button 
+                      className={`toggle-btn ${viewMode === 'grid' ? 'active' : ''}`}
+                      onClick={() => setViewMode('grid')}
+                      style={{ 
+                        padding: '6px 12px', 
+                        borderRadius: '6px', 
+                        fontSize: '0.8rem',
+                        background: viewMode === 'grid' ? 'var(--simba-white)' : 'transparent',
+                        boxShadow: viewMode === 'grid' ? '0 2px 4px rgba(0,0,0,0.1)' : 'none',
+                        fontWeight: 700
+                      }}
+                    >
+                      Grid
+                    </button>
+                    <button 
+                      className={`toggle-btn ${viewMode === 'list' ? 'active' : ''}`}
+                      onClick={() => setViewMode('list')}
+                      style={{ 
+                        padding: '6px 12px', 
+                        borderRadius: '6px', 
+                        fontSize: '0.8rem',
+                        background: viewMode === 'list' ? 'var(--simba-white)' : 'transparent',
+                        boxShadow: viewMode === 'list' ? '0 2px 4px rgba(0,0,0,0.1)' : 'none',
+                        fontWeight: 700
+                      }}
+                    >
+                      List
+                    </button>
+                  </div>
                   <span>{products.length} {t('results')}</span>
                   <button className="ghost-button" onClick={() => setSelectedCategory(null)}>
                     {t('resetFilter')}
@@ -510,10 +532,10 @@ const AppContent: React.FC = () => {
                 </div>
               </div>
 
-              <div className="product-grid">
+              <div className={`product-grid ${viewMode === 'list' ? 'list-view' : ''}`}>
                 {products.length > 0 ? (
                   products.map((product) => (
-                    <ProductCard key={product.id} product={product} onClick={setSelectedProduct} />
+                    <ProductCard key={product.id} product={product} onClick={setSelectedProduct} viewMode={viewMode} />
                   ))
                 ) : (
                   <div className="empty-state">
@@ -534,9 +556,9 @@ const AppContent: React.FC = () => {
               <p>{t('personalizedDesc')}</p>
             </div>
           </div>
-          <div className="service-spotlight-grid">
+          <div className={`service-spotlight-grid ${viewMode === 'list' ? 'list-view' : ''}`}>
             {newForYou.map((product) => (
-              <ProductCard key={`personal-${product.id}`} product={product} onClick={setSelectedProduct} />
+              <ProductCard key={`personal-${product.id}`} product={product} onClick={setSelectedProduct} viewMode={viewMode} />
             ))}
           </div>
         </section>
@@ -558,6 +580,10 @@ const AppContent: React.FC = () => {
             )}
           </div>
         </section>
+
+        <ScrollAnimation animation="fadeIn">
+          <SimbaExperience />
+        </ScrollAnimation>
 
         <ScrollAnimation animation="fadeIn">
           <Testimonials />
@@ -664,16 +690,14 @@ const AppContent: React.FC = () => {
                     {location.address}
                   </p>
                   <p className="location-description">{location.description}</p>
-                  {location.coordinates && (
-                    <a 
-                      href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(location.coordinates + ' ' + location.address)}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="location-map-link"
-                    >
-                      {t('viewOnMaps')} →
-                    </a>
-                  )}
+                  <a 
+                    href={`https://www.google.com/maps/search/?api=1&query=${location.lat},${location.lng}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="location-map-link"
+                  >
+                    {t('viewOnMaps')} →
+                  </a>
                 </div>
               </div>
             ))}
@@ -694,7 +718,11 @@ const AppContent: React.FC = () => {
         selectedLocation={selectedLocation}
       />
       <ProductModal product={selectedProduct} onClose={() => setSelectedProduct(null)} />
-      <BranchPanel isOpen={isAdminOpen} onClose={() => setIsAdminOpen(false)} />
+      <AdminPanel 
+        isOpen={isAdminOpen} 
+        onClose={() => setIsAdminOpen(false)} 
+        selectedLocation={selectedLocation}
+      />
       <AdminRegisterModal 
         isOpen={isAdminRegisterOpen} 
         onClose={() => setIsAdminRegisterOpen(false)}

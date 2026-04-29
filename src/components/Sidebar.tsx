@@ -17,38 +17,62 @@ const Sidebar: React.FC<SidebarProps> = ({
   categoryCounts,
 }) => {
   const { language } = useSettings();
+  const [isExpanded, setIsExpanded] = React.useState(false);
 
   return (
-    <aside className="sidebar" aria-label="Category Filters">
-      <div className="sidebar-header">
-        <p className="section-kicker">Departments</p>
-        <h3>Shop by category</h3>
-        <p>These filters drive the main product grid below.</p>
-      </div>
+    <aside className={`sidebar ${isExpanded ? 'expanded' : ''}`} aria-label="Category Filters">
+      <button 
+        className="sidebar-toggle-btn" 
+        onClick={() => setIsExpanded(!isExpanded)}
+        aria-expanded={isExpanded}
+      >
+        <div className="toggle-content">
+          <span className="toggle-icon">📂</span>
+          <span className="toggle-text">Shop by category</span>
+        </div>
+        <span className={`arrow ${isExpanded ? 'up' : 'down'}`}>▼</span>
+      </button>
 
-      <div className="sidebar-list">
+      <div className={`sidebar-list ${isExpanded ? 'show' : ''}`}>
         <button
           className={`sidebar-item ${selectedCategory === null ? 'active' : ''}`}
-          onClick={() => onSelectCategory(null)}
+          onClick={() => {
+            onSelectCategory(null);
+            setIsExpanded(false);
+          }}
           aria-pressed={selectedCategory === null}
           aria-label="Show all products"
         >
-          <span>All Products</span>
+          <span>🏪 All Products</span>
           <strong>{Object.values(categoryCounts).reduce((total, count) => total + count, 0)}</strong>
         </button>
 
-        {categories.map((category) => (
-          <button
-            key={category}
-            className={`sidebar-item ${selectedCategory === category ? 'active' : ''}`}
-            onClick={() => onSelectCategory(category)}
-            aria-pressed={selectedCategory === category}
-            aria-label={`Filter by ${translateCategoryLabel(category, language)}`}
-          >
-            <span>{translateCategoryLabel(category, language)}</span>
-            <strong>{categoryCounts[category] || 0}</strong>
-          </button>
-        ))}
+        {categories.map((category) => {
+          const icons: Record<string, string> = {
+            'Cosmetics & Personal Care': '💄',
+            'Sports & Wellness': '🏆',
+            'Baby Products': '👶',
+            'Kitchenware & Electronics': '🔌',
+            'Food Products': '🍎',
+            'General': '📦',
+            'Alcoholic Drinks': '🍷'
+          };
+          return (
+            <button
+              key={category}
+              className={`sidebar-item ${selectedCategory === category ? 'active' : ''}`}
+              onClick={() => {
+                onSelectCategory(category);
+                setIsExpanded(false);
+              }}
+              aria-pressed={selectedCategory === category}
+              aria-label={`Filter by ${translateCategoryLabel(category, language)}`}
+            >
+              <span>{icons[category] || '📁'} {translateCategoryLabel(category, language)}</span>
+              <strong>{categoryCounts[category] || 0}</strong>
+            </button>
+          );
+        })}
       </div>
     </aside>
   );
