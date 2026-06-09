@@ -1,0 +1,32 @@
+@import "tailwindcss";
+
+@theme {
+  --color-simba-primary: #e31b23;
+  --color-simba-secondary: #ffd200;
+  --color-simba-orange: #f28c28;
+  --color-simba-purple: #49266f;
+  --color-simba-ink: #201616;
+  --color-simba-muted: #766c6c;
+  --color-simba-bg: #fafafa;
+  --color-simba-line: #edeaea;
+  --color-simba-white: #ffffff;
+}
+
+@layer base {
+  :root {
+    --simba-primary: #e31b23;
+    --simba-secondary: #ffd200;
+    --simba-orange: #f28c28;
+    --simba-purple: #49266f;
+    --simba-ink: #201616;
+    --simba-muted: #766c6c;
+    --simba-bg: #fafafa;
+    --simba-line: #edeaea;
+    --simba-white: #ffffff;
+    --simba-shadow: 0 4px 12px rgba(32, 22, 22, 0.08);
+  }
+
+  body {
+    @apply bg-simba-bg text-simba-ink antialiased font-sans;
+  }
+}

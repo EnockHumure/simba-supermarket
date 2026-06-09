@@ -1,0 +1,32 @@
+[
+  {
+    "id": "cp-1",
+    "title": "200 RWF Off Inyange Milk",
+    "description": "Save on any 1L Inyange Milk product. One per customer.",
+    "productId": 65001,
+    "discountValue": 200,
+    "discountType": "flat",
+    "expiryDate": "2026-07-01",
+    "image": "https://res.cloudinary.com/eskalate/image/upload/v1776507692/simba_contest/product_65001.jpg"
+  },
+  {
+    "id": "cp-2",
+    "title": "10% Off All Bakery Items",
+    "description": "Enjoy extra savings on fresh bread, cakes, and pastries this week.",
+    "departmentId": "bakery",
+    "discountValue": 10,
+    "discountType": "percent",
+    "expiryDate": "2026-06-15",
+    "image": "https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&q=80&w=400"
+  },
+  {
+    "id": "cp-3",
+    "title": "500 RWF Off Fresh Beef",
+    "description": "Valid on any beef purchase over 2,000 RWF.",
+    "departmentId": "meat-seafood",
+    "discountValue": 500,
+    "discountType": "flat",
+    "expiryDate": "2026-06-30",
+    "image": "https://images.unsplash.com/photo-1547592166-23ac45744acd?auto=format&fit=crop&q=80&w=400"
+  }
+]

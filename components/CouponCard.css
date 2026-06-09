@@ -1,0 +1,112 @@
+.coupon-card {
+  background: white;
+  border-radius: 20px;
+  overflow: hidden;
+  border: 2px dashed #e5e7eb;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  transition: all 0.3s ease;
+  min-height: 400px;
+}
+
+.coupon-card.clipped {
+  border-color: #10b981;
+  background: #f0fdf4;
+}
+
+.coupon-visual {
+  position: relative;
+  height: 200px;
+}
+
+.coupon-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.coupon-badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: var(--simba-primary);
+  color: white;
+  padding: 6px 12px;
+  border-radius: 99px;
+  font-size: 11px;
+  font-weight: 900;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.coupon-details {
+  padding: 1.5rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.coupon-title {
+  font-size: 1.125rem;
+  font-weight: 900;
+  color: var(--simba-ink);
+  margin-bottom: 0.5rem;
+}
+
+.coupon-desc {
+  font-size: 0.8125rem;
+  color: var(--simba-muted);
+  line-height: 1.5;
+  margin-bottom: 1rem;
+}
+
+.coupon-expiry {
+  font-size: 10px;
+  font-weight: 700;
+  color: #9ca3af;
+  margin-bottom: 1.5rem;
+  margin-top: auto;
+}
+
+.clip-btn {
+  width: 100%;
+  padding: 0.75rem;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 900;
+  transition: all 0.2s;
+  background: var(--simba-ink);
+  color: white;
+}
+
+.clip-btn:hover {
+  opacity: 0.9;
+  transform: translateY(-2px);
+}
+
+.clip-btn.is-clipped {
+  background: #10b981;
+  cursor: default;
+}
+
+.coupon-cut-line {
+  position: absolute;
+  left: -10px;
+  right: -10px;
+  top: 200px;
+  height: 2px;
+  border-top: 2px dotted #e5e7eb;
+}
+
+.coupon-card::before, .coupon-card::after {
+  content: '';
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  background: var(--simba-bg);
+  border-radius: 50%;
+  top: 190px;
+}
+
+.coupon-card::before { left: -10px; }
+.coupon-card::after { right: -10px; }

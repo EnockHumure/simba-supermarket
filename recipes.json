@@ -1,0 +1,27 @@
+[
+  {
+    "id": "recipe-1",
+    "name": "Classic Kigali Beef Stew",
+    "description": "A hearty, traditional Rwandan beef stew served with rice and fresh vegetables.",
+    "image": "https://images.unsplash.com/photo-1547592166-23ac45744acd?auto=format&fit=crop&q=80&w=800",
+    "servings": 4,
+    "prepTime": "45 min",
+    "ingredients": [
+      { "productId": 13001, "name": "Beef Chuck Roast", "quantity": 1 },
+      { "productId": 65001, "name": "Inyange Milk (for side)", "quantity": 1 },
+      { "productId": 62001, "name": "Cooking Oil", "quantity": 1 }
+    ]
+  },
+  {
+    "id": "recipe-2",
+    "name": "Fresh Bakery Breakfast",
+    "description": "Start your morning with fresh Simba bakery items and premium Rwandan coffee.",
+    "image": "https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&q=80&w=800",
+    "servings": 2,
+    "prepTime": "5 min",
+    "ingredients": [
+      { "productId": 64001, "name": "Fresh Bread Loaf", "quantity": 1 },
+      { "productId": 65002, "name": "Yogurt", "quantity": 2 }
+    ]
+  }
+]

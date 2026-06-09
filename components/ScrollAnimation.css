@@ -1,0 +1,39 @@
+.scroll-animation {
+  opacity: 0;
+  transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.scroll-animation.visible {
+  opacity: 1;
+}
+
+/* Fade In Animation */
+.scroll-animation.fadeIn {
+  opacity: 0;
+}
+
+.scroll-animation.fadeIn.visible {
+  opacity: 1;
+}
+
+/* Slide Up Animation */
+.scroll-animation.slideUp {
+  opacity: 0;
+  transform: translateY(50px);
+}
+
+.scroll-animation.slideUp.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Zoom Animation */
+.scroll-animation.zoom {
+  opacity: 0;
+  transform: scale(0.9);
+}
+
+.scroll-animation.zoom.visible {
+  opacity: 1;
+  transform: scale(1);
+}
